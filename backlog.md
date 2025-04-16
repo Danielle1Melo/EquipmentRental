@@ -31,4 +31,6 @@
 ## 2° Sprint (16/04/2025 - 29/04/2025)
 * Revisão da modelagem do banco de dados;
 * Documentação de cada rota
+    * Identificar endpoints disponíveis
+    * Identificar os métodos HTTP (GET, POST, PUT, DELETE)
 * Métricas SCRUM
