@@ -56,7 +56,7 @@
 - Detalhes do equipamento.
 
 
-### 2.4 GET  PATCH /equipamentos/:id
+### 2.4 PATCH /equipamentos/:id
 
 #### Caso de Uso
 - Atualizar dados do equipamento.
