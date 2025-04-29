@@ -14,6 +14,20 @@
 - Retorno dos tokens de acesso e refresh.
 - Em caso de erro, mensagem de erro: "E-mail já cadastrado" ou "Dados inválidos".
 
+### 1.2 POST  /register
+
+#### Caso de Uso
+- Permitir que novos usuários se cadastrem no sistema para acessar as funcionalidades do aplicativo, criando uma conta com suas informações pessoais.
+
+#### Regras de Negócio
+- Validação de Dados: Verificar se os campos obrigatórios (nome, e-mail, senha, telefone) 
+- Confirmação de Cadastro: Enviar um e-mail de confirmação com um link para validar a conta antes de permitir o login
+- Criptografia de Senha: Armazenar a senha de forma segura.
+
+#### Caso de Uso
+- Usuário cadastrado com sucesso.
+- Em caso de erro, mensagem de erro: "E-mail já cadastrado" ou "Dados inválidos".
+
 ## 2. Equipamentos
 
 ### 2.1 POST /equipamentos
@@ -104,7 +118,36 @@
 - Filtro por status, data, locador ou locatário.
 
 #### Resultado Esperado
-- Lista dos equipamentos reservados.
+- Lista dos equipamentos reservados. 
+
+## 4. Usuario
+
+### 4.1 GET /usuario/:id
+
+#### Caso de Uso
+- Obter detalhes de um usuário específico.
+
+#### Regras de Negócio
+- Validação de Existência: verificar se o usuário existe.
+- Controle de Permissão: o próprio usuário ou administradores podem visualizar.
+
+#### Resultado Esperado
+- Detalhamento completo: nome, e-mail, status, foto.
+- Erro caso não encontrado ou sem permissão.
+
+### 4.2 PATCH /usuario/:id
+
+#### Caso de Uso
+- Atualizar informações do usuário.
+
+#### Regras de Negócio
+- Garantir a existência do usuário.
+- Garantir que os dados estejam em formato válido. 
+
+#### Resultado Esperado
+- Dados atualizados com sucesso.
+- Erro em caso de duplicidade ou violação de regras.
+
 
 
 
