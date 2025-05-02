@@ -22,6 +22,48 @@ const fakeMappings = {
         notaMediaAvaliação: () => fakebr.random.number({ min: 0, max: 10 }),
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
+        
+    }, 
+
+    Endereco: {
+        id: () => new mongoose.Types.ObjectId().toString(),
+        rua: () => fakebr.address.streetName(),
+        numero: () => fakebr.random.number({ min: 1, max: 1000 }),
+        complemento: () => fakebr.address.secondaryAddress(),
+        bairro: () => fakebr.address.county(),
+        cidade: () => fakebr.address.city(),
+        estado: () => fakebr.address.stateAbbr(),
+        cep: () => fakebr.address.zipCode(),
+    },
+
+    Reserva: {
+      id: () => new mongoose.Types.ObjectId().toString(),
+      dataInicial: () => fakebr.date.past(),
+      dataFinal: () => fakebr.date.future(),
+      dataFinalAtrasada: () => fakebr.date.future(),
+      quantidadeEquipamento: () => fakebr.random.number({ min: 1, max: 10 }),
+      valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
+      enderecoEquipamento: () => fakebr.address.streetAddress(),
+      status: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
+    }, 
+
+    Avaliacao: {
+      id: () => new mongoose.Types.ObjectId().toString(),
+      nota: () => fakebr.random.number({ min: 1, max: 5 }),
+      descricao: () => fakebr.lorem.sentence(),
+      dataAvaliacao: () => fakebr.date.past(),
+    }, 
+
+    Equipamento: {
+      id: () => new mongoose.Types.ObjectId().toString(),
+      nome: () => fakebr.commerce.productName(),
+      descricao: () => fakebr.lorem.sentence(),
+      valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
+      quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
+      categoria: () => fakebr.commerce.department(),
+      status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
+      foto: () => fakebr.image.imageUrl(),
+      notaMediaAvaliação: () => fakebr.random.number({ min: 0, max: 10 }),
     }
 }
 
