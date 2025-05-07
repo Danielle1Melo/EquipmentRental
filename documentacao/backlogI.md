@@ -42,3 +42,4 @@
     * 3.2 CRUD Principal; (Danielle Melo)
     * 3.3 Endpoints Adicionais;
 * Métricas SCRUM
+
