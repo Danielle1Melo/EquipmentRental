@@ -1,5 +1,4 @@
 import fakebr from 'faker-br';
-import { fa } from 'faker-br/lib/locales';
 import mongoose from 'mongoose';
 import { v4 as uuid } from 'uuid';
 
@@ -55,16 +54,15 @@ const fakeMappings = {
     }, 
 
     Equipamento: {
-      id: () => new mongoose.Types.ObjectId().toString(),
       nome: () => fakebr.commerce.productName(),
       descricao: () => fakebr.lorem.sentence(),
-      valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
-      quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
+      valor: () => fakebr.random.number({ min: 10, max: 100 }),
+      quantidade: () => fakebr.random.number({ min: 1, max: 50 }),
       categoria: () => fakebr.commerce.department(),
-      status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
       foto: () => fakebr.image.imageUrl(),
-      notaMediaAvaliação: () => fakebr.random.number({ min: 0, max: 10 }),
-    }
+      notaMedia: () => fakebr.random.number({ min: 0, max: 10 }),
+      aprovado: () => fakebr.random.boolean(),
+    }  
 }
 
 
