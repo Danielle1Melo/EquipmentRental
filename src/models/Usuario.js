@@ -9,12 +9,13 @@ class Usuario {
             telefone:{type:String, required:true},
             senha:{type:String, require:true},
             dataNascimento:{type:Date, required: true},
-            CPF:{type:String, required:true},
-            notaMedia:{type:Number}
+
+            cpf:{type:String, required:true},
+            notaMediaAvaliacao:{type:Number}
         })
         usuarioSchema.plugin(mongoosePaginate);
         this.model = mongoose.model('usuario', usuarioSchema);
     }
 }
-export default new Usuario().model
 
+export default new Usuario().model

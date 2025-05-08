@@ -5,9 +5,11 @@ import Usuario from './Usuario.js';
 class Avalicao {
     constructor(){
         const avaliacaoSchema = new mongoose.Schema({
-            avalDescricao: {type: String},
-            avalNota: {type:Number},
-            usuarioId: {
+
+            nota: {type:Number},
+            descricao: {type: String},
+
+            usuario: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'usuario'
             }
@@ -17,5 +19,5 @@ class Avalicao {
     }
 }
 
-export default new Avalicao().model;
 
+export default new Avalicao().model;

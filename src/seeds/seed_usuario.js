@@ -3,9 +3,9 @@ import Usuario from "../models/Usuario"
 import getGlobalFakeMapping from "../globalFakeMapping"
 import bcrypt from "bcryptjs";
 
-import DbConect from "../config/DbConnect.js";
+import DbConnect from "../config/Dbconnect";
 
-await DbConect.conectar();
+await DbConnect.conectar();
 
 export function gerarSenhaHash(senhaPura){
     return bcrypt.hashSync(senhaPura, 8);

@@ -1,8 +1,8 @@
 import fakebr from 'faker-br';
+//import { fa } from 'faker-br/lib/locales';
 import mongoose from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import loadModels from './loadModels.js';
-
 
 //173
 
@@ -11,66 +11,61 @@ const fakeMappings = {
 
   },
 
-  Usuario: {
-    id: () => new mongoose.Types.ObjectId().toString(),
-    nome: () => fakebr.name.firstName(),
-    sobrenome: () => fakebr.name.lastName(),
-    email: () => fakebr.internet.email(),
-    telefone: () => fakebr.phone.phoneNumber(),
-    senha: () => fakebr.internet.password(),
-    dataNascimento: () => fakebr.date.paste(),
-    cpf: () => fakebr.br.cpf(),
-    notaMediaAvaliação: () => fakebr.random.number({ min: 0, max: 10 }),
-    status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
-    tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
 
-  },
+    Usuario: {
+        nome: () => fakebr.name.firstName(),
+        sobrenome: () => fakebr.name.lastName(),
+        email: () => fakebr.internet.email(),
+        telefone: () => fakebr.phone.phoneNumber(),
+        senha: () => fakebr.internet.password(),
+        dataNascimento: () => fakebr.date.paste(),
+        cpf: () => fakebr.br.cpf(),
+        notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
+        status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
+        tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
+        
+    }, 
 
-  Endereco: {
-    id: () => new mongoose.Types.ObjectId().toString(),
-    rua: () => fakebr.address.streetName(),
-    numero: () => fakebr.random.number({ min: 1, max: 1000 }),
-    complemento: () => fakebr.address.secondaryAddress(),
-    bairro: () => fakebr.address.county(),
-    cidade: () => fakebr.address.city(),
-    estado: () => fakebr.address.stateAbbr(),
-    cep: () => fakebr.address.zipCode(),
-  },
+    Endereco: {
+        rua: () => fakebr.address.streetName(),
+        numero: () => fakebr.random.number({ min: 1, max: 1000 }),
+        complemento: () => fakebr.address.secondaryAddress(),
+        bairro: () => fakebr.address.county(),
+        cidade: () => fakebr.address.city(),
+        estado: () => fakebr.address.stateAbbr(),
+        cep: () => fakebr.address.zipCode(),
+    },
 
-  Reserva: {
-    id: () => new mongoose.Types.ObjectId().toString(),
-    dataInicial: () => fakebr.date.past(),
-    dataFinal: () => fakebr.date.future(),
-    dataFinalAtrasada: () => fakebr.date.future(),
-    quantidadeEquipamento: () => fakebr.random.number({ min: 1, max: 10 }),
-    valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
-    enderecoEquipamento: () => fakebr.address.streetAddress(),
-    status: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
-    pkEquipamentoId: () => new mongoose.Types.ObjectId().toString(),
-    pkUsuarioId: () => new mongoose.Types.ObjectId().toString(),
-  },
+    Reserva: {
+      dataInicial: () => fakebr.date.past(),
+      dataFinal: () => fakebr.date.future(),
+      dataFinalAtrasada: () => fakebr.date.future(),
+      quantidadeEquipamento: () => fakebr.random.number({ min: 1, max: 10 }),
+      valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
+      enderecoEquipamento: () => fakebr.address.streetAddress(),
+      status: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
+      equipamento: [{_id: new mongoose.Types.ObjectId().toString}],
+      usuario: [{_id: new mongoose.Types.ObjectId().toString}],
+    }, 
 
-  Avaliacao: {
-    id: () => new mongoose.Types.ObjectId().toString(),
-    nota: () => fakebr.random.number({ min: 1, max: 5 }),
-    descricao: () => fakebr.lorem.sentence(),
-    dataAvaliacao: () => fakebr.date.past(),
-  },
+    Avaliacao: {
+      nota: () => fakebr.random.number({ min: 1, max: 5 }),
+      descricao: () => fakebr.lorem.sentence(),
+      dataAvaliacao: () => fakebr.date.past(),
+      usuario: [{_id: new mongoose.Types.ObjectId().toString}]
+    }, 
 
-  Equipamento: {
-    nome: () => fakebr.commerce.productName(),
-    descricao: () => fakebr.lorem.sentence(),
-    valor: () => fakebr.random.number({ min: 10, max: 100 }),
-    categoria: () => fakebr.commerce.department(),
-    foto: () => fakebr.image.imageUrl(),
-    quantidade: () => fakebr.random.number({ min: 1, max: 50 }),
-    notaMedia: () => fakebr.random.number({ min: 0, max: 10 }),
-    aprovado: () => fakebr.random.boolean(),
-    fkUsuarioId: () => new mongoose.Types.ObjectId().toString(),
-    avaliacaoPkAvalId: () => new mongoose.Types.ObjectId().toString(),
-  }
+    Equipamento: {
+      nome: () => fakebr.commerce.productName(),
+      descricao: () => fakebr.lorem.sentence(),
+      valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
+      quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
+      categoria: () => fakebr.commerce.department(),
+      status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
+      foto: () => fakebr.image.imageUrl(),
+      notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
+    }
 }
-
 
 /**
 * Retorna o mapping global, consolidando os mappings comuns e específicos.

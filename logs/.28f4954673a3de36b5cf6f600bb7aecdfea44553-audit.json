@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\.28f4954673a3de36b5cf6f600bb7aecdfea44553-audit.json",
+    "files": [
+        {
+            "date": 1746741156807,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-08.log",
+            "hash": "f12d12a8f65060a0e0e16126f10d37e6e1217183da48d1597b9a221cef36910a"
+        }
+    ],
+    "hashType": "sha256"
+}

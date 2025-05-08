@@ -2,7 +2,7 @@
 // import Equipamento from "../models/Equipamento.js";
 // import Usuario from "../models/Usuario.js";
 // import DbConnect from "../config/Dbconnect.js";
-// import getGlobalFakeMapping from "./globalFakermapping.js";
+import getGlobalFakeMapping from "./globalFakermapping.js";
 // //import logger from "../utils/logger.js";
 
 
@@ -58,7 +58,7 @@ import Equipamento from "../models/Equipamento.js";
 import Usuario from "../models/Usuario.js";
 import DbConnect from "../config/Dbconnect.js";
 
-await DbConnect.conectar();
+
 
 async function SeedEquipamentos() {
   await Equipamento.deleteMany();
@@ -69,6 +69,8 @@ async function SeedEquipamentos() {
     console.error("Nenhum usuário encontrado. Execute o seed de usuários primeiro.");
     return;
   }
+
+  const fake = await getGlobalFakeMapping();
 
   const categoriasValidas = [
     "Furadeira",
@@ -81,22 +83,27 @@ async function SeedEquipamentos() {
     "Betoneira"
   ];
 
-  const equipamentos = Array.from({ length: 10 }).map((_, i) => ({
-    nome: `Equipamento ${i + 1}`,
-    descricao: `Descrição do equipamento ${i + 1}`,
-    valor: (i + 1) * 10,
-    categoria: categoriasValidas[i % categoriasValidas.length],
-    foto: `https://example.com/foto${i + 1}.jpg`,
-    quantidade: Math.floor(Math.random() * 10) + 1,
-    notaMedia: 0,
-    status: "disponível",
-    fkUsuarioId: usuario._id,
-    aprovado: false
-  }));
+  const equipamentos = []
+  try{
+    for(let i = 0; i < 5; i++){
+    equipamentos.push({
+      nome: fake.nome(),
+      descricao:fake.descricao(),
+      valorDiaria: fake.valorDiaria(),
+      quantidadeDisponivel:fake.quantidadeDisponivel(),
+      categoria: fake.categoria(),
+      status: fake.status(),
+      foto: fake.foto(),
+      notaMediaAvaliacao: fake.notaMediaAvaliacao(),
+    });
 
-  await Equipamento.insertMany(equipamentos);
-  console.log("Equipamentos inseridos com sucesso!");
+  }
+  const resultado = await Equipamento.collection.insertMany(equipamentos)
+  return resultado;
+  } catch (err) {
+    console.log(`Deu erro aqui ó ${err}`)
+  }
 }
 
-SeedEquipamentos();
+export default SeedEquipamentos;
 
