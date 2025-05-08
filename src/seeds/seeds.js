@@ -19,8 +19,9 @@ import SeedAvaliacao from "./seed_avaliacao.js";
 DbConnect.conectar();
 
 async function main() {
-        const usuario = await SeedUsuario()
-        await SeedAvaliacao(usuario)
+
+    const usuario = await SeedUsuario()
+    await SeedAvaliacao(usuario)
 
 }
 
