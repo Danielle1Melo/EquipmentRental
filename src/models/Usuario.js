@@ -7,7 +7,7 @@ class Usuario {
             nome: {type: String, required:true},
             email:{type:String, required:true},
             telefone:{type:String, required:true},
-            senha:{type:String, require:dtrue},
+            senha:{type:String, require:true},
             dataNascimento:{type:Date, required: true},
             CPF:{type:String, required:true},
             notaMedia:{type:Number}
