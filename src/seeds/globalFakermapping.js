@@ -1,7 +1,8 @@
 import fakebr from 'faker-br';
-import { fa } from 'faker-br/lib/locales';
+//import { fa } from 'faker-br/lib/locales';
 import mongoose from 'mongoose';
 import { v4 as uuid } from 'uuid';
+import loadModels from './loadModels.js';
 
 //173
 
@@ -11,7 +12,6 @@ const fakeMappings = {
     },
 
     Usuario: {
-        id: () => new mongoose.Types.ObjectId().toString(),
         nome: () => fakebr.name.firstName(),
         sobrenome: () => fakebr.name.lastName(),
         email: () => fakebr.internet.email(),
@@ -19,14 +19,13 @@ const fakeMappings = {
         senha: () => fakebr.internet.password(),
         dataNascimento: () => fakebr.date.paste(),
         cpf: () => fakebr.br.cpf(),
-        notaMediaAvaliação: () => fakebr.random.number({ min: 0, max: 10 }),
+        notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
         
     }, 
 
     Endereco: {
-        id: () => new mongoose.Types.ObjectId().toString(),
         rua: () => fakebr.address.streetName(),
         numero: () => fakebr.random.number({ min: 1, max: 1000 }),
         complemento: () => fakebr.address.secondaryAddress(),
@@ -37,7 +36,6 @@ const fakeMappings = {
     },
 
     Reserva: {
-      id: () => new mongoose.Types.ObjectId().toString(),
       dataInicial: () => fakebr.date.past(),
       dataFinal: () => fakebr.date.future(),
       dataFinalAtrasada: () => fakebr.date.future(),
@@ -45,17 +43,18 @@ const fakeMappings = {
       valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
       enderecoEquipamento: () => fakebr.address.streetAddress(),
       status: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
+      equipamento: [{_id: new mongoose.Types.ObjectId().toString}],
+      usuario: [{_id: new mongoose.Types.ObjectId().toString}],
     }, 
 
     Avaliacao: {
-      id: () => new mongoose.Types.ObjectId().toString(),
       nota: () => fakebr.random.number({ min: 1, max: 5 }),
       descricao: () => fakebr.lorem.sentence(),
       dataAvaliacao: () => fakebr.date.past(),
+      usuario: [{_id: new mongoose.Types.ObjectId().toString}]
     }, 
 
     Equipamento: {
-      id: () => new mongoose.Types.ObjectId().toString(),
       nome: () => fakebr.commerce.productName(),
       descricao: () => fakebr.lorem.sentence(),
       valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
@@ -63,10 +62,9 @@ const fakeMappings = {
       categoria: () => fakebr.commerce.department(),
       status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
       foto: () => fakebr.image.imageUrl(),
-      notaMediaAvaliação: () => fakebr.random.number({ min: 0, max: 10 }),
+      notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
     }
 }
-
 
 /**
  * Retorna o mapping global, consolidando os mappings comuns e específicos.

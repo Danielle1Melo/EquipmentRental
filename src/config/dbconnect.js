@@ -1,13 +1,16 @@
+// src/config/DbConnect.js
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { URL } from 'url';
+import SendMail from '../utils/SendMail.js'; // Assegure-se de que este caminho está correto
+import logger from '../utils/logger.js';
 
-dotenv.config();
+dotenv.config(); // Carrega as variáveis de ambiente
 
 /**
  * Classe responsável por gerenciar a conexão com o MongoDB.
  */
-class DbConnect{
+class DbConnect {
     /**
      * Estabelece a conexão com o MongoDB.
      */
@@ -83,21 +86,24 @@ class DbConnect{
         }
     }
 
-        /**
+    /**
      * Desconecta do MongoDB.
      */
-        static async desconectar() {
-            try {
-                await mongoose.disconnect();
-                // logger.info('Conexão com o banco encerrada!');
-            } catch (error) {
-                logger.error(`Erro ao desconectar do banco de dados em ${new Date().toISOString()}: ${error.message}`);
-                if (process.env.NODE_ENV !== 'test') {
-                    // SendMail.enviaEmailErrorDbConect(error, new URL(import.meta.url).pathname, new Date());
-                }
-                throw error; // Re-lança o erro para permitir que o aplicativo lide com a falha de desconexão
-            }
-        }
-}
 
+    static async desconectar() {
+        try {
+            await mongoose.disconnect();
+            logger.info('Conexão com o banco encerrada!');
+        } catch (error) {
+            logger.error(`Erro ao desconectar do banco de dados em ${new Date().toISOString()}: ${error.message}`);
+            if (process.env.NODE_ENV !== 'test') {
+                SendMail.enviaEmailErrorDbConect(error, new URL(import.meta.url).pathname, new Date());
+            }
+            throw error; // Re-lança o erro para permitir que o aplicativo lide com a falha de desconexão
+        }
+
+}
+}
 export default DbConnect
+
+

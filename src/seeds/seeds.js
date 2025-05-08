@@ -7,23 +7,32 @@ import DbConnect from "../config/dbconnect.js";
 
 // Models principais
 // import Reserva from "../models/Reserva.js";
-// import Usuario from "../models/Usuario.js";
-// import Avaliacao from "../models/Avaliacao.js";
+import Usuario from "../models/Usuario.js";
+import Avaliacao from "../models/Avaliacao.js";
 // import Equipamento from "../models/Equipamento.js";
 // import Endereco from "../models/Endereco.js";
 
-import Usuario from "../models/Usuario.js";
-import SeedUsuario from "./seed_usuario.js";
-import SeedAvaliacao from "./seed_avaliacao.js";
 
-DbConnect.conectar();
+import SeedReserva from "./seedReserva.js"
+import SeedUsuario from "./seedUsuario.js"
+import SeedAvaliacao from "./seed_avaliacao.js"
 
-async function main() {
+await DbConnect.conectar();
 
-    const usuario = await SeedUsuario()
-    await SeedAvaliacao(usuario)
+async function main(){
+    try {
+        // await SeedReserva();
+        const usuario = await SeedUsuario();
+        await SeedAvaliacao(usuario)
 
+        console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
+      } catch (err) {
+        console.error("Erro ao executar SEED:", err);
+      } finally {
+        mongoose.connection.close();
+        process.exit(0);
+      }
 }
 
-await main()
-DbConnect.desconectar();
+main();
+

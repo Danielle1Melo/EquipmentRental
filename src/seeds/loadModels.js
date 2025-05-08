@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 // Obtém o diretório atual do arquivo
 const __filename = fileURLToPath(import.meta.url);
@@ -19,14 +19,16 @@ async function loadModels() {
 
     for (const file of files) {
         if (file.endsWith('.js')) {
-            const modelPath = path.join(modelsDir, file);
-            // Importação dinâmica do módulo
-            const module = await import(modelPath);
-            // Considera que o model está exportado como default
-            const model = module.default || module;
-            // Usa o nome do arquivo (sem extensão) como identificador
-            const modelName = path.basename(file, '.js');
-            models.push({ model, name: modelName });
+            try {
+                const modelPath = path.join(modelsDir, file);
+                const modelUrl = pathToFileURL(modelPath)
+                const module = await import(modelUrl.href);
+                const model = module.default || module;
+                const modelName = path.basename(file, '.js');
+                models.push({ model, name: modelName });
+            } catch (error) {
+                console.error(`Erro ao carregar model ${file}:`, error);
+            }
         }
     }
     return models;
