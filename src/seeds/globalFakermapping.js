@@ -51,7 +51,7 @@ const fakeMappings = {
       nota: () => fakebr.random.number({ min: 1, max: 5 }),
       descricao: () => fakebr.lorem.sentence(),
       dataAvaliacao: () => fakebr.date.past(),
-      usuario: [{_id: new mongoose.Types.ObjectId().toString}]
+      usuario: [{_id: new mongoose.Types.ObjectId().to}]
     }, 
 
     Equipamento: {
