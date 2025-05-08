@@ -21,7 +21,12 @@
     "mongodb": "^6.7.0",
     "mongoose": "^8.7.1",
     "mongoose-paginate-v2": "^1.8.5",
-    "uuid": "^11.1.0"
+    "nodemailer": "^7.0.2",
+    "path": "^0.12.7",
+    "url": "^0.11.4",
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.7.0",

@@ -1,5 +1,5 @@
-class Avaliacao {
+// class Avaliacao {
 
-}
+// }
 
-export default new Avaliacao().model;
+// export default new Avaliacao().model;

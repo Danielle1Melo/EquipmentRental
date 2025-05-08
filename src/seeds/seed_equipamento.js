@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 import Equipamento from "../models/Equipamento.js";
 import Usuario from "../models/Usuario.js";
-import DbConect from "../config/DbConnect.js";
+import DbConnect from "../config/Dbconnect.js";
 import getGlobalFakeMapping from "./globalFakermapping.js";
+import logger from "../utils/logger.js";
 
-await DbConect.conectar();
+
+await DbConnect.conectar();
 
 async function SeedEquipamentos() {
   await Equipamento.deleteMany();
