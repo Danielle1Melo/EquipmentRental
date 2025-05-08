@@ -1,20 +1,18 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import Usuario from './Usuario.js';
-import Equipamento from './Equipamento.js';
+
 class Reserva {
     constructor(){
         const reservaSchema = new mongoose.Schema({
-            id: { type: String, required: true, unique: true },
-            dataInicial: { type: Date, required: true },
+            dataInicial: { type: Date, required: [true, "A data inicial é obrigatória"]},
             dataFinal: { type: Date, required: true },
             dataFinalAtrasada: { type: Date, required: false },
             quantidadeEquipamento: { type: Number, required: true },
             valorEquipamento: { type: Number, required: true },
             enderecoEquipamento: { type: String, required: true },
             status: { type: String, enum: ['pendente', 'confirmada', 'cancelada'], default: 'pendente' },
-            pkEquipamentoId: { type: mongoose.Schema.Types.ObjectId, ref: 'Equipamento', required: true },
-            pkUsuarioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+            equipamento: { type: mongoose.Schema.Types.ObjectId, ref: 'equipamento', required: true },
+            usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario', required: true },
         },
         {
             timestamps: true,
