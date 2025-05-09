@@ -2,15 +2,18 @@ import Avaliacao from "../models/Avaliacao.js"
 import DbConnect from "../config/dbconnect.js"
 import Usuario from "../models/Usuario.js"
 import { faker } from "@faker-js/faker"
+import getGlobalFakeMapping from "./globalFakeMapping.js"
 
+
+const fake =  await getGlobalFakeMapping()
 
 async function SeedAvaliacao(usuario) {
     await Avaliacao.deleteMany()
     const avaliacoes = []
 
     for(let i = 0; i < usuario.length; i++){
-        const avalDescricao = faker.lorem.paragraph({min:1, max: 5});
-        const notaMedia = faker.number.int({min: 1, max: 5})
+        const avalDescricao = fake.avalDescricao();
+        const notaMedia = fake.notaMedia()
 
         avaliacoes.push({
             avalDescricao,
@@ -21,6 +24,7 @@ async function SeedAvaliacao(usuario) {
 
     await Avaliacao.collection.insertMany(avaliacoes)
     console.log(`${avaliacoes.length} avaliaçoes inseridas com sucesso!`);
+    return Avaliacao.collection.find()
 }
 
 export default SeedAvaliacao

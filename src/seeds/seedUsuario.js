@@ -3,38 +3,42 @@ import Usuario from "../models/Usuario.js"
 // import getGlobalFakeMapping from "../globalFakeMapping"
 import bcrypt from "bcryptjs";
 import { faker } from "@faker-js/faker";
+import getGlobalFakeMapping from "./globalFakeMapping.js";
 
 
-import DbConnect from "../config/dbconnect.js";
 
 // await DbConect.conectar();
 
-export function gerarSenhaHash(senhaPura){
+const fake = await getGlobalFakeMapping()
+
+export async function gerarSenhaHash(senhaPura){
     return bcrypt.hashSync(senhaPura, 8);
 }
 
 const senhaPura = "AISDAIEF#t4";
-const senhaHash = gerarSenhaHash(senhaPura) //usar essa
+const senhaHash = await gerarSenhaHash(senhaPura) //usar essa
+
+
 
 async function SeedUsuario(){
 
     await Usuario.deleteMany();
     const usuarios = [];
 
-    for (let i = 0; i < 5; i++) {
-        const nome = faker.person.fullName();
-        const email = faker.internet.email();
-        const telefone = faker.phone.number();
-        const senhaHash = await bcrypt.hash("Senha123@", 10);
-        const dataNascimento = faker.date.birthdate({ min: 18, max: 60, mode: "age" });
-        const CPF = faker.string.numeric(11); // Geração de CPF fictício
-        const notaMedia = faker.number.float({ min: 0, max: 10 });
+    for (let i = 0; i < 2; i++) {
+        const nome = fake.nome();
+        const email = fake.email();
+        const telefone = fake.telefone();
+        const senha = senhaHash;
+        const dataNascimento = fake.dataNascimento();
+        const CPF = fake.cpf(); // Geração de CPF fictício
+        const notaMedia = fake.notaMediaAvaliacao();
 
         usuarios.push({
             nome,
             email,
             telefone,
-            senha: senhaHash,
+            senha: senha,
             dataNascimento,
             CPF,
             notaMedia

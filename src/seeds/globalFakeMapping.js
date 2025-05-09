@@ -3,6 +3,7 @@ import fakebr from 'faker-br';
 import mongoose from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import loadModels from './loadModels.js';
+import { gerarDataAleatoria } from '../utils/helpers/randomPastDate.js';
 
 //173
 
@@ -17,7 +18,7 @@ const fakeMappings = {
         email: () => fakebr.internet.email(),
         telefone: () => fakebr.phone.phoneNumber(),
         senha: () => fakebr.internet.password(),
-        dataNascimento: () => fakebr.date.paste(),
+        dataNascimento: () => gerarDataAleatoria(),
         cpf: () => fakebr.br.cpf(),
         notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),

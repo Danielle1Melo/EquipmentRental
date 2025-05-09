@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Reserva from "../models/Reserva.js";
 import DbConnect from "../config/dbconnect.js";
-import getGlobalFakeMapping from "./globalFakermapping.js";
+import getGlobalFakeMapping from "./globalFakeMapping.js";
 
 await DbConnect.conectar();
 

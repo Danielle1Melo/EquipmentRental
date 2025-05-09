@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\silvi\\Desktop\\IFRO TRABALHOS\\Ensimo Superior\\Fabrica de Software II\\API\\aluguel-de-equipamentos\\logs\\.bd4a6a86e72d650575d994ffb84ae7c76810665e-audit.json",
+    "files": [
+        {
+            "date": 1746804425733,
+            "name": "C:\\Users\\silvi\\Desktop\\IFRO TRABALHOS\\Ensimo Superior\\Fabrica de Software II\\API\\aluguel-de-equipamentos\\logs\\combined-2025-05-09.log",
+            "hash": "b3c649ae23f1a68b9d4d583f80de493d3770adf267e8c9cb3be579a7f481e412"
+        }
+    ],
+    "hashType": "sha256"
+}
