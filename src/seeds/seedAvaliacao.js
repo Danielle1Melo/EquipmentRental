@@ -5,12 +5,12 @@ import { faker } from "@faker-js/faker"
 import getGlobalFakeMapping from "./globalFakeMapping.js"
 
 
-const fake =  await getGlobalFakeMapping()
+
 
 async function SeedAvaliacao(usuario) {
     await Avaliacao.deleteMany()
     const avaliacoes = []
-
+    const fake =  await getGlobalFakeMapping()
     for(let i = 0; i < usuario.length; i++){
         const avalDescricao = fake.avalDescricao();
         const notaMedia = fake.notaMedia()

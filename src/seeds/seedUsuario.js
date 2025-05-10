@@ -9,7 +9,7 @@ import getGlobalFakeMapping from "./globalFakeMapping.js";
 
 // await DbConect.conectar();
 
-const fake = await getGlobalFakeMapping()
+
 
 export async function gerarSenhaHash(senhaPura){
     return bcrypt.hashSync(senhaPura, 8);
@@ -24,6 +24,7 @@ async function SeedUsuario(){
 
     await Usuario.deleteMany();
     const usuarios = [];
+    const fake = await getGlobalFakeMapping()
 
     for (let i = 0; i < 2; i++) {
         const nome = fake.nome();
