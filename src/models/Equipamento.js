@@ -10,9 +10,11 @@ class Equipamento {
       categoria: { type: String, required: true },
       foto: { type: String, required: false },
       quantidadeDisponivel: { type: Number, required: true },
-      // notaMedia: { type: Number, default: 0 },
       status: { type: Boolean, default: false },
-      // usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario', required: true },
+      usuario: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'usuario'
+      },
       notaMediaAvaliacao: { type: mongoose.Schema.Types.ObjectId, ref: 'avaliacao', required: false }
     }, {
       timestamps: true,

@@ -3,7 +3,7 @@ import Usuario from "../models/Usuario"
 import getGlobalFakeMapping from "../globalFakeMapping"
 import bcrypt from "bcryptjs";
 
-import DbConnect from "../config/Dbconnect";
+import DbConnect from "../config/DbConnect";
 
 await DbConnect.conectar();
 

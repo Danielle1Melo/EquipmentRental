@@ -7,6 +7,7 @@ import logger from '../utils/logger.js';
 
 dotenv.config(); // Carrega as variáveis de ambiente
 
+
 /**
  * Classe responsável por gerenciar a conexão com o MongoDB.
  */

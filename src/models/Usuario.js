@@ -9,7 +9,6 @@ class Usuario {
             telefone:{type:String, required:true},
             senha:{type:String, require:true},
             dataNascimento:{type:Date, required: true},
-
             cpf:{type:String, required:true},
             notaMediaAvaliacao:{type:Number}
         })

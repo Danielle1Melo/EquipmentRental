@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { faker } from "@faker-js/faker";
 
 
-import DbConnect from "../config/Dbconnect.js";
+import DbConnect from "../config/DbConnect.js";
 
 // await DbConect.conectar();
 

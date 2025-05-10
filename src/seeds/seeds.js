@@ -26,7 +26,7 @@ async function main(){
         // await SeedReserva();
         const usuario = await SeedUsuario();
         await SeedAvaliacao(usuario)
-        await SeedEquipamentos();
+        await SeedEquipamentos(usuario);
 
         console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
       } catch (err) {
