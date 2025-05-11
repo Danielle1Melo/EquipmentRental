@@ -106,6 +106,4 @@ class DbConnect {
 
 }
 }
-export default DbConnect
-
-
+export default DbConnect;
