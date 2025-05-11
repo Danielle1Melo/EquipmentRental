@@ -10,12 +10,12 @@ async function SeedEquipamentos(usuario) {
 
   await Equipamento.deleteMany();
 
-  const usuario = await Usuario.findOne();
+  // const usuario = await Usuario.findOne();
 
-  if (!usuario) {
-    console.error("Nenhum usuário encontrado. Execute o seed de usuários primeiro.");
-    return;
-  }
+  // if (!usuario) {
+  //   console.error("Nenhum usuário encontrado. Execute o seed de usuários primeiro.");
+  //   return;
+  // }
 
   const fake = await getGlobalFakeMapping();
 

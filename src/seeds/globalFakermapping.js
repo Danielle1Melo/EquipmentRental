@@ -65,6 +65,7 @@ const fakeMappings = {
       quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
       categoria: () => fakebr.commerce.department(),
       status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
+      usuario: [{_id: new mongoose.Types.ObjectId().to}],
       foto: () => fakebr.image.imageUrl(),
       notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 5 }),
     }
