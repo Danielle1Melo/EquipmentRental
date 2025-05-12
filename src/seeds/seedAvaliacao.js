@@ -12,12 +12,12 @@ async function SeedAvaliacao(usuario) {
     const avaliacoes = []
     const fake =  await getGlobalFakeMapping()
     for(let i = 0; i < usuario.length; i++){
-        const avalDescricao = fake.avalDescricao();
-        const notaMedia = fake.notaMedia()
+        const descricao = fake.descricao();
+        const nota = fake.nota()
 
         avaliacoes.push({
-            avalDescricao,
-            notaMedia,
+            descricao,
+            nota,
             usuarioId:{_id:usuario[i]._id}
         })
     }
