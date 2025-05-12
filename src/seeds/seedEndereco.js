@@ -1,14 +1,14 @@
 import Endereco from "../models/Endereco.js";
 import getGlobalFakeMapping from "./globalFakermapping.js";
 
-async function SeedEndereco(usuarios) {
+async function SeedEndereco(usuario) {
   await Endereco.deleteMany();
 
   const fake = await getGlobalFakeMapping();
 
   const enderecos = [];
 
-  for (let i = 0; i < usuarios.length; i++) {
+  for (let i = 0; i < usuario.length; i++) {
     enderecos.push({
       endeLogarduro: fake.endeLogarduro(),
       endeNumero: fake.endeNumero(),
@@ -17,13 +17,15 @@ async function SeedEndereco(usuarios) {
       endeCep: fake.endeCep(),
       endeCidade: fake.endeCidade(),
       endeComplemento: fake.endeComplemento(),
-      usuario: usuarios[i]._id,
+      usuario: usuario[i]._id,
     });
   }
 
   await Endereco.insertMany(enderecos);
 
   console.log(`${enderecos.length} endereços inseridos com sucesso.`);
+
+  return await Endereco.find();
 }
 
 export default SeedEndereco;

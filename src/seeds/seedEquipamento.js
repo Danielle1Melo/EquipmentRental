@@ -6,7 +6,7 @@ import Usuario from "../models/Usuario.js";
 
 
 
-async function SeedEquipamentos(usuario) {
+async function SeedEquipamentos(usuario, enderecos, avaliacoes) {
 
   await Equipamento.deleteMany();
 
@@ -26,7 +26,7 @@ async function SeedEquipamentos(usuario) {
 
   const equipamentos = []
 
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < 2; i++){
     equipamentos.push({
       nome: fake.nome(),
       descricao:fake.descricao(),
@@ -35,8 +35,9 @@ async function SeedEquipamentos(usuario) {
       categoria: categoriasValidas[Math.floor(Math.random() * categoriasValidas.length)],
       status: fake.status(),
       usuario:{_id:usuario[i]._id},
+      endereco: { _id: enderecos[i]._id },
       foto: fake.foto(),
-      notaMediaAvaliacao: fake.notaMediaAvaliacao(),
+      notaMediaAvaliacao: {_id: avaliacoes[i]._id}
     });
 
   }
@@ -44,8 +45,9 @@ async function SeedEquipamentos(usuario) {
   await Equipamento.collection.insertMany(equipamentos)
   
   console.log(`${Equipamento.length} Equipamentos inseridos com sucesso!`)
-}
 
+  return await Equipamento.find();
+}
 
 
 export default SeedEquipamentos;

@@ -3,6 +3,7 @@ import fakebr from 'faker-br';
 import mongoose from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import loadModels from './loadModels.js';
+import { gerarDataAleatoria } from '../utils/helpers/randomPasteDate.js'
 
 
 
@@ -13,21 +14,19 @@ const fakeMappings = {
 
     },
 
-  Usuario: {
-        id: () => new mongoose.Types.ObjectId().toString(),
+   Usuario: {
         nome: () => fakebr.name.firstName(),
         sobrenome: () => fakebr.name.lastName(),
         email: () => fakebr.internet.email(),
         telefone: () => fakebr.phone.phoneNumber(),
         senha: () => fakebr.internet.password(),
-        dataNascimento: () => fakebr.date.paste(),
+        dataNascimento: () => gerarDataAleatoria(),
         cpf: () => fakebr.br.cpf(),
         notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
         
     }, 
-
 Endereco: {
     endeLogarduro: () => fakebr.address.streetName(),
     endeNumero: () => fakebr.random.number({ min: 1, max: 10}),
@@ -51,7 +50,7 @@ Endereco: {
       usuario: [{_id: new mongoose.Types.ObjectId().toString}],
     }, 
 
-  Avaliacao: {
+    Avaliacao: {
       nota: () => fakebr.random.number({ min: 1, max: 5 }),
       descricao: () => fakebr.lorem.sentence(),
       dataAvaliacao: () => fakebr.date.past(),
@@ -67,7 +66,8 @@ Endereco: {
       status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
       usuario: [{_id: new mongoose.Types.ObjectId().to}],
       foto: () => fakebr.image.imageUrl(),
-      notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10}),
+      notaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
+      endereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
     }
 }
 

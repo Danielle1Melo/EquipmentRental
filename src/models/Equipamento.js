@@ -15,14 +15,23 @@ class Equipamento {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'usuario'
       },
-      notaMediaAvaliacao: { type: mongoose.Schema.Types.ObjectId, ref: 'avaliacao', required: false }
+      notaMediaAvaliacao: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'avaliacao', 
+        required: false 
+      },
+       endereco: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'endereco',
+        required: false
+      }
     }, {
       timestamps: true,
       versionKey: false
     });
 
     equipamentoSchema.plugin(mongoosePaginate);
-    this.model = mongoose.model('equipamentos', equipamentoSchema);
+    this.model = mongoose.model('equipamento', equipamentoSchema);
   }
 }
 

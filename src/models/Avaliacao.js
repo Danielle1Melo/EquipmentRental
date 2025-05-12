@@ -2,10 +2,9 @@ import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import Usuario from './Usuario.js';
 
-class Avalicao {
+class Avaliacao {
     constructor(){
         const avaliacaoSchema = new mongoose.Schema({
-
             nota: {type:Number},
             descricao: {type: String},
 
@@ -19,5 +18,4 @@ class Avalicao {
     }
 }
 
-
-export default new Avalicao().model;
+export default new Avaliacao().model;
