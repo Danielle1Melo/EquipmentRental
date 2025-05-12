@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import Usuario from './Usuario.js';
 
-class Avalicao {
+class Avaliacao {
     constructor(){
         const avaliacaoSchema = new mongoose.Schema({
             nota: {type:Number},
