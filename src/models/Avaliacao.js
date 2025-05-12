@@ -18,4 +18,4 @@ class Avaliacao {
     }
 }
 
-export default new Avalicao().model;
+export default new Avaliacao().model;
