@@ -4,7 +4,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 class Endereco {
   constructor() {
     const enderecoSchema = new mongoose.Schema({
-      endeLogarduro: { type: String, required: true },
+      endeLogradouro: { type: String, required: true },
       endeNumero: { type: Number, required: true },
       endeBairro: { type: String, required: true },
       endeUf: { type: String, required: true },
@@ -22,7 +22,7 @@ class Endereco {
     });
 
     enderecoSchema.plugin(mongoosePaginate);
-    this.model = mongoose.model('endereco', enderecoSchema);
+    this.model = mongoose.model('enderecos', enderecoSchema);
   }
 }
 

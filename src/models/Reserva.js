@@ -29,7 +29,7 @@ class Reserva {
 
 
     reservaSchema.plugin(mongoosePaginate)
-    this.model = mongoose.model("reserva", reservaSchema)
+    this.model = mongoose.model("reservas", reservaSchema)
     }
 
 }

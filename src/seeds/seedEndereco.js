@@ -10,7 +10,7 @@ async function SeedEndereco(usuario) {
 
   for (let i = 0; i < usuario.length; i++) {
     enderecos.push({
-      endeLogarduro: fake.endeLogarduro(),
+      endeLogradouro: fake.endeLogradouro(),
       endeNumero: fake.endeNumero(),
       endeBairro: fake.endeBairro(),
       endeUf: fake.endeUf(),

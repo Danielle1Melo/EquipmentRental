@@ -14,7 +14,7 @@ class Avaliacao {
             }
         })
         avaliacaoSchema.plugin(mongoosePaginate)
-        this.model = mongoose.model('avaliacao', avaliacaoSchema)
+        this.model = mongoose.model('avaliacoes', avaliacaoSchema)
     }
 }
 

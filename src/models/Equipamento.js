@@ -31,7 +31,7 @@ class Equipamento {
     });
 
     equipamentoSchema.plugin(mongoosePaginate);
-    this.model = mongoose.model('equipamento', equipamentoSchema);
+    this.model = mongoose.model('equipamentos', equipamentoSchema);
   }
 }
 

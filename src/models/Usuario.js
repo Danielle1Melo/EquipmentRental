@@ -13,7 +13,7 @@ class Usuario {
             notaMediaAvaliacao:{type:Number}
         })
         usuarioSchema.plugin(mongoosePaginate);
-        this.model = mongoose.model('usuario', usuarioSchema);
+        this.model = mongoose.model('usuarios', usuarioSchema);
     }
 }
 

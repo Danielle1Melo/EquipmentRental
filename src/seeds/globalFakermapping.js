@@ -28,14 +28,15 @@ const fakeMappings = {
         
     }, 
 Endereco: {
-    endeLogarduro: () => fakebr.address.streetName(),
+    endeLogradouro: () => fakebr.address.streetName(),
     endeNumero: () => fakebr.random.number({ min: 1, max: 10}),
     endeBairro: () => fakebr.address.county(),
     endeUf: () => fakebr.address.stateAbbr(),
     endeCep: () => fakebr.address.zipCode(),
-    usuario: [{_id: new mongoose.Types.ObjectId().to}],
     endeCidade: () => fakebr.address.city(),
     endeComplemento: () => fakebr.address.secondaryAddress(),
+    usuario: [{_id: new mongoose.Types.ObjectId().to}],
+   
 },
 
  Reserva: {
