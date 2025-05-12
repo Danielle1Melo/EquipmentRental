@@ -28,21 +28,27 @@ async function SeedUsuario(){
 
     for (let i = 0; i < 2; i++) {
         const nome = fake.nome();
+        const sobrenome = fake.sobrenome();
         const email = fake.email();
         const telefone = fake.telefone();
-        const senha = senhaHash;
+        const senha = await gerarSenhaHash(fake.senha());
         const dataNascimento = fake.dataNascimento();
         const CPF = fake.cpf(); // Geração de CPF fictício
         const notaMedia = fake.notaMediaAvaliacao();
+        const status = fake.status()
+        const tipoUsuario = fake.tipoUsuario()
 
         usuarios.push({
             nome,
+            sobrenome,
             email,
             telefone,
             senha: senha,
             dataNascimento,
             CPF,
-            notaMedia
+            notaMedia,
+            status,
+            tipoUsuario
         });
     }
 

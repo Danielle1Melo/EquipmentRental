@@ -14,11 +14,13 @@ async function SeedAvaliacao(usuario) {
     for(let i = 0; i < usuario.length; i++){
         const descricao = fake.descricao();
         const nota = fake.nota()
+        const dataAvaliacao = fake.dataAvaliacao()
 
         avaliacoes.push({
             descricao,
             nota,
-            usuarioId:{_id:usuario[i]._id}
+            usuarioId:{_id:usuario[i]._id},
+            dataAvaliacao
         })
     }
 

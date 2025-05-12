@@ -1,12 +1,14 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import Usuario from './Usuario.js';
+import { type } from 'os';
 
 class Avaliacao {
     constructor(){
         const avaliacaoSchema = new mongoose.Schema({
             nota: {type:Number},
             descricao: {type: String},
+            dataAvaliacao: {type: Date},
 
             usuario: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -14,7 +16,7 @@ class Avaliacao {
             }
         })
         avaliacaoSchema.plugin(mongoosePaginate)
-        this.model = mongoose.model('avaliacao', avaliacaoSchema)
+        this.model = mongoose.model('avaliacoes', avaliacaoSchema)
     }
 }
 
