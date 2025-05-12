@@ -13,7 +13,7 @@ const fakeMappings = {
 
     },
 
-    Usuario: {
+  Usuario: {
         id: () => new mongoose.Types.ObjectId().toString(),
         nome: () => fakebr.name.firstName(),
         sobrenome: () => fakebr.name.lastName(),
@@ -28,16 +28,16 @@ const fakeMappings = {
         
     }, 
 
-    Endereco: {
-        id: () => new mongoose.Types.ObjectId().toString(),
-        rua: () => fakebr.address.streetName(),
-        numero: () => fakebr.random.number({ min: 1, max: 1000 }),
-        complemento: () => fakebr.address.secondaryAddress(),
-        bairro: () => fakebr.address.county(),
-        cidade: () => fakebr.address.city(),
-        estado: () => fakebr.address.stateAbbr(),
-        cep: () => fakebr.address.zipCode(),
-    },
+Endereco: {
+    endeLogarduro: () => fakebr.address.streetName(),
+    endeNumero: () => fakebr.random.number({ min: 1, max: 10}),
+    endeBairro: () => fakebr.address.county(),
+    endeUf: () => fakebr.address.stateAbbr(),
+    endeCep: () => fakebr.address.zipCode(),
+    usuario: [{_id: new mongoose.Types.ObjectId().to}],
+    endeCidade: () => fakebr.address.city(),
+    endeComplemento: () => fakebr.address.secondaryAddress(),
+},
 
  Reserva: {
       dataInicial: () => fakebr.date.past(),
@@ -67,7 +67,7 @@ const fakeMappings = {
       status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
       usuario: [{_id: new mongoose.Types.ObjectId().to}],
       foto: () => fakebr.image.imageUrl(),
-      notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 5 }),
+      notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10}),
     }
 }
 

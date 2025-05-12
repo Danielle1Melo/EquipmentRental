@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";
 
 
-import DbConnect from "../config/Dbconnect.js";
+import DbConnect from "../config/DbConnect.js";
 
 // Models principais
 // import Reserva from "../models/Reserva.js";
@@ -18,6 +18,7 @@ import Equipamento from "../models/Equipamento.js";
 import SeedUsuario from "./seedUsuario.js"
 import SeedAvaliacao from "./seed_avaliacao.js"
 import SeedEquipamentos from "./seed_equipamento.js";
+import SeedEndereco from "./seed_endereco.js";
 
 await DbConnect.conectar();
 
@@ -25,8 +26,9 @@ async function main(){
     try {
         // await SeedReserva();
         const usuario = await SeedUsuario();
-        await SeedAvaliacao(usuario)
+        await SeedAvaliacao(usuario);
         await SeedEquipamentos(usuario);
+        await SeedEndereco(usuario);
 
         console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
       } catch (err) {
