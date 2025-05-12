@@ -26,7 +26,7 @@ async function SeedEquipamentos(usuario, enderecos, avaliacoes) {
 
   const equipamentos = []
 
-    for(let i = 0; i < 2; i++){
+    for(let i = 0; i < 25; i++){
     equipamentos.push({
       nome: fake.nome(),
       descricao:fake.descricao(),

@@ -26,7 +26,7 @@ async function SeedUsuario(){
     const usuarios = [];
     const fake = await getGlobalFakeMapping()
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 25; i++) {
         const nome = fake.nome();
         const email = fake.email();
         const telefone = fake.telefone();

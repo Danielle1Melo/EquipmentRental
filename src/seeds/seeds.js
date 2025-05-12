@@ -13,8 +13,8 @@ import Avaliacao from "../models/Avaliacao.js";
 import Equipamento from "../models/Equipamento.js";
 // import Endereco from "../models/Endereco.js";
 
-
-// import SeedReserva from "./seedReserva.js"
+//Seeds
+import SeedReserva from "./seedReserva.js"
 import SeedUsuario from "./seedUsuario.js"
 import SeedAvaliacao from "./seedAvaliacao.js"
 import SeedEquipamentos from "./seedEquipamento.js";
@@ -25,20 +25,11 @@ await DbConnect.conectar();
 
 async function main(){
     try {
-        // await SeedReserva();
-        // const usuario = await SeedUsuario();
-        // await SeedAvaliacao(usuario);
-        // await SeedEquipamentos(usuario, enderecos, avaliacoes);
-        // const enderecos = await SeedEndereco(usuarios);
-
+        await SeedReserva();
         const usuario = await SeedUsuario();
         const enderecos = await SeedEndereco(usuario);   
         const avaliacoes = await SeedAvaliacao(usuario);
         await SeedEquipamentos(usuario, enderecos, avaliacoes);
-
-
-
-
 
         console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
       } catch (err) {
