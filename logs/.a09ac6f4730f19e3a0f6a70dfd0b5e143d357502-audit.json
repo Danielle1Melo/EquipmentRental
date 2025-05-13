@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\2024103070001\\aluguel-de-equipamentos\\logs\\.a09ac6f4730f19e3a0f6a70dfd0b5e143d357502-audit.json",
+    "files": [
+        {
+            "date": 1747178860168,
+            "name": "C:\\Users\\2024103070001\\aluguel-de-equipamentos\\logs\\combined-2025-05-13.log",
+            "hash": "8db3fa7a173108682da6fa90e86c501d9d7737dfcef5bfd3319f440c548569ae"
+        }
+    ],
+    "hashType": "sha256"
+}
