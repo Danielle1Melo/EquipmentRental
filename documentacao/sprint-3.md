@@ -5,6 +5,7 @@
 - Equipamentos (Taline Rodrigues)
 - Avaliação (Silvio Huan)
 - Endereço (Taline Rodrigues)
+
 **Implementar Seeds**
 - Reserva (Danielle Melo)
 - Usuário (Silvio Huan)
