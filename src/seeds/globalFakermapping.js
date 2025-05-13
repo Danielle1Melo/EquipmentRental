@@ -1,7 +1,11 @@
 import fakebr from 'faker-br';
-import { fa } from 'faker-br/lib/locales';
+//import { fa } from 'faker-br/lib/locales';
 import mongoose from 'mongoose';
 import { v4 as uuid } from 'uuid';
+import loadModels from './loadModels.js';
+import { gerarDataAleatoria } from '../utils/helpers/randomPasteDate.js'
+
+
 
 //173
 
@@ -10,34 +14,32 @@ const fakeMappings = {
 
     },
 
-    Usuario: {
-        id: () => new mongoose.Types.ObjectId().toString(),
+   Usuario: {
         nome: () => fakebr.name.firstName(),
         sobrenome: () => fakebr.name.lastName(),
         email: () => fakebr.internet.email(),
         telefone: () => fakebr.phone.phoneNumber(),
         senha: () => fakebr.internet.password(),
-        dataNascimento: () => fakebr.date.paste(),
+        dataNascimento: () => gerarDataAleatoria(),
         cpf: () => fakebr.br.cpf(),
-        notaMediaAvaliação: () => fakebr.random.number({ min: 0, max: 10 }),
+        notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
         
     }, 
+Endereco: {
+    endeLogradouro: () => fakebr.address.streetName(),
+    endeNumero: () => fakebr.random.number({ min: 1, max: 10}),
+    endeBairro: () => fakebr.address.county(),
+    endeUf: () => fakebr.address.stateAbbr(),
+    endeCep: () => fakebr.address.zipCode(),
+    endeCidade: () => fakebr.address.city(),
+    endeComplemento: () => fakebr.address.secondaryAddress(),
+    usuario: [{_id: new mongoose.Types.ObjectId().to}],
+   
+},
 
-    Endereco: {
-        id: () => new mongoose.Types.ObjectId().toString(),
-        rua: () => fakebr.address.streetName(),
-        numero: () => fakebr.random.number({ min: 1, max: 1000 }),
-        complemento: () => fakebr.address.secondaryAddress(),
-        bairro: () => fakebr.address.county(),
-        cidade: () => fakebr.address.city(),
-        estado: () => fakebr.address.stateAbbr(),
-        cep: () => fakebr.address.zipCode(),
-    },
-
-    Reserva: {
-      id: () => new mongoose.Types.ObjectId().toString(),
+ Reserva: {
       dataInicial: () => fakebr.date.past(),
       dataFinal: () => fakebr.date.future(),
       dataFinalAtrasada: () => fakebr.date.future(),
@@ -45,25 +47,28 @@ const fakeMappings = {
       valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
       enderecoEquipamento: () => fakebr.address.streetAddress(),
       status: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
+      equipamento: [{_id: new mongoose.Types.ObjectId().toString}],
+      usuario: [{_id: new mongoose.Types.ObjectId().toString}],
     }, 
 
     Avaliacao: {
-      id: () => new mongoose.Types.ObjectId().toString(),
       nota: () => fakebr.random.number({ min: 1, max: 5 }),
       descricao: () => fakebr.lorem.sentence(),
       dataAvaliacao: () => fakebr.date.past(),
+      usuario: [{_id: new mongoose.Types.ObjectId().to}]
     }, 
 
     Equipamento: {
-      id: () => new mongoose.Types.ObjectId().toString(),
       nome: () => fakebr.commerce.productName(),
       descricao: () => fakebr.lorem.sentence(),
       valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
       quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
       categoria: () => fakebr.commerce.department(),
       status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
+      usuario: [{_id: new mongoose.Types.ObjectId().to}],
       foto: () => fakebr.image.imageUrl(),
-      notaMediaAvaliação: () => fakebr.random.number({ min: 0, max: 10 }),
+      notaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
+      endereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
     }
 }
 

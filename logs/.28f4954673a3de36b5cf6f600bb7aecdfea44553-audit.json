@@ -1,0 +1,30 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\.28f4954673a3de36b5cf6f600bb7aecdfea44553-audit.json",
+    "files": [
+        {
+            "date": 1746741156807,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-08.log",
+            "hash": "f12d12a8f65060a0e0e16126f10d37e6e1217183da48d1597b9a221cef36910a"
+        },
+        {
+            "date": 1746913976501,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-10.log",
+            "hash": "fa55007464892961cb5f61b5532828eb23bb98328dc7d3332f20ff0618d4cd2a"
+        },
+        {
+            "date": 1747003863687,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-11.log",
+            "hash": "eaeeb92dfde8e757f6b78e7a48e6022b3e8c02c18c87267c6896fa1f6548da2f"
+        },
+        {
+            "date": 1747022617712,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-12.log",
+            "hash": "d30a8e3d038b0ba1721c3952307162583eeb984fb805c3245766e37ebfbaed4d"
+        }
+    ],
+    "hashType": "sha256"
+}

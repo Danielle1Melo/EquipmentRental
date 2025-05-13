@@ -1,13 +1,17 @@
+// src/config/DbConnect.js
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { URL } from 'url';
+import SendMail from '../utils/SendMail.js'; // Assegure-se de que este caminho está correto
+import logger from '../utils/logger.js';
 
-dotenv.config();
+dotenv.config(); // Carrega as variáveis de ambiente
+
 
 /**
  * Classe responsável por gerenciar a conexão com o MongoDB.
  */
-class DbConnect{
+class DbConnect {
     /**
      * Estabelece a conexão com o MongoDB.
      */
@@ -20,7 +24,7 @@ class DbConnect{
             }
 
             // Log seguro indicando que a URI está definida
-            logger.info('DB_URL está definida.');
+            // logger.info('DB_URL está definida.');
 
             // Configuração de strictQuery baseada no ambiente
             if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
@@ -33,27 +37,27 @@ class DbConnect{
             if (process.env.NODE_ENV === 'development') {
                 mongoose.set('autoIndex', true); // Cria índices automaticamente
                 mongoose.set('debug', true); // Ativa logs de debug
-                logger.info('Configurações de desenvolvimento ativadas: autoIndex e debug.');
+                // logger.info('Configurações de desenvolvimento ativadas: autoIndex e debug.');
             } else {
                 mongoose.set('autoIndex', false); // Desativa criação automática de índices
                 mongoose.set('debug', false); // Desativa logs de debug
-                logger.info('Configurações de produção ativadas: autoIndex e debug desativados.');
+                // logger.info('Configurações de produção ativadas: autoIndex e debug desativados.');
             }
 
             // Adiciona listeners para eventos do Mongoose
             mongoose.connection.on('connected', () => {
-                logger.info('Mongoose conectado ao MongoDB.');
+                // logger.info('Mongoose conectado ao MongoDB.');
             });
 
             mongoose.connection.on('error', (err) => {
                 logger.error(`Mongoose erro: ${err}`);
                 if (process.env.NODE_ENV !== 'test') {
-                    SendMail.enviaEmailErrorDbConect(err, new URL(import.meta.url).pathname, new Date());
+                    // SendMail.enviaEmailErrorDbConect(err, new URL(import.meta.url).pathname, new Date());
                 }
             });
 
             mongoose.connection.on('disconnected', () => {
-                logger.info('Mongoose desconectado do MongoDB.');
+                // logger.info('Mongoose desconectado do MongoDB.');
             });
 
             // Conexão com opções configuráveis via variáveis de ambiente
@@ -73,29 +77,33 @@ class DbConnect{
                     : 10,
             });
 
-            logger.info('Conexão com o banco estabelecida!');
+            // logger.info('Conexão com o banco estabelecida!');
         } catch (error) {
             logger.error(`Erro na conexão com o banco de dados em ${new Date().toISOString()}: ${error.message}`);
             if (process.env.NODE_ENV !== 'test') {
-                SendMail.enviaEmailErrorDbConect(error, new URL(import.meta.url).pathname, new Date());
+                // SendMail.enviaEmailErrorDbConect(error, new URL(import.meta.url).pathname, new Date());
             }
             throw error; // Re-lança o erro para permitir que o aplicativo lide com a falha de conexão
         }
     }
 
-        /**
+    /**
      * Desconecta do MongoDB.
      */
-        static async desconectar() {
-            try {
-                await mongoose.disconnect();
-                logger.info('Conexão com o banco encerrada!');
-            } catch (error) {
-                logger.error(`Erro ao desconectar do banco de dados em ${new Date().toISOString()}: ${error.message}`);
-                if (process.env.NODE_ENV !== 'test') {
-                    SendMail.enviaEmailErrorDbConect(error, new URL(import.meta.url).pathname, new Date());
-                }
-                throw error; // Re-lança o erro para permitir que o aplicativo lide com a falha de desconexão
+
+    static async desconectar() {
+        try {
+            await mongoose.disconnect();
+            logger.info('Conexão com o banco encerrada!');
+        } catch (error) {
+            logger.error(`Erro ao desconectar do banco de dados em ${new Date().toISOString()}: ${error.message}`);
+            if (process.env.NODE_ENV !== 'test') {
+                SendMail.enviaEmailErrorDbConect(error, new URL(import.meta.url).pathname, new Date());
             }
+            throw error; // Re-lança o erro para permitir que o aplicativo lide com a falha de desconexão
         }
+
+
 }
+}
+export default DbConnect;

@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/Users/gilberto/development/repositorio/@ projetos_aula/2025/aluguel-de-equipamentos/logs/.980bd4be49dce11f36f2f364eb1308a2e0f98cc2-audit.json",
+    "files": [
+        {
+            "date": 1746662822919,
+            "name": "/Users/gilberto/development/repositorio/@ projetos_aula/2025/aluguel-de-equipamentos/logs/error-2025-05-07.log",
+            "hash": "aef71c4ce6b8e3146ca581388013b15ed6acbc01aabfa21a6b526987ed73b607"
+        }
+    ],
+    "hashType": "sha256"
+}
