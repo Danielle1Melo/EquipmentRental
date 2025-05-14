@@ -1,7 +1,7 @@
 # Aluguel de Equipamentos
 
 <p style="margin: 0 auto;">
-<img src="images/logo.png" alt="logoLocaFácil" width="1000" />
+<img src="./src/images/logo.png" alt="logoLocaFácil" width="1000" />
 </p>
 
 
