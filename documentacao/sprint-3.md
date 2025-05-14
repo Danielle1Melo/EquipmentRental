@@ -13,11 +13,15 @@
 - Avaliação (Silvio Huan)
 - Endereço (Taline Rodrigues)
 
-**Global Fake Mapping (Danielle Melo)**
+**Global Fake Mapping **(Danielle Melo)
 
-**Implementar rotas do sistema**
-- Reservas (Danielle Melo)
-    - POST /reservas
-    - GET /reservas
+## Rotas do Sistema
+### Reservas (Danielle Melo)
+- `POST /reservas`
+- `GET /reservas`
+- `GET /reservas/:id`
+- `PATCH /reservas`
+
+    
 
 
