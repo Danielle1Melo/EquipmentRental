@@ -1,12 +1,12 @@
 # Rotas do Sistema
 
-## Usuários (Silvio)
+## Usuários (Silvio Huan)
 - `POST /login`
 - `POST /register`
 - `GET /usuario/:id`
 - `PATCH /usuario/:id`
 
-## Equipamentos (Taline)
+## Equipamentos (Taline Rodrigues)
 - `POST /equipamentos`
 - `GET /equipamentos`
 - `GET /equipamentos/:id`
@@ -32,7 +32,15 @@
 Criar cenários de teste baseados nas regras de negócio ()
 
 ## Implementar testes unitários para fluxos principais
-- Usuários (Silvio)
-- Equipamentos (Taline)
-- Reservas (Dani)
+- Usuários (Silvio Huan)
+- Equipamentos (Taline Rodrigues)
+- Reservas (Danielle Melo)
+
+
+# Desenvolvimento
+
+- Desenvolvimento dos **controllers** das rotas implementadas
+- Desenvolvimento dos **services** das rotas implementadas
+
+>  Seguindo as regras de negócio 
 

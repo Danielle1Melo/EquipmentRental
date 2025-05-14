@@ -8,6 +8,11 @@ const router = express.Router();
 
 const reservaController = new ReservaController(); 
 
+router
+.get("/reservas", asyncWrapper(reservaController.listar.bind(reservaController)))
+.get("/reservas:id", asyncWrapper(reservaController.listar.bind(reservaController)))
+.post("/reservas", asyncWrapper(reservaController.listar.bind(reservaController)))
+.patch("/reservas:id", asyncWrapper(reservaController.listar.bind(reservaController)))
 
 export default router;
 
