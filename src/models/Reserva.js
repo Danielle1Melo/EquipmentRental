@@ -20,12 +20,12 @@ class Reserva {
         }
     );
 
-    reservaSchema.pre('save', function (next) {
-        if (this.dataFinal <= this.dataInicial) {
-          return next(new Error('A data final da reserva deve ser posterior à data inicial.'));
-        }
-        next();
-    });
+    // reservaSchema.pre('save', function (next) {
+    //     if (this.dataFinal <= this.dataInicial) {
+    //       return next(new Error('A data final da reserva deve ser posterior à data inicial.'));
+    //     }
+    //     next();
+    // });
 
 
     reservaSchema.plugin(mongoosePaginate)
