@@ -1,0 +1,1 @@
+{"level":"error","message":"Erro na conexão com o banco de dados em 2025-05-15T00:28:19.783Z: Socket 'secureConnect' timed out after 10007ms (connectTimeoutMS: 10000)","service":"usuario-service","timestamp":"2025-05-15T00:28:19.785Z"}

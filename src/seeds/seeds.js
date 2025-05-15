@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";
 
 
-import DbConnect from "../config/DbConnect.js";
+import DbConnect from "../config/Dbconnect.js";
 
 // Models principais
 // import Reserva from "../models/Reserva.js";

@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/.78159bbaeda3d52b75c54e22adc671d93bb565e2-audit.json",
+    "files": [
+        {
+            "date": 1747268803186,
+            "name": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/error-2025-05-14.log",
+            "hash": "b3502fbd7034e149ff406199c22610c8869702eff31aa9a356288a0f24d43265"
+        }
+    ],
+    "hashType": "sha256"
+}
