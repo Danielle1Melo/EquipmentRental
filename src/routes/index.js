@@ -5,7 +5,8 @@ import express from "express";
 import logRoutes from "../middlewares/LogRoutesMiddleware.js";
 import dotenv from "dotenv";
 
-import reserva from "./reservaRouter.js"
+// import reserva from "./reservaRouter.js"
+import usuario from "./usuarioRouter.js"
 
 dotenv.config();
 
@@ -28,7 +29,8 @@ const routes = (app) => {
     // });
 
     app.use(express.json(),
-        reserva
+        // reserva,
+        usuario
     );
 
     // Se não é nenhuma rota válida, produz 404

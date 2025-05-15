@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/Users/silviohuan/Desktop/Pasta Escola/Fabrica-II/aluguel-de-equipamentos/logs/.ec1cdb635ea42687f86c0f2599e868c67638693d-audit.json",
+    "files": [
+        {
+            "date": 1747336053615,
+            "name": "/Users/silviohuan/Desktop/Pasta Escola/Fabrica-II/aluguel-de-equipamentos/logs/error-2025-05-15.log",
+            "hash": "3ac8d0785416dea58d06406952bdf030aa097ef5874ac272b7d2ae2e938cbf7c"
+        }
+    ],
+    "hashType": "sha256"
+}

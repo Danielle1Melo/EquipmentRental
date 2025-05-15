@@ -1,6 +1,6 @@
-import DbConnect from './config/Dbconnect.js ';
+import DbConnect from './config/Dbconnect.js';
 import routes from './routes/index.js';
-import CommonResponse from './utils/helpers/CommonResponse.js';
+// import CommonResponse from './utils/helpers/CommonResponse.js';
 import express from "express";  
 
 const app = express();
