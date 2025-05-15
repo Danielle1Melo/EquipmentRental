@@ -1,6 +1,6 @@
-import ReservaService from '../services/ReservaService.js';
-import { ReservaIdSchema, ReservaQuerySchema } from '../utils/validators/schemas/zod/querys/ReservaQuerySchema.js';
-import { ReservaSchema, ReservaUpdateSchema } from '../utils/validators/schemas/zod/ReservaSchema.js';
+import ReservaService from '../service/ReservaService.js';
+import mongoose from 'mongoose';
+
 import {
     CommonResponse,
     CustomError,
@@ -10,6 +10,7 @@ import {
     StatusService,
     asyncWrapper
 } from '../utils/helpers/index.js';
+import { UsuarioIdSchema } from '../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
 
 class ReservaController {
     constructor() {
@@ -21,23 +22,7 @@ class ReservaController {
 
         const { id } = req.params || {};
         if (id) {
-            ReservaIdSchema.parse(id);
-        
-            const existe = await this.service.existe(id);
-            if (!existe) {
-                throw new CustomError({
-                    statusCode: HttpStatusCodes.NOT_FOUND.code,
-                    errorType: 'notFound',
-                    field: 'id',
-                    details: [],
-                    customMessage: 'Reserva não encontrada.'
-                });
-            }
-        }
-
-        const query = req.query || {};
-        if (Object.keys(query).length !== 0) {
-            await ReservaQuerySchema.parseAsync(query);
+            UsuarioIdSchema.parse(id);
         }
 
         const data = await this.service.listar(req);
@@ -48,29 +33,28 @@ class ReservaController {
     async criar(req, res) {
         console.log('Estou no criar em ReservaController');
 
-        const parsedData = ReservaSchema.parse(req.body);
-        const data = await this.service.criar(parsedData);
+        let data = await this.service.criar(req.body);
 
-        const reservaLimpa = data.toObject();
-        delete reservaLimpa.__v;
+        let reservaLimpa = data.toObject();
 
-        return CommonResponse.created(res, { message: 'Reserva criada com sucesso.', dados: reservaLimpa });
+        return CommonResponse.created(res, reservaLimpa);
     }
 
     async atualizar(req, res) {
         console.log('Estou no atualizar em ReservaController');
 
         const { id } = req.params;
-        ReservaIdSchema.parse(id);
+        UsuarioIdSchema.parse(id);
 
-        const parsedData = ReservaUpdateSchema.parse(req.body);
+        // const parsedData = UsuarioUpdateSchema.parse(req.body);
+        const parsedData = req.body;
+
         const data = await this.service.atualizar(id, parsedData);
 
-        const reservaLimpa = data.toObject();
-        delete reservaLimpa.__v;
 
-        return CommonResponse.success(res, { message: 'Reserva atualizada com sucesso.', dados: reservaLimpa }, 200);
+        return CommonResponse.success(res, data, 200, 'Usuário atualizado com sucesso.');
     }
+
 }
 
 export default ReservaController;

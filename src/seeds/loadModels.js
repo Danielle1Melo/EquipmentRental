@@ -13,9 +13,10 @@ const __dirname = path.dirname(__filename);
  * Retorna um array com objetos { model, name }.
  */
 async function loadModels() {
-    const models = [];
-    const modelsDir = path.join(__dirname, '../models');
-    const files = fs.readdirSync(modelsDir);
+  const models = [];
+  const modelsDir = path.join(__dirname, '../models');
+  const files = fs.readdirSync(modelsDir);
+
 
     for (const file of files) {
         if (file.endsWith('.js')) {
@@ -31,9 +32,8 @@ async function loadModels() {
             }
         }
     }
-    return models;
+  
+  return models;
 }
 
 export default loadModels;
-
-

@@ -16,7 +16,8 @@ class Usuario {
             tipoUsuario:{type:String, required: true}
         })
         usuarioSchema.plugin(mongoosePaginate);
-        this.model = mongoose.model('usuario', usuarioSchema);
+        this.model = mongoose.model('usuarios', usuarioSchema);
     }
 }
+
 export default new Usuario().model

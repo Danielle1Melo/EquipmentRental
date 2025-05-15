@@ -10,10 +10,9 @@ const reservaController = new ReservaController();
 
 router
 .get("/reservas", asyncWrapper(reservaController.listar.bind(reservaController)))
-.get("/reservas:id", asyncWrapper(reservaController.listar.bind(reservaController)))
-.post("/reservas", asyncWrapper(reservaController.listar.bind(reservaController)))
-.patch("/reservas:id", asyncWrapper(reservaController.listar.bind(reservaController)))
-
+.get("/reservas/:id", asyncWrapper(reservaController.listar.bind(reservaController)))
+.post("/reservas", asyncWrapper(reservaController.criar.bind(reservaController)))
+.patch("/reservas/:id", asyncWrapper(reservaController.atualizar.bind(reservaController)))
 
 export default router;
 

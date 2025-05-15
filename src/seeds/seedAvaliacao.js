@@ -1,9 +1,7 @@
 import Avaliacao from "../models/Avaliacao.js"
-import DbConnect from "../config/dbconnect.js"
+import DbConnect from "../config/Dbconnect.js"
 import Usuario from "../models/Usuario.js"
-import { faker } from "@faker-js/faker"
 import getGlobalFakeMapping from "./globalFakeMapping.js"
-
 
 
 
@@ -16,6 +14,7 @@ async function SeedAvaliacao(usuario) {
         const nota = fake.nota()
         const dataAvaliacao = fake.dataAvaliacao()
 
+
         avaliacoes.push({
             descricao,
             nota,
@@ -26,7 +25,8 @@ async function SeedAvaliacao(usuario) {
 
     await Avaliacao.collection.insertMany(avaliacoes)
     console.log(`${avaliacoes.length} avaliaçoes inseridas com sucesso!`);
-    return Avaliacao.collection.find()
+
+    return await Avaliacao.find()
 }
 
 export default SeedAvaliacao

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import Usuario from './Usuario.js';
-import { type } from 'os';
+
 
 class Avaliacao {
     constructor(){
@@ -20,4 +20,6 @@ class Avaliacao {
     }
 }
 
+
 export default new Avaliacao().model;
+

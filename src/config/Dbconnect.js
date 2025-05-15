@@ -7,6 +7,7 @@ import logger from '../utils/logger.js';
 
 dotenv.config(); // Carrega as variáveis de ambiente
 
+
 /**
  * Classe responsável por gerenciar a conexão com o MongoDB.
  */
@@ -102,8 +103,7 @@ class DbConnect {
             throw error; // Re-lança o erro para permitir que o aplicativo lide com a falha de desconexão
         }
 
+
 }
 }
-export default DbConnect
-
-
+export default DbConnect;

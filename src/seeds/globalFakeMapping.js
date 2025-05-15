@@ -1,9 +1,9 @@
 import fakebr from 'faker-br';
 //import { fa } from 'faker-br/lib/locales';
 import mongoose from 'mongoose';
-import { v4 as uuid } from 'uuid';
 import loadModels from './loadModels.js';
 import { gerarDataAleatoria } from '../utils/helpers/randomPastDate.js';
+
 
 //173
 
@@ -12,7 +12,7 @@ const fakeMappings = {
 
     },
 
-    Usuario: {
+   Usuario: {
         nome: () => fakebr.name.firstName(),
         sobrenome: () => fakebr.name.lastName(),
         email: () => fakebr.internet.email(),
@@ -25,18 +25,19 @@ const fakeMappings = {
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
         
     }, 
+Endereco: {
+    endeLogradouro: () => fakebr.address.streetName(),
+    endeNumero: () => fakebr.random.number({ min: 1, max: 10}),
+    endeBairro: () => fakebr.address.county(),
+    endeUf: () => fakebr.address.stateAbbr(),
+    endeCep: () => fakebr.address.zipCode(),
+    endeCidade: () => fakebr.address.city(),
+    endeComplemento: () => fakebr.address.secondaryAddress(),
+    usuario: [{_id: new mongoose.Types.ObjectId().to}],
+   
+},
 
-    Endereco: {
-        rua: () => fakebr.address.streetName(),
-        numero: () => fakebr.random.number({ min: 1, max: 1000 }),
-        complemento: () => fakebr.address.secondaryAddress(),
-        bairro: () => fakebr.address.county(),
-        cidade: () => fakebr.address.city(),
-        estado: () => fakebr.address.stateAbbr(),
-        cep: () => fakebr.address.zipCode(),
-    },
-
-    Reserva: {
+ Reserva: {
       dataInicial: () => fakebr.date.past(),
       dataFinal: () => fakebr.date.future(),
       dataFinalAtrasada: () => fakebr.date.future(),
@@ -62,10 +63,13 @@ const fakeMappings = {
       quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
       categoria: () => fakebr.commerce.department(),
       status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
+      usuario: [{_id: new mongoose.Types.ObjectId().to}],
       foto: () => fakebr.image.imageUrl(),
-      notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
+      notaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
+      endereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
     }
 }
+
 
 /**
  * Retorna o mapping global, consolidando os mappings comuns e específicos.

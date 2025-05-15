@@ -3,6 +3,7 @@ import Usuario from "../models/Usuario.js"
 // import getGlobalFakeMapping from "../globalFakeMapping"
 import bcrypt from "bcryptjs";
 import { faker } from "@faker-js/faker";
+
 import getGlobalFakeMapping from "./globalFakeMapping.js";
 
 
@@ -26,17 +27,18 @@ async function SeedUsuario(){
     const usuarios = [];
     const fake = await getGlobalFakeMapping()
 
-    for (let i = 0; i < 2; i++) {
+
+    for (let i = 0; i < 25; i++) {
         const nome = fake.nome();
-        const sobrenome = fake.sobrenome();
         const email = fake.email();
+        const sobrenome = fake.sobrenome();
         const telefone = fake.telefone();
-        const senha = await gerarSenhaHash(fake.senha());
+        const senha = senhaHash;
         const dataNascimento = fake.dataNascimento();
         const CPF = fake.cpf(); // Geração de CPF fictício
         const notaMedia = fake.notaMediaAvaliacao();
-        const status = fake.status()
-        const tipoUsuario = fake.tipoUsuario()
+        const status = fake.status();
+        const tipoUsuario = fake.tipoUsuario();
 
         usuarios.push({
             nome,
@@ -62,5 +64,3 @@ async function SeedUsuario(){
 }
 
 export default SeedUsuario
-
-
