@@ -23,6 +23,7 @@ const fakeMappings = {
         notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
+        fotoUsuario: () => fakebr.image.imageUrl(),
         
     }, 
 Endereco: {

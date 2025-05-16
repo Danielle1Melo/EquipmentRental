@@ -39,6 +39,7 @@ async function SeedUsuario(){
         const notaMedia = fake.notaMediaAvaliacao();
         const status = fake.status();
         const tipoUsuario = fake.tipoUsuario();
+        const fotoUsuario = fake.fotoUsuario()
 
         usuarios.push({
             nome,
@@ -50,7 +51,8 @@ async function SeedUsuario(){
             CPF,
             notaMedia,
             status,
-            tipoUsuario
+            tipoUsuario,
+            fotoUsuario
         });
     }
 

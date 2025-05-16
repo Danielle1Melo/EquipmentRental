@@ -13,7 +13,8 @@ class Usuario {
             cpf:{type:String, required:true},
             notaMediaAvaliacao:{type:Number},
             status: {type: String, required: true},
-            tipoUsuario:{type:String, required: true}
+            tipoUsuario:{type:String, required: true},
+            fotoUsuario:{type:String}
         })
         usuarioSchema.plugin(mongoosePaginate);
         this.model = mongoose.model('usuarios', usuarioSchema);
