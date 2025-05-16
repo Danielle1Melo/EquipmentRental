@@ -11,5 +11,36 @@ class UsuarioService {
         console.log("Estou retornando os dados em UsuarioService")
         return data
     }
+    async updateUsuario(id, parseData){
+        console.log("Estou no updateUsuario Service")
+        await this.ensureUserExists(id)
+        console.log(id)
+        await this.repository.buscarPorEmail(parseData, id)
+        await this.repository.buscarPorTelefone(parseData, id)
+        await this.repository.buscarPorCpf(id, parseData)
+
+        delete parseData.cpf
+        delete parseData.dataNascimento
+
+        const data = await this.repository.updateUsuario(id, parseData)
+        return data
+    }
+    async ensureUserExists(id){
+        const usuarioExistente = await this.repository.buscarPorId(id)
+         if (!usuarioExistente) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'Usuário',
+                details: [],
+                customMessage: messages.error.resourceNotFound('Usuário'),
+            });
+        }
+        return usuarioExistente;
+
+    }
+    async validateEmail(email, id = null){
+        const usuarioExistente = await this.repository.buscarPorEmail(email)
+    }
 }
 export default UsuarioService

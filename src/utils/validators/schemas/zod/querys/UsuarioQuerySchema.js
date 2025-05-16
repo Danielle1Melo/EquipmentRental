@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 export const UsuarioIdSchema = z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
     message: "ID inválido",
 });
-
+const regexCPF = /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/
 export const UsuarioQuerySchema = z.object({
     nome: z
         .string()
@@ -22,8 +22,11 @@ export const UsuarioQuerySchema = z.object({
         .refine((value) => !value || value === "true" || value === "false", {
             message: "Ativo deve ser 'true' ou 'false'",
         }),
-    grupo: z.string().optional().transform((val) => val?.trim()),
-    unidade: z.string().optional().transform((val) => val?.trim()),
+    cpf: z.string()
+        .optional()
+        .refine((val) => !val ||regexCPF.test(val), {
+            message: "CPF inválido"
+        }),
     page: z
         .string()
         .optional()

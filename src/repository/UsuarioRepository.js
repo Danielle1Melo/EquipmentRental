@@ -1,4 +1,8 @@
+import { populate } from "dotenv"
 import UsuarioModel from "../models/Usuario.js"
+import AvaliacaoModel from "../models/Avaliacao.js"
+import CustomError from "../utils/helpers/CustomError.js"
+import messages from "../utils/helpers/messages.js"
 
 class UsuarioRepository {
     constructor({
@@ -11,13 +15,78 @@ class UsuarioRepository {
         const id = req.params.id || null
         if(id){
             const data = await this.model.findById(id)
-            // TODO: Colocar os populates depois
+            return data
         }
 
         const data = await this.model.find()
         return data
 
     }
-}
+    async updateUsuario(id, parseData){
+        console.log("Estou no updateUsuario em UsuarioRepository")
+        
+        
+        this.model.findByIdAndUpdate(id, parseData)
 
+    }
+    async buscarPorId(id, includeTokens = false){
+        console.log("Estou no bucarPorId no UsuarioRepository")
+        let query = this.model.findById(id)
+
+        const user = await query
+        if(!user){
+            throw new CustomError({
+                statusCode:404,
+                errorType:"resourceNotFound",
+                field:"Usuário",
+                details:[],
+                customMessage: messages.error.resourceNotFound("Usuário")
+            })
+        }
+        return user
+    }
+    async buscarPorEmail(parseData, idIgnorado = null){
+    //    console.log(email)
+    console.log("IDIDID",idIgnorado)
+    console.log("Estou na buscarPorEmail Repository")
+        const documento = await this.model.findOne({email:parseData.email, _id: {$ne: idIgnorado}})
+        console.log("Pesquisa conluida com sucesso")
+        if(documento){
+            throw new CustomError({
+                statusCode: 409,
+                errorType:"Conflict",
+                details:[],
+                customMessage: messages.error.resourceConflict("Usuário")
+
+            })
+        }
+    }
+    async buscarPorTelefone(id, telefone = null){
+        console.log("Estou no buscarPorTelefone no UsuarioRepository")
+        const documento = await this.model.findOne({telefone:telefone, _id:{$ne: id}})
+        console.log("Pesquisa conluida com sucesso")
+        if(documento){
+            throw new CustomError({
+                statusCode: 409,
+                errorType:"Conflict",
+                details:[],
+                customMessage: messages.error.resourceConflict("Usuário")
+
+            })
+        }
+    }
+    async buscarPorCpf(id, cpf = null) {
+        console.log("Estou no buscarPorCpf no UsuarioRepository")
+        const documento = await this.model.findOne({cpf:cpf, _id:{$ne: id}})
+        if(documento){
+            throw new CustomError({
+                statusCode: 409,
+                errorType:"Conflict",
+                details:[],
+                customMessage: messages.error.resourceConflict("Usuário")
+
+            })
+        }
+    }
+}
 export default UsuarioRepository
