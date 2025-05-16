@@ -1,117 +1,82 @@
-// controllers/EquipamentoController.js
-import EquipamentoService from "../services/EquipamentoService.js";
+// import EquipamentoService from "../services/EquipamentoService.js";
+import { CommonResponse, CustomError, HttpStatusCodes} from "../utils/helpers/index.js";
 
-export default class EquipamentoController {
+import { equipamentoSchema, equipamentoUpdateSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
+import { EquipamentoQuerySchema, EquipamentoIdSchema } from "../utils/validators/schemas/zod/querys/EquipamentoQuerySchema.js";
+
+class EquipamentoController {
   constructor() {
-    this.equipamentoService = new EquipamentoService();
+    this.service = new EquipamentoService();
   }
 
+  // POST 
   async criar(req, res) {
-    const { nome, descricao, categoria, valorDiaria, valorSemanal, valorMensal, disponibilidade } = req.body;
-    
-    if (!nome || !descricao || !categoria || (!valorDiaria && !valorSemanal && !valorMensal) || disponibilidade === undefined) {
-      return res.status(400).json({ mensagem: "Campos obrigatórios ausentes." });
+    try {
+      const parsedData = equipamentoSchema.parse(req.body);
+      const data = await this.service.criar(parsedData, req.usuario); 
+      return CommonResponse.created(res, data, "Equipamento cadastrado. Aguardando aprovação.");
+    } catch (error) {
+      return CommonResponse.error(res, error);
     }
-
-    const dados = {
-      nome,
-      descricao,
-      categoria,
-      valorDiaria,
-      valorSemanal,
-      valorMensal,
-      disponibilidade,
-      status: "pendente", 
-      locadorId: req.user.id 
-    };
-
-    const equipamentoCriado = await this.equipamentoService.criar(dados);
-    return res.status(201).json({
-      mensagem: "Equipamento cadastrado. Aguardando aprovação.",
-      equipamento: equipamentoCriado
-    });
   }
 
+  // GET 
   async listar(req, res) {
-    const filtros = {
-      categoria: req.query.categoria,
-      status: req.query.status,
-      valorMin: req.query.valorMin,
-      valorMax: req.query.valorMax,
-      page: req.query.page || 1,
-      limit: req.query.limit || 10
-    };
+    try {
+      const { id } = req.params;
 
-    const resultado = await this.equipamentoService.listar(filtros);
-    return res.status(200).json(resultado);
+      if (id) {
+        EquipamentoIdSchema.parse(id);
+        const equipamento = await this.service.obterPorId(id, req.usuario); 
+        return CommonResponse.success(res, equipamento);
+      }
+
+      const query = req.query || {};
+      if (Object.keys(query).length !== 0) {
+        await EquipamentoQuerySchema.parseAsync(query);
+      }
+
+      const lista = await this.service.listar(req);
+      return CommonResponse.success(res, lista);
+    } catch (error) {
+      return CommonResponse.error(res, error);
+    }
   }
 
-  async obterPorId(req, res) {
-    const id = req.params.id;
-    const userId = req.user?.id;
-
-    const equipamento = await this.equipamentoService.obterPorId(id);
-
-    if (!equipamento) {
-      return res.status(404).json({ mensagem: "Equipamento não encontrado." });
-    }
-
-    if (equipamento.status !== "ativo" && equipamento.locadorId !== userId) {
-      return res.status(403).json({ mensagem: "Acesso negado ao equipamento." });
-    }
-
-    return res.status(200).json(equipamento);
-  }
-
+  // PATCH 
   async atualizar(req, res) {
-    const id = req.params.id;
-    const userId = req.user?.id;
-    const dadosAtualizados = req.body;
+    try {
+      const { id } = req.params;
+      EquipamentoIdSchema.parse(id);
+      const parsedData = equipamentoUpdateSchema.parse(req.body);
 
-    const equipamento = await this.equipamentoService.obterPorId(id);
-
-    if (!equipamento) {
-      return res.status(404).json({ mensagem: "Equipamento não encontrado." });
+      const data = await this.service.atualizar(id, parsedData, req.usuario); 
+      return CommonResponse.success(res, data, 200, "Equipamento atualizado.");
+    } catch (error) {
+      return CommonResponse.error(res, error);
     }
-
-    if (equipamento.locadorId !== userId) {
-      return res.status(403).json({ mensagem: "Você não tem permissão para editar este equipamento." });
-    }
-
-    const camposCriticos = ['nome', 'descricao', 'categoria', 'valorDiaria', 'valorSemanal', 'valorMensal'];
-    const alteracoesCriticas = camposCriticos.some(campo => campo in dadosAtualizados);
-
-    if (alteracoesCriticas) {
-      dadosAtualizados.status = 'pendente';
-    }
-
-    const equipamentoAtualizado = await this.equipamentoService.atualizar(id, dadosAtualizados);
-    return res.status(200).json({
-      mensagem: "Equipamento atualizado.",
-      equipamento: equipamentoAtualizado
-    });
   }
 
+  // DELETE 
   async deletar(req, res) {
-    const id = req.params.id;
-    const userId = req.user?.id;
+    try {
+      const { id } = req.params;
+      if (!id) {
+        throw new CustomError({
+          statusCode: HttpStatusCodes.BAD_REQUEST.code,
+          errorType: "validationError",
+          field: "id",
+          details: [],
+          customMessage: "ID do equipamento é obrigatório para deletar.",
+        });
+      }
 
-    const equipamento = await this.equipamentoService.obterPorId(id);
-
-    if (!equipamento) {
-      return res.status(404).json({ mensagem: "Equipamento não encontrado." });
+      const data = await this.service.deletar(id, req.usuario);
+      return CommonResponse.success(res, data, 200, "Equipamento inativado.");
+    } catch (error) {
+      return CommonResponse.error(res, error);
     }
-
-    if (equipamento.locadorId !== userId) {
-      return res.status(403).json({ mensagem: "Você não tem permissão para inativar este equipamento." });
-    }
-
-    const possuiLocacoesAtivas = await this.equipamentoService.temLocacoesAtivas(id);
-    if (possuiLocacoesAtivas) {
-      return res.status(400).json({ mensagem: "Equipamento não pode ser inativado com locações ativas." });
-    }
-
-    await this.equipamentoService.inativar(id);
-    return res.status(200).json({ mensagem: "Equipamento inativado." });
   }
 }
+
+export default EquipamentoController;
