@@ -10,7 +10,7 @@ import {
     StatusService,
     asyncWrapper
 } from '../utils/helpers/index.js';
-import { UsuarioIdSchema } from '../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
+import { ReservaIdSchema } from '../utils/validators/schemas/zod/querys/ReservaQuerySchema.js';
 
 class ReservaController {
     constructor() {
@@ -22,7 +22,7 @@ class ReservaController {
 
         const { id } = req.params || {};
         if (id) {
-            UsuarioIdSchema.parse(id);
+            ReservaIdSchema.parse(id);
         }
 
         const data = await this.service.listar(req);
@@ -44,7 +44,7 @@ class ReservaController {
         console.log('Estou no atualizar em ReservaController');
 
         const { id } = req.params;
-        UsuarioIdSchema.parse(id);
+        ReservaIdSchema.parse(id);
 
         // const parsedData = UsuarioUpdateSchema.parse(req.body);
         const parsedData = req.body;
