@@ -39,6 +39,17 @@ const UsuarioSchema = z.object({
           'A senha deve conter pelo menos 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial.',
       }
     ),
+    cpf:z
+    .string()
+    .min(11, { message: "O CPF deve conter 11 caracteres"})
+    .optional()
+    ,
+    telefone:z
+    .string()
+    .min(8, {message: "Menos de 8 caracteres"})
+    .max(8, {message: "Mais de 8 caracteres"})
+    .optional()
+    ,
   link_foto: z.string().optional(),
   ativo: z.boolean().default(false),
 

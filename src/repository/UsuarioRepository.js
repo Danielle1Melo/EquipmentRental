@@ -22,7 +22,7 @@ class UsuarioRepository {
         return data
 
     }
-    async updateUsuario(id, parseData){
+    async updateUsuario(parseData, id){
         console.log("Estou no updateUsuario em UsuarioRepository")
         
         
@@ -45,11 +45,9 @@ class UsuarioRepository {
         }
         return user
     }
-    async buscarPorEmail(parseData, idIgnorado = null){
-    //    console.log(email)
-    console.log("IDIDID",idIgnorado)
+    async buscarPorEmail(email, idIgnorado = null){
     console.log("Estou na buscarPorEmail Repository")
-        const documento = await this.model.findOne({email:parseData.email, _id: {$ne: idIgnorado}})
+        const documento = await this.model.findOne({email:email, _id: {$ne: idIgnorado}})
         console.log("Pesquisa conluida com sucesso")
         if(documento){
             throw new CustomError({
@@ -61,10 +59,11 @@ class UsuarioRepository {
             })
         }
     }
-    async buscarPorTelefone(id, telefone = null){
+    async buscarPorTelefone(telefone, id = null){
         console.log("Estou no buscarPorTelefone no UsuarioRepository")
         const documento = await this.model.findOne({telefone:telefone, _id:{$ne: id}})
         console.log("Pesquisa conluida com sucesso")
+        console.log("Telefone encontrado:",documento)
         if(documento){
             throw new CustomError({
                 statusCode: 409,
@@ -75,9 +74,10 @@ class UsuarioRepository {
             })
         }
     }
-    async buscarPorCpf(id, cpf = null) {
-        console.log("Estou no buscarPorCpf no UsuarioRepository")
+    async buscarPorCpf(cpf, id = null) {
+        // console.log("Estou no buscarPorCpf no UsuarioRepository")
         const documento = await this.model.findOne({cpf:cpf, _id:{$ne: id}})
+        console.log(documento)
         if(documento){
             throw new CustomError({
                 statusCode: 409,

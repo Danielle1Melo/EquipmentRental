@@ -32,7 +32,8 @@ class UsuarioController {
         const {id} = req.params || {}
         
         UsuarioIdSchema.parse(id)
-        const parseData = UsuarioUpdateSchema.parse(req.body)
+        const parseData = await UsuarioUpdateSchema.parseAsync(req.body)
+        console.log("BODY:", parseData)
         const data = await this.service.updateUsuario(id, parseData)
         return CommonResponse.success(res, data)
     }
