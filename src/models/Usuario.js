@@ -5,12 +5,11 @@ class Usuario {
     constructor(){
         const usuarioSchema = new mongoose.Schema({
             nome: {type: String, required:true},
-            sobrenome: {type: String, required: true},
-            email:{type:String, required:true},
-            telefone:{type:String, required:true},
+            email:{type:String, required:true, unique:true},
+            telefone:{type:String, required:true, unique:true},
             senha:{type:String, require:true},
             dataNascimento:{type:Date, required: true},
-            cpf:{type:String, required:true},
+            cpf:{type:String, required:true, unique:true},
             notaMediaAvaliacao:{type:Number},
             status: {type: String, required: true},
             tipoUsuario:{type:String, required: true},

@@ -31,7 +31,6 @@ async function SeedUsuario(){
     for (let i = 0; i < 25; i++) {
         const nome = fake.nome();
         const email = fake.email();
-        const sobrenome = fake.sobrenome();
         const telefone = fake.telefone();
         const senha = senhaHash;
         const dataNascimento = fake.dataNascimento();
@@ -43,7 +42,6 @@ async function SeedUsuario(){
 
         usuarios.push({
             nome,
-            sobrenome,
             email,
             telefone,
             senha: senha,

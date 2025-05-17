@@ -9,6 +9,7 @@ import { RotaSchema } from './RotaSchema.js';
  * Tamanho mínimo: 8 caracteres
  **/
 const senhaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const telefoneRegex = /^(\+55\s?)?(\(?[1-9]{2}\)?\s?)(9?[0-9]{4})-?([0-9]{4})$/
 
 // Validação de array de ObjectId sem duplicações
 const distinctObjectIdArray = z
@@ -27,7 +28,6 @@ const UsuarioSchema = z.object({
   senha: z
     .string()
     .min(8, 'A senha deve ter pelo menos 8 caracteres.')
-    .optional()
     .refine(
       (senha) => {
         // Senha é opcional
@@ -42,23 +42,14 @@ const UsuarioSchema = z.object({
     cpf:z
     .string()
     .min(11, { message: "O CPF deve conter 11 caracteres"})
-    .optional()
     ,
     telefone:z
     .string()
-    .min(8, {message: "Menos de 8 caracteres"})
-    .max(8, {message: "Mais de 8 caracteres"})
-    .optional()
-    ,
-  link_foto: z.string().optional(),
-  ativo: z.boolean().default(false),
-
-  // Arrays sem ids repetidos:
-  grupos: distinctObjectIdArray.default([]),
-  unidades: distinctObjectIdArray.default([]),
-
-  // Permissões permanece como estava
-  permissoes: z.array(RotaSchema).default([]),
+    .refine((val) => !val || telefoneRegex.test(val), {message: `O telefone deve ser algo como: +55 (XX) 9XXXX-XXXX, +55 XX 9XXXX-XXXX, (XX) 9XXXX-XXXX, XX 9XXXX-XXXX`}),
+    link_foto: z.string().optional(),
+    dataNascimento:z
+    .string()
+    .date()
 });
 
 const UsuarioUpdateSchema = UsuarioSchema.partial();

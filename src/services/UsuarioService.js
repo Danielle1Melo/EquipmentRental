@@ -13,17 +13,6 @@ class UsuarioService {
     }
     async updateUsuario(id, parseData){
         console.log("Estou no updateUsuario Service")
-        await this.ensureUserExists(id)
-        console.log(id)
-        console.log(parseData)
-        await this.repository.buscarPorEmail(parseData.email, id)
-        await this.repository.buscarPorTelefone(parseData.telefone, id)
-        await this.repository.buscarPorCpf(parseData.cpf, id)
-        await this.repository.updateUsuario(parseData, id)
-
-        delete parseData.cpf
-        delete parseData.dataNascimento
-
         const data = await this.repository.updateUsuario(id, parseData)
         return data
     }

@@ -1,6 +1,7 @@
 import DbConnect from './config/Dbconnect.js';
 import routes from './routes/index.js';
-// import CommonResponse from './utils/helpers/CommonResponse.js';
+import CommonResponse from './utils/helpers/CommonResponse.js';
+import errorHandler from './utils/helpers/errorHandler.js';
 import express from "express";  
 
 const app = express();
@@ -21,4 +22,5 @@ app.use((req, res, next) => {
     );
 });
 
+app.use(errorHandler);
 export default app;

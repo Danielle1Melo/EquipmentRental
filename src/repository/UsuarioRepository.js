@@ -18,15 +18,29 @@ class UsuarioRepository {
             return data
         }
 
+        // TODO: Fazer opções de consulta com filtros
+        const {nome, email, status, telefone, cpf, nota, tipoUsuario, notaMediaAvaliacao, dataNascimento} = req.params
+
+
         const data = await this.model.find()
         return data
 
     }
-    async updateUsuario(parseData, id){
+    async updateUsuario(id, parseData){
         console.log("Estou no updateUsuario em UsuarioRepository")
         
         
-        this.model.findByIdAndUpdate(id, parseData)
+        const usuarioAtualizado = await this.model.findByIdAndUpdate(id, {$set: parseData}, {new: true})
+        if(!usuarioAtualizado){
+            throw new CustomError({
+                statusCode:404,
+                errorType:"resourceNotFound",
+                field:"Usuário",
+                details:[],
+                customMessage: messages.error.resourceNotFound("Usuário")
+            })
+        }
+        return usuarioAtualizado
 
     }
     async buscarPorId(id, includeTokens = false){

@@ -13,8 +13,7 @@ const fakeMappings = {
     },
 
    Usuario: {
-        nome: () => fakebr.name.firstName(),
-        sobrenome: () => fakebr.name.lastName(),
+        nome: () => fakebr.name.firstName() + " " + fakebr.name.lastName(),
         email: () => fakebr.internet.email(),
         telefone: () => fakebr.phone.phoneNumber(),
         senha: () => fakebr.internet.password(),
