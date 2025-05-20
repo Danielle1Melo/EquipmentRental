@@ -45,8 +45,8 @@ class ReservaRepository {
             const data = await this.reservaModel
                 .findById(id)
                 .populate([
-                    { path: 'equipamento', select: 'nome' },
-                    { path: 'usuario', select: 'nome' }
+                    { path: 'equipamentos', select: 'nome' },
+                    { path: 'usuarios', select: 'nome' }
                 ]);
 
             if (!data) {
@@ -65,8 +65,8 @@ class ReservaRepository {
         return this.reservaModel
             .find()
             .populate([
-                { path: 'equipamento', select: 'nome' },
-                { path: 'usuario', select: 'nome' },
+                { path: 'equipamentos', select: 'nome' },
+                { path: 'usuarios', select: 'nome' },
             ]);
     }
 
@@ -78,10 +78,6 @@ class ReservaRepository {
     async atualizar(id, parsedData) {
         const reserva = await this.reservaModel
             .findByIdAndUpdate(id, parsedData, { new: true })
-            .populate([
-                { path: 'equipamento', select: 'nome' },
-                { path: 'usuario', select: 'nome' }
-            ]);;
 
         if (!reserva) {
             throw new CustomError({

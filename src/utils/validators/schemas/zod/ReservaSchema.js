@@ -29,8 +29,8 @@ const ReservaSchema = z.object({
   status: z
     .enum(['pendente', 'confirmada', 'cancelada'])
     .default('pendente'),
-  equipamento: z.array(objectIdSchema).default([]),
-  usuario: z.array(objectIdSchema).default([]),
+  equipamentos: z.array(objectIdSchema).default([]),
+  usuarios: z.array(objectIdSchema).default([]),
 })
 
 const ReservaUpdateSchema = ReservaSchema.partial();

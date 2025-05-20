@@ -74,8 +74,19 @@ class ReservaService {
             });
         }
 
-        const equipamentoId = equipamento[0]; //Assumindo equipamento único para simplificar
-        const equipamentoDoc = await Equipamento.findById(equipamentoId);
+        const equipamentoId = equipamento; //Assumindo equipamento único para simplificar
+
+        if (!mongoose.Types.ObjectId.isValid(equipamentoId)) {
+            throw new CustomError({
+                statusCode: 400,
+                errorType: 'invalidData',
+                field: 'equipamento',
+                details: [],
+                customMessage: `ID de equipamento inválido: ${equipamentoId}`,
+            });
+        }
+        const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentoId);
+        const equipamentoDoc = await Equipamento.findById(equipamentoObjectId);
         if (!equipamentoDoc) {
             throw new CustomError({
                 statusCode: 404,
