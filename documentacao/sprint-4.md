@@ -19,9 +19,10 @@
 
 # Desenvolvimento dos **controllers** das rotas implementadas
 
- - ReservaController (Dani)
- - EquipamentoController (Taline)
- - UsuarioController (Silvio)
+ - ReservaController (Danielle Melo)
+ - EquipamentoController (Taline Rodrigues)
+ - UsuarioController (Silvio Huan)
+ 
 # Desenvolvimento dos **services** das rotas implementadas
 > - /*colocar services*/
 

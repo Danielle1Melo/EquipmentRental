@@ -24,7 +24,7 @@ class ReservaRepository {
     //     }
 
     //     const user = await query;
-        
+
     //     if (!user) {
     //         throw new CustomError({
     //             statusCode: 404,
@@ -35,14 +35,19 @@ class ReservaRepository {
     //         });
     //     }
     // } 
-       
+
 
 
     async listar(req) {
         const { id } = req.params;
 
-        if(id) {
-            const data = await this.reservaModel.findById(id);
+        if (id) {
+            const data = await this.reservaModel
+                .findById(id)
+                .populate([
+                    { path: 'equipamentos', select: 'nome' },
+                    { path: 'usuarios', select: 'nome' }
+                ]);
 
             if (!data) {
                 throw new CustomError({
@@ -54,19 +59,25 @@ class ReservaRepository {
                 });
             }
 
-            return Reserva.findById(id);
+            return data;
         }
 
-        return Reserva.find()
+        return this.reservaModel
+            .find()
+            .populate([
+                { path: 'equipamentos', select: 'nome' },
+                { path: 'usuarios', select: 'nome' },
+            ]);
     }
 
-    async criar(dadosReserva){
+    async criar(dadosReserva) {
         const reserva = new this.reservaModel(dadosReserva);
         return await reserva.save()
     }
 
     async atualizar(id, parsedData) {
-        const reserva = await this.reservaModel.findByIdAndUpdate(id, parsedData, { new: true });
+        const reserva = await this.reservaModel
+            .findByIdAndUpdate(id, parsedData, { new: true })
 
         if (!reserva) {
             throw new CustomError({
@@ -79,6 +90,24 @@ class ReservaRepository {
         }
 
         return reserva;
+    }
+
+    async findReservasSobrepostas(equipamentoId, dataInicial, dataFinal) {
+        try {
+            return await this.reservaModel.find({
+                equipamento: { $in: [equipamentoId] }, // Suporta array de equipamentos
+                dataInicial: { $lte: dataFinal },
+                dataFinal: { $gte: dataInicial },
+            });
+        } catch (error) {
+            throw new CustomError({
+                statusCode: 500,
+                errorType: 'databaseError',
+                field: 'Reserva',
+                details: [error.message],
+                customMessage: 'Erro ao buscar reservas sobrepostas.'
+            });
+        }
     }
 
 }

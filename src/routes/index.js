@@ -19,7 +19,6 @@ const routes = (app) => {
     }
     );
 
-
     //configurando swagger e criando a rota /docs
     // const swaggerDocs = swaggerJsDoc(getSwaggerOptions());
     // app.use(swaggerUI.serve);
