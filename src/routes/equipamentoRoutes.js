@@ -2,6 +2,7 @@ import express from "express";
 import { asyncWrapper } from '../utils/helpers/index.js';
 import EquipamentoController from "../controllers/EquipamentoController.js";
 
+
 const router = express.Router();
 const equipamentoController = new EquipamentoController();
 

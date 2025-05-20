@@ -1,207 +1,130 @@
-import { CommonResponse, CustomError, HttpStatusCodes } from "../utils/helpers/index.js";
-import { equipamentoSchema, equipamentoUpdateSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
-import { EquipamentoQuerySchema, EquipamentoIdSchema } from "../utils/validators/schemas/zod/querys/EquipamentoQuerySchema.js";
+// import { equipamentoSchema, equipamentoUpdateSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
+// import { EquipamentoQuerySchema, EquipamentoIdSchema } from "../utils/validators/schemas/zod/querys/EquipamentoQuerySchema.js";
+// import EquipamentoService from "../services/EquipamentoService.js";
+// import { CommonResponse } from "../utils/helpers/index.js";
 
-class EquipamentoController {
-  constructor() {
-    this.equipamentos = [
-      {
-        id: "1",
-        nome: "Furadeira",
-        descricao: "Furadeira potente",
-        categoria: "Ferramentas",
-        valorDiaria: 30,
-        valorSemanal: 180,
-        valorMensal: 600,
-        disponibilidade: true,
-        status: "ativo",
-        proprietarioId: "user1"
-      },
-      {
-        id: "2",
-        nome: "Serra Elétrica",
-        descricao: "Serra para cortes rápidos",
-        categoria: "Ferramentas",
-        valorDiaria: 40,
-        valorSemanal: 220,
-        valorMensal: 750,
-        disponibilidade: true,
-        status: "inativo",
-        proprietarioId: "user2"
-      },
-    ];
-  }
+// class EquipamentoController {
+//   constructor() {
+//     this.service = new EquipamentoService();
+//   }
 
-  // // POST /equipamentos
-  // async criar(req, res) {
-  //   try {
-  //     const data = equipamentoSchema.parse(req.body);
+//   async listar(req, res) {
+//     const filtros = EquipamentoQuerySchema.parse(req.query);
+//     const resultado = await this.service.buscarEquipamentos(filtros);
 
-  //     const novoEquipamento = {
-  //       id: (this.equipamentos.length + 1).toString(),
-  //       ...data,
-  //       status: "inativo", 
-  //       proprietarioId: req.usuario?.id || "userSimulado",
-  //     };
+//     return CommonResponse.success(res, resultado);
+//   }
 
-  //     this.equipamentos.push(novoEquipamento);
+//   async obterPorId(req, res) {
+//     const id = EquipamentoIdSchema.parse(req.params.id);
+//     const usuarioId = req.user.id;
 
-  //     return CommonResponse.created(res, novoEquipamento, "Equipamento cadastrado. Aguardando aprovação.");
-  //   } catch (error) {
-  //     return CommonResponse.error(res, error);
-  //   }
-  // }
-
-  // GET /equipamentos
-  async listar(req, res) {
-    try {
-      await EquipamentoQuerySchema.parseAsync(req.query);
-
-      let { categoria, status, valorMin, valorMax, pagina = 1, limite = 10 } = req.query;
-      pagina = Number(pagina);
-      limite = Number(limite);
-
-      let resultados = [...this.equipamentos];
-
-      if (categoria) {
-        resultados = resultados.filter(eq => eq.categoria === categoria);
-      }
-      if (status) {
-        resultados = resultados.filter(eq => eq.status === status);
-      }
-      if (valorMin) {
-        resultados = resultados.filter(eq => eq.valorDiaria >= Number(valorMin));
-      }
-      if (valorMax) {
-        resultados = resultados.filter(eq => eq.valorDiaria <= Number(valorMax));
-      }
-
-      const total = resultados.length;
-      const totalPaginas = Math.ceil(total / limite);
-      resultados = resultados.slice((pagina - 1) * limite, pagina * limite);
-
-      const metadados = {
-        pagina,
-        limite,
-        total,
-        totalPaginas,
-      };
-
-      return CommonResponse.success(res, { equipamentos: resultados, metadados });
-    } catch (error) {
-      return CommonResponse.error(res, error);
-    }
-  }
-
-//   // GET /equipamentos/:id
-// async obterPorId(req, res) {
-//   try {
-//     const { id } = req.params;
-//     EquipamentoIdSchema.parse(id);
-
-//     const equipamento = this.equipamentos.find(eq => eq.id === id);
-//     if (!equipamento) {
-//       return CommonResponse.error(res, {
-//         statusCode: HttpStatusCodes.NOT_FOUND.code,
-//         message: "Equipamento não encontrado.",
-//         details: null,
-//       });
-//     }
-
-//     const usuarioId = req.usuario?.id || "userSimulado";
-
-//     if (equipamento.status !== "ativo" && equipamento.proprietarioId !== usuarioId) {
-//       return CommonResponse.error(res, {
-//         statusCode: HttpStatusCodes.FORBIDDEN.code,
-//         message: "Equipamento não disponível.",
-//         details: null,
-//       });
-//     }
+//     const equipamento = await this.service.detalharEquipamento(id, usuarioId);
 
 //     return CommonResponse.success(res, equipamento);
-//   } catch (error) {
-//     if (error.name === "ZodError") {
-//       return CommonResponse.error(res, {
-//         statusCode: HttpStatusCodes.BAD_REQUEST.code,
-//         message: "ID inválido.",
-//         details: error.errors,
-//       });
-//     }
-//     return CommonResponse.error(res, {
-//       statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR.code,
-//       message: error.message || "Erro interno",
-//       details: null,
+//   }
+
+//   async criar(req, res) {
+//     const dados = equipamentoSchema.parse(req.body);
+//     const usuarioId = req.user.id;
+
+//     const equipamento = await this.service.criarEquipamento(dados, usuarioId);
+
+//     return CommonResponse.created(res, {
+//       mensagem: "Equipamento cadastrado. Aguardando aprovação.",
+//       equipamento,
 //     });
+//   }
+
+//   async atualizar(req, res) {
+//     const id = EquipamentoIdSchema.parse(req.params.id);
+//     const dadosAtualizados = equipamentoUpdateSchema.parse(req.body);
+//     const usuarioId = req.user.id;
+
+//     const equipamento = await this.service.atualizarEquipamento(id, usuarioId, dadosAtualizados);
+
+//     return CommonResponse.success(res, {
+//       mensagem: "Equipamento atualizado.",
+//       equipamento,
+//     });
+//   }
+
+//   async deletar(req, res) {
+//     const id = EquipamentoIdSchema.parse(req.params.id);
+//     const usuarioId = req.user.id;
+
+//     await this.service.inativarEquipamento(id, usuarioId);
+
+//     return CommonResponse.success(res, { mensagem: "Equipamento inativado." });
 //   }
 // }
 
-//   // PATCH /equipamentos/:id
-//   async atualizar(req, res) {
-//     try {
-//       const { id } = req.params;
-//       EquipamentoIdSchema.parse(id);
-//       const dadosAtualizados = equipamentoUpdateSchema.parse(req.body);
+// export default EquipamentoController;
 
-//       const index = this.equipamentos.findIndex(eq => eq.id === id);
-//       if (index === -1) {
-//         return CommonResponse.error(res, new CustomError({
-//           statusCode: HttpStatusCodes.NOT_FOUND.code,
-//           errorType: "notFound",
-//           customMessage: "Equipamento não encontrado."
-//         }));
-//       }
+import mongoose from "mongoose";
+import { equipamentoSchema, equipamentoUpdateSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
+import { EquipamentoQuerySchema, EquipamentoIdSchema } from "../utils/validators/schemas/zod/querys/EquipamentoQuerySchema.js";
+import EquipamentoService from "../services/EquipamentoService.js";
+import { CommonResponse } from "../utils/helpers/index.js";
 
-//       const usuarioId = req.usuario?.id || "userSimulado";
-//       if (this.equipamentos[index].proprietarioId !== usuarioId) {
-//         return CommonResponse.error(res, new CustomError({
-//           statusCode: HttpStatusCodes.FORBIDDEN.code,
-//           errorType: "forbidden",
-//           customMessage: "Você não tem permissão para editar este equipamento."
-//         }));
-//       }
+class EquipamentoController {
+  constructor() {
+    this.service = new EquipamentoService();
+  }
 
-//       this.equipamentos[index] = {
-//         ...this.equipamentos[index],
-//         ...dadosAtualizados,
-//         status: "inativo" 
-//       };
+  async listar(req, res) {
+    const filtros = EquipamentoQuerySchema.parse(req.query);
+    const resultado = await this.service.buscarEquipamentos(filtros);
+    return CommonResponse.success(res, resultado);
+  }
 
-//       return CommonResponse.success(res, this.equipamentos[index], 200, "Equipamento atualizado. Aguardando aprovação.");
-//     } catch (error) {
-//       return CommonResponse.error(res, error);
-//     }
-//   }
+  async obterPorId(req, res) {
+    const id = EquipamentoIdSchema.parse(req.params.id);
 
-//   // DELETE /equipamentos/:id
-//   async deletar(req, res) {
-//     try {
-//       const { id } = req.params;
-//       EquipamentoIdSchema.parse(id);
+    // fallback para teste: id válido de ObjectId (24 chars hex)
+    const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
 
-//       const index = this.equipamentos.findIndex(eq => eq.id === id);
-//       if (index === -1) {
-//         return CommonResponse.error(res, new CustomError({
-//           statusCode: HttpStatusCodes.NOT_FOUND.code,
-//           errorType: "notFound",
-//           customMessage: "Equipamento não encontrado."
-//         }));
-//       }
-//       const temLocacoesAtivas = false;
-//       if (temLocacoesAtivas) {
-//         return CommonResponse.error(res, new CustomError({
-//           statusCode: HttpStatusCodes.BAD_REQUEST.code,
-//           errorType: "businessRule",
-//           customMessage: "Equipamento com locações ativas não pode ser inativado."
-//         }));
-//       }
+    const equipamento = await this.service.detalharEquipamento(id, usuarioId);
+    return CommonResponse.success(res, equipamento);
+  }
 
-//       this.equipamentos[index].status = "inativo";
+  async criar(req, res) {
+    const dados = equipamentoSchema.parse(req.body);
 
-//       return CommonResponse.success(res, this.equipamentos[index], 200, "Equipamento inativado.");
-//     } catch (error) {
-//       return CommonResponse.error(res, error);
-//     }
-//   }
+    // fallback para teste: id válido de ObjectId
+    const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
+
+    const equipamento = await this.service.criarEquipamento(dados, usuarioId);
+    return CommonResponse.created(res, {
+      mensagem: "Equipamento cadastrado. Aguardando aprovação.",
+      equipamento,
+    });
+  }
+
+  async atualizar(req, res) {
+    const id = EquipamentoIdSchema.parse(req.params.id);
+    const dadosAtualizados = equipamentoUpdateSchema.parse(req.body);
+
+    // fallback para teste: id válido de ObjectId
+    const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
+
+    const equipamento = await this.service.atualizarEquipamento(id, usuarioId, dadosAtualizados);
+    return CommonResponse.success(res, {
+      mensagem: "Equipamento atualizado.",
+      equipamento,
+    });
+  }
+
+  async deletar(req, res) {
+    const id = EquipamentoIdSchema.parse(req.params.id);
+
+    // fallback para teste: id válido de ObjectId
+    const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
+
+    await this.service.inativarEquipamento(id, usuarioId);
+    return CommonResponse.success(res, { mensagem: "Equipamento inativado." });
+  }
 }
 
 export default EquipamentoController;
+
