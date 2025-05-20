@@ -1,36 +1,32 @@
-import Equipamento from '../models/Equipamento.js';
+import EquipamentoRepository from '../repositories/EquipamentoRepository.js';
 import { CustomError, HttpStatusCodes, messages } from '../utils/helpers/index.js';
 
 class EquipamentoService {
   constructor() {
-    // nada aqui
+    this.repository = new EquipamentoRepository();
   }
 
   async criarEquipamento(dados, usuarioId) {
-    const novoEquipamento = new Equipamento({
+    return await this.repository.criar({
       ...dados,
       usuario: usuarioId,
-      status: false, // inativo até aprovação
+      status: false,
     });
-    return await novoEquipamento.save();
   }
 
   async buscarEquipamentos(filtros) {
     const pagina = parseInt(filtros.page) || 1;
     const limite = parseInt(filtros.limit) || 10;
 
-    // Remove page e limit para usar no filtro
     const filtrosQuery = { ...filtros };
     delete filtrosQuery.page;
     delete filtrosQuery.limit;
 
-    // Construir query conforme filtrosQuery (exemplo simples)
     const query = {};
 
     if (filtrosQuery.categoria) query.categoria = filtrosQuery.categoria;
     if (filtrosQuery.status) {
-      if (filtrosQuery.status === 'ativo') query.status = true;
-      else if (filtrosQuery.status === 'inativo') query.status = false;
+      query.status = filtrosQuery.status === 'ativo';
     }
     if (filtrosQuery.minValor || filtrosQuery.maxValor) {
       query.valorDiaria = {};
@@ -38,23 +34,11 @@ class EquipamentoService {
       if (filtrosQuery.maxValor) query.valorDiaria.$lte = Number(filtrosQuery.maxValor);
     }
 
-    const equipamentos = await Equipamento.find(query)
-      .skip((pagina - 1) * limite)
-      .limit(limite)
-      .exec();
-
-    const total = await Equipamento.countDocuments(query);
-
-    return {
-      total,
-      pagina,
-      limite,
-      equipamentos,
-    };
+    return await this.repository.buscarComFiltros(query, pagina, limite);
   }
 
   async detalharEquipamento(id, usuarioId) {
-    const equipamento = await Equipamento.findById(id).exec();
+    const equipamento = await this.repository.buscarPorId(id);
 
     if (!equipamento) {
       throw new CustomError({
@@ -74,7 +58,7 @@ class EquipamentoService {
   }
 
   async atualizarEquipamento(id, usuarioId, dadosAtualizados) {
-    const equipamento = await Equipamento.findById(id).exec();
+    const equipamento = await this.repository.buscarPorId(id);
 
     if (!equipamento) {
       throw new CustomError({
@@ -99,14 +83,11 @@ class EquipamentoService {
       dadosAtualizados.status = false;
     }
 
-    // Atualiza e retorna o novo documento
-    const equipamentoAtualizado = await Equipamento.findByIdAndUpdate(id, dadosAtualizados, { new: true }).exec();
-
-    return equipamentoAtualizado;
+    return await this.repository.atualizarPorId(id, dadosAtualizados);
   }
 
   async inativarEquipamento(id, usuarioId) {
-    const equipamento = await Equipamento.findById(id).exec();
+    const equipamento = await this.repository.buscarPorId(id);
 
     if (!equipamento) {
       throw new CustomError({
@@ -121,9 +102,7 @@ class EquipamentoService {
         customMessage: 'Somente o locador pode inativar o equipamento.',
       });
     }
-
-    // TODO: implementar lógica para verificar locações ativas, se tiver
-    // Por enquanto assume que não tem locações ativas
+    
     const temLocacoesAtivas = false;
 
     if (temLocacoesAtivas) {
@@ -133,10 +112,7 @@ class EquipamentoService {
       });
     }
 
-    equipamento.status = false;
-    await equipamento.save();
-
-    return equipamento;
+    return await this.repository.inativarPorId(id);
   }
 }
 
