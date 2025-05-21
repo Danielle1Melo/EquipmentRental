@@ -33,7 +33,7 @@ class ReservaService {
             });
         }
 
-        if (dataFinalAtrasada <= dataFinal) {
+        if (dataFinalAtrasada >= dataFinal) {
             throw new CustomError({
                 statusCode: 400,
                 errorType: 'invalidData',
