@@ -3,13 +3,17 @@
 import { z } from 'zod';
 import objectIdSchema from './ObjectIdSchema.js';
 import { RotaSchema } from './RotaSchema.js';
-
+import UsuarioValidator from '../../../ValidatorUsuario.js';
 /** Definição da expressão regular para a senha
  * Padrão: 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial
  * Tamanho mínimo: 8 caracteres
  **/
+const validaCPF = UsuarioValidator.validarCPF
 const senhaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-const telefoneRegex = /^(\+55\s?)?(\(?[1-9]{2}\)?\s?)(9?[0-9]{4})-?([0-9]{4})$/
+const telefoneRegex = /^(\+55\s?)?(\(?[1-9]{2}\)?\s?)(9?[0-9]{4})-?([0-9]{4})$/;
+const dataRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/
+const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+( [A-Za-zÀ-ÖØ-öø-ÿ]+)?$/
+
 
 // Validação de array de ObjectId sem duplicações
 const distinctObjectIdArray = z
@@ -20,7 +24,10 @@ const distinctObjectIdArray = z
   );
 
 const UsuarioSchema = z.object({
-  nome: z.string().min(1, 'Campo nome é obrigatório.'),
+  nome: z
+  .string()
+  .min(1, 'Campo nome é obrigatório.')
+  .refine((nomeUsuario) => !nomeUsuario || nomeRegex.test(nomeUsuario), {message: "Nome não pode conter caracteres especiais, nem numeros e nem seguido por dois ou mais espaços."}),
   email: z
     .string()
     .email('Formato de email inválido.')
@@ -45,19 +52,23 @@ const UsuarioSchema = z.object({
     link_foto: z.string().optional(),
     dataNascimento:z
     .string()
-    .date(),
-    cpf:z
+    .refine((data) => !data || dataRegex.test(data), {message: "Formato de data inválido, deve serguir o padrão => ano-mês-dia, Ex: 0000-00-00"})
+    .refine(UsuarioValidator.validarData, {message: "Data de Nascimento inválida"}),
+    CPF:z
     .string()
-    .min(11, { message: "O CPF deve conter 11 caracteres"}),
+    .length(11, { message: "O CPF deve conter 11 caracteres numéricos"})
+    .refine(UsuarioValidator.validarCPF, {message: "CPF inválido"}),
+    status:z
+    .enum(["ativo", "inativo"], {message: `status só pode ser do tipo 'ativo' ou 'inativo'`})
+    .default("inativo"),
     notaMedia:z
     .number()
     .max(10, {message: "A nota não pode ser maior que 10"})
     .default(0)
     .optional(),
     tipoUsuario:z
-    .string()
-    .includes(["ativo", "inativo"],{message: "Usuario só pode ser do tipo 'ativo' ou 'inativo'"})
-    .default("inativo"),
+    .enum(["usuario", "admin"], {message: `tipoUsuario só pode ser do tipo 'usuario' ou 'admin'`})
+    .default("usuario"),
     fotoUsuario:z
     .string()
     .optional(),

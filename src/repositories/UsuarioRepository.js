@@ -110,7 +110,9 @@ class UsuarioRepository {
         }
     }
     async cadastrarUsuario(req){
-        await this.buscarPorCpf()
+
+        const data = await this.model.create(req.body)
+        return data
     }
 }
 export default UsuarioRepository

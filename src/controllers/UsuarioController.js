@@ -39,9 +39,9 @@ class UsuarioController {
     }
     async cadastrarUsuario(req, res){
         console.log("Estou no cadastrarUsuario")
-        const parseDate = await UsuarioSchema(req.body)
-        const data = await this.service.cadastrarUsuario(req.body)
-        return data
+        await UsuarioSchema.parseAsync(req.body)
+        const data = await this.service.cadastrarUsuario(req)
+        return CommonResponse.success(res, data)
     }
 }
 

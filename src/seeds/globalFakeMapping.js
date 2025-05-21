@@ -18,11 +18,11 @@ const fakeMappings = {
         telefone: () => fakebr.phone.phoneNumber(),
         senha: () => fakebr.internet.password(),
         dataNascimento: () => gerarDataAleatoria(),
-        cpf: () => fakebr.br.cpf(),
+        CPF: () => fakebr.br.cpf(),
         notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
-        fotoUsuario: () => fakebr.image.imageUrl(),
+        fotoUsuario: () => fakebr.internet.avatar(),
         
     }, 
 Endereco: {
@@ -33,7 +33,7 @@ Endereco: {
     endeCep: () => fakebr.address.zipCode(),
     endeCidade: () => fakebr.address.city(),
     endeComplemento: () => fakebr.address.secondaryAddress(),
-    usuario: [{_id: new mongoose.Types.ObjectId().to}],
+    usuario: [{_id: new mongoose.Types.ObjectId().toString()}],
    
 },
 
@@ -46,14 +46,14 @@ Endereco: {
       enderecoEquipamento: () => fakebr.address.streetAddress(),
       status: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
       equipamento: [{_id: new mongoose.Types.ObjectId().toString}],
-      usuario: [{_id: new mongoose.Types.ObjectId().toString}],
+      usuario: [{_id: new mongoose.Types.ObjectId().toString()}],
     }, 
 
     Avaliacao: {
       nota: () => fakebr.random.number({ min: 1, max: 5 }),
       descricao: () => fakebr.lorem.sentence(),
       dataAvaliacao: () => fakebr.date.past(),
-      usuario: [{_id: new mongoose.Types.ObjectId().to}]
+      usuario: [{_id: new mongoose.Types.ObjectId().toString()}]
     }, 
 
     Equipamento: {

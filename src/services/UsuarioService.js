@@ -1,5 +1,5 @@
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
-import UsuarioRepository from '../repository/UsuarioRepository.js';
+import UsuarioRepository from '../repositories/UsuarioRepository.js';
 
 class UsuarioService {
     constructor(){
@@ -33,8 +33,9 @@ class UsuarioService {
     async validateEmail(email, id = null){
         const usuarioExistente = await this.repository.buscarPorEmail(email)
     }
-    async cadastrarUsuario(data){
-        
+    async cadastrarUsuario(req){
+        const data = await this.repository.cadastrarUsuario(req)
+        return data
     }
 }
 export default UsuarioService

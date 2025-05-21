@@ -34,7 +34,7 @@ async function SeedUsuario(){
         const telefone = fake.telefone();
         const senha = senhaHash;
         const dataNascimento = fake.dataNascimento();
-        const CPF = fake.cpf(); // Geração de CPF fictício
+        const CPF = fake.CPF(); // Geração de CPF fictício
         const notaMedia = fake.notaMediaAvaliacao();
         const status = fake.status();
         const tipoUsuario = fake.tipoUsuario();
