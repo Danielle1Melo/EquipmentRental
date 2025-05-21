@@ -16,5 +16,5 @@ export function gerarDataAleatoria(idadeMinima=18, idadeMaxima=90) {
   // Cria a data com o timestamp aleatório
   const dataAleatoria = new Date(timestampAleatorio);
 
-  return dataAleatoria.toISOString().split("T")[0];
+  return new Date(dataAleatoria.getFullYear(), dataAleatoria.getMonth(), dataAleatoria.getDate())
 }

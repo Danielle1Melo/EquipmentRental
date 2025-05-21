@@ -3,6 +3,7 @@ import UsuarioModel from "../models/Usuario.js"
 import AvaliacaoModel from "../models/Avaliacao.js"
 import CustomError from "../utils/helpers/CustomError.js"
 import messages from "../utils/helpers/messages.js"
+import UsuarioFilterBuilder from "./filters/UsuarioFilterBuilder.js"
 
 class UsuarioRepository {
     constructor({
@@ -19,10 +20,16 @@ class UsuarioRepository {
         }
 
         // TODO: Fazer opções de consulta com filtros
-        const {nome, email, status, telefone, cpf, nota, tipoUsuario, notaMediaAvaliacao, dataNascimento} = req.params
-
-
-        const data = await this.model.find()
+        const { nome, email, status, tipoUsuario } = req.query
+        const filterBuilder = new UsuarioFilterBuilder()
+        .comNome(nome, '')
+        .comEmail(email, '')
+        .comStatus(status, '')
+        .comTipoUsuario(tipoUsuario, '')
+        
+        let filtros = filterBuilder.build()
+        const data = await this.model.find(filtros)
+        console.log(data)
         return data
 
     }
