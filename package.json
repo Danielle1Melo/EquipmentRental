@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "seed": "node src/seeds/seeds.js",
-    "test": "",
+    "test": "jest --coverage --detectOpenHandles",
     "start": "node server.js"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "express": "^4.21.1",
     "faker-br": "^0.4.1",
     "fs": "^0.0.1-security",
+    "jest": "^29.7.0",
     "mongodb": "^6.7.0",
     "mongoose": "^8.7.1",
     "mongoose-paginate-v2": "^1.8.5",
@@ -31,7 +32,13 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
     "@faker-js/faker": "^9.7.0",
+    "@jest/globals": "^29.7.0",
+    "babel-jest": "^29.7.0",
+    "eslint": "^9.27.0",
+    "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.9"
   }
 }
