@@ -72,21 +72,21 @@ class EquipamentoService {
       });
     }
 
-    // if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
-    //   throw new CustomError({
-    //     statusCode: HttpStatusCodes.FORBIDDEN.code,
-    //     customMessage: 'Somente o locador pode atualizar o equipamento.',
-    //   });
-    // }    
+  // if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
+  //   throw new CustomError({
+  //     statusCode: HttpStatusCodes.FORBIDDEN.code,
+  //     customMessage: 'Somente o locador pode atualizar o equipamento.',
+  //   });
+  // }
 
-    const camposCriticos = ['nome', 'descricao', 'valorDiaria', 'categoria'];
-    const mudouCampoCritico = camposCriticos.some(
-      (campo) => campo in dadosAtualizados && dadosAtualizados[campo] !== equipamento[campo]
-    );
+    // const camposCriticos = ['nome', 'descricao', 'valorDiaria', 'categoria'];
+    // const mudouCampoCritico = camposCriticos.some(
+    //   (campo) => campo in dadosAtualizados && dadosAtualizados[campo] !== equipamento[campo]
+    // );
 
-    if (mudouCampoCritico) {
-      dadosAtualizados.status = false;
-    }
+    // if (mudouCampoCritico) {
+    //   dadosAtualizados.status = false;
+    // }
 
     return await this.repository.atualizarPorId(id, dadosAtualizados);
   }
@@ -101,13 +101,12 @@ class EquipamentoService {
       });
     }
 
-    // if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
-    //   throw new CustomError({
-    //     statusCode: HttpStatusCodes.FORBIDDEN.code,
-    //     customMessage: 'Somente o locador pode inativar o equipamento.',
-    //   });
-    // }
-    
+  // if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
+  //   throw new CustomError({
+  //     statusCode: HttpStatusCodes.FORBIDDEN.code,
+  //     customMessage: 'Somente o locador pode inativar o equipamento.',
+  //   });
+  // }
     const temLocacoesAtivas = false;
 
     if (temLocacoesAtivas) {

@@ -57,19 +57,28 @@ Endereco: {
       dataAvaliacao: () => fakebr.date.past(),
       usuario: [{_id: new mongoose.Types.ObjectId().to}]
     }, 
+Equipamento: {
+  nomeEquipamento: () => fakebr.random.arrayElement([
+    "Furadeira Bosch",
+    "Parafusadeira Makita",
+    "Serra Circular Dewalt",
+    "Lixadeira Orbital Black+Decker",
+    "Compressor Schulz",
+    "Multímetro Digital ICEL",
+    "Betoneira CSM 400L",
+    "Soldador Inversor Vonder"
+  ]),
+  descricao: () => fakebr.lorem.sentence(),
+  valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
+  quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
+  categoria: () => fakebr.commerce.department(),
+  statusEquipamento: () => fakebr.random.boolean(), 
+  usuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
+  foto: () => fakebr.image.imageUrl(),
+  notaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
+  endereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
+}
 
-    Equipamento: {
-      nome: () => fakebr.commerce.productName(),
-      descricao: () => fakebr.lorem.sentence(),
-      valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
-      quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
-      categoria: () => fakebr.commerce.department(),
-      status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
-      usuario: [{_id: new mongoose.Types.ObjectId().to}],
-      foto: () => fakebr.image.imageUrl(),
-      notaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
-      endereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
-    }
 }
 
 

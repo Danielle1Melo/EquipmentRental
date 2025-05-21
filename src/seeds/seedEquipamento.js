@@ -28,12 +28,12 @@ async function SeedEquipamentos(usuario, enderecos, avaliacoes) {
 
     for(let i = 0; i < usuario.length; i++){
     equipamentos.push({
-      nome: fake.nome(),
+      nome: fake.nomeEquipamento(),
       descricao:fake.descricao(),
       valorDiaria: fake.valorDiaria(),
       quantidadeDisponivel:fake.quantidadeDisponivel(),
       categoria: categoriasValidas[Math.floor(Math.random() * categoriasValidas.length)],
-      status: fake.status(),
+      status: fake.statusEquipamento(),
       usuario:{_id:usuario[i]._id},
       endereco: { _id: enderecos[i]._id },
       foto: fake.foto(),
