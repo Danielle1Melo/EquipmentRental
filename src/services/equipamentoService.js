@@ -47,12 +47,17 @@ class EquipamentoService {
       });
     }
 
-    if (!equipamento.status && equipamento.usuario.toString() !== usuarioId) {
+    if (
+      !equipamento.status &&
+      equipamento.usuario &&
+      equipamento.usuario.toString() !== usuarioId
+    ) {
       throw new CustomError({
         statusCode: HttpStatusCodes.FORBIDDEN.code,
         customMessage: 'Equipamento não disponível para visualização.',
       });
     }
+    
 
     return equipamento;
   }
@@ -67,12 +72,12 @@ class EquipamentoService {
       });
     }
 
-    if (equipamento.usuario.toString() !== usuarioId) {
-      throw new CustomError({
-        statusCode: HttpStatusCodes.FORBIDDEN.code,
-        customMessage: 'Somente o locador pode atualizar o equipamento.',
-      });
-    }
+    // if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
+    //   throw new CustomError({
+    //     statusCode: HttpStatusCodes.FORBIDDEN.code,
+    //     customMessage: 'Somente o locador pode atualizar o equipamento.',
+    //   });
+    // }    
 
     const camposCriticos = ['nome', 'descricao', 'valorDiaria', 'categoria'];
     const mudouCampoCritico = camposCriticos.some(
@@ -96,12 +101,12 @@ class EquipamentoService {
       });
     }
 
-    if (equipamento.usuario.toString() !== usuarioId) {
-      throw new CustomError({
-        statusCode: HttpStatusCodes.FORBIDDEN.code,
-        customMessage: 'Somente o locador pode inativar o equipamento.',
-      });
-    }
+    // if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
+    //   throw new CustomError({
+    //     statusCode: HttpStatusCodes.FORBIDDEN.code,
+    //     customMessage: 'Somente o locador pode inativar o equipamento.',
+    //   });
+    // }
     
     const temLocacoesAtivas = false;
 
