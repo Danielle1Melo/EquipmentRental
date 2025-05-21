@@ -33,5 +33,8 @@ class UsuarioService {
     async validateEmail(email, id = null){
         const usuarioExistente = await this.repository.buscarPorEmail(email)
     }
+    async cadastrarUsuario(data){
+        
+    }
 }
 export default UsuarioService

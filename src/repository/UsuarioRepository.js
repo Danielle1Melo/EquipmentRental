@@ -109,5 +109,8 @@ class UsuarioRepository {
             })
         }
     }
+    async cadastrarUsuario(req){
+        await this.buscarPorCpf()
+    }
 }
 export default UsuarioRepository

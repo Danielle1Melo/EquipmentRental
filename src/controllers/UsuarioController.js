@@ -1,7 +1,7 @@
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
 import UsuarioService from '../services/UsuarioService.js';
 import { UsuarioIdSchema, UsuarioQuerySchema } from '../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
-import { UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
+import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
 
 class UsuarioController {
     constructor(){
@@ -36,6 +36,12 @@ class UsuarioController {
         console.log("BODY:", parseData)
         const data = await this.service.updateUsuario(id, parseData)
         return CommonResponse.success(res, data)
+    }
+    async cadastrarUsuario(req, res){
+        console.log("Estou no cadastrarUsuario")
+        const parseDate = await UsuarioSchema(req.body)
+        const data = await this.service.cadastrarUsuario(req.body)
+        return data
     }
 }
 
