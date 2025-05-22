@@ -2,6 +2,7 @@ import DbConnect from './config/Dbconnect.js ';
 import routes from './routes/index.js';
 import CommonResponse from './utils/helpers/CommonResponse.js';
 import express from "express";  
+import errorHandler from './utils/helpers/errorHandler.js';
 
 const app = express();
 
@@ -20,5 +21,7 @@ app.use((req, res, next) => {
         [{ message: 'Rota não encontrada.' }]
     );
 });
+
+app.use(errorHandler);
 
 export default app;
