@@ -1,4 +1,4 @@
-const {it, expect, describe} = require ('@jest/globals');
+import {it, describe} from '@jest/globals'
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import Usuario from '../../models/Usuario';

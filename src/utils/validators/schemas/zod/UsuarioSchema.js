@@ -12,7 +12,7 @@ const validaCPF = UsuarioValidator.validarCPF
 const senhaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const telefoneRegex = /^(\+55\s?)?(\(?[1-9]{2}\)?\s?)(9?[0-9]{4})-?([0-9]{4})$/;
 const dataRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/
-const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+( [A-Za-zÀ-ÖØ-öø-ÿ]+)?$/
+const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+( [A-Za-zÀ-ÖØ-öø-ÿ]+)*$/
 
 
 // Validação de array de ObjectId sem duplicações
