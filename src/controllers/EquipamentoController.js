@@ -39,7 +39,7 @@ async criar(req, res) {
     const id = EquipamentoIdSchema.parse(req.params.id);
     const dadosAtualizados = equipamentoUpdateSchema.parse(req.body);
 
-    const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
+    const usuarioId = req.headers['user-id'] || "64f50c786bfa9c0012345678";
 
     const equipamento = await this.service.atualizarEquipamento(id, usuarioId, dadosAtualizados);
     return CommonResponse.success(res, {
@@ -50,7 +50,7 @@ async criar(req, res) {
 
 async deletar(req, res) {
   const id = EquipamentoIdSchema.parse(req.params.id);
-  const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
+  const usuarioId = req.headers['user-id'] || "64f50c786bfa9c0012345678";
 
   await this.service.excluirEquipamento(id, usuarioId);
   return CommonResponse.success(res, { mensagem: "Equipamento excluído com sucesso." });
