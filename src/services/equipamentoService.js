@@ -1,16 +1,28 @@
 import EquipamentoRepository from '../repositories/EquipamentoRepository.js';
 import { CustomError, HttpStatusCodes, messages } from '../utils/helpers/index.js';
+import Avaliacao from '../models/Avaliacao.js';
 
 class EquipamentoService {
   constructor() {
     this.repository = new EquipamentoRepository();
   }
 
-  async criarEquipamento(dados, usuarioId) {
+  async criarEquipamento(dados) {
+
+    // usuario fixo para simular
+    const usuario = { _id: "682520e98e38a049ac2ac569" };
+
+    //id de avaliação para teste
+    const avaliacaoIdTeste = "682520e98e38a049ac2ac570";
+
+    const statusAleatorio = Math.random() < 0.5;
+
+
     return await this.repository.criar({
       ...dados,
-      usuario: usuarioId,
-      status: false,
+      usuario,
+      avaliacao: avaliacaoIdTeste,
+      status: statusAleatorio,
     });
   }
 
@@ -57,7 +69,7 @@ class EquipamentoService {
         customMessage: 'Equipamento não disponível para visualização.',
       });
     }
-    
+
 
     return equipamento;
   }
@@ -72,12 +84,12 @@ class EquipamentoService {
       });
     }
 
-  // if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
-  //   throw new CustomError({
-  //     statusCode: HttpStatusCodes.FORBIDDEN.code,
-  //     customMessage: 'Somente o locador pode atualizar o equipamento.',
-  //   });
-  // }
+    if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
+      throw new CustomError({
+        statusCode: HttpStatusCodes.FORBIDDEN.code,
+        customMessage: 'Somente o locador pode atualizar o equipamento.',
+      });
+    }
 
     // const camposCriticos = ['nome', 'descricao', 'valorDiaria', 'categoria'];
     // const mudouCampoCritico = camposCriticos.some(
@@ -91,7 +103,7 @@ class EquipamentoService {
     return await this.repository.atualizarPorId(id, dadosAtualizados);
   }
 
-  async inativarEquipamento(id, usuarioId) {
+  async excluirEquipamento(id, usuarioId) {
     const equipamento = await this.repository.buscarPorId(id);
 
     if (!equipamento) {
@@ -100,23 +112,23 @@ class EquipamentoService {
         customMessage: messages.error.resourceNotFound('Equipamento'),
       });
     }
+    if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
+      throw new CustomError({
+        statusCode: HttpStatusCodes.FORBIDDEN.code,
+        customMessage: 'Somente o locador pode realizar essa operação.',
+      });
+    }
 
-  // if (!equipamento.usuario || equipamento.usuario.toString() !== usuarioId) {
-  //   throw new CustomError({
-  //     statusCode: HttpStatusCodes.FORBIDDEN.code,
-  //     customMessage: 'Somente o locador pode inativar o equipamento.',
-  //   });
-  // }
     const temLocacoesAtivas = false;
 
     if (temLocacoesAtivas) {
       throw new CustomError({
         statusCode: HttpStatusCodes.CONFLICT.code,
-        customMessage: 'Não é possível inativar equipamento com locações ativas.',
+        customMessage: 'Não é possível excluir equipamento com locações ativas.',
       });
     }
 
-    return await this.repository.inativarPorId(id);
+    return await this.repository.excluirPorId(id);
   }
 }
 

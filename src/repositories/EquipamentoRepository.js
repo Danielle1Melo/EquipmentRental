@@ -14,9 +14,9 @@ class EquipamentoRepository {
     return await Equipamento.findByIdAndUpdate(id, dados, { new: true }).exec();
   }
 
-  async inativarPorId(id) {
-    return await Equipamento.findByIdAndUpdate(id, { status: false }, { new: true }).exec();
-  }
+async excluirPorId(id) {
+  return await Equipamento.findByIdAndDelete(id).exec();
+}
 
   async buscarComFiltros(query, pagina = 1, limite = 10) {
     const equipamentos = await Equipamento.find(query)

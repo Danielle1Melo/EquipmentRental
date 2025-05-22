@@ -24,17 +24,16 @@ class EquipamentoController {
     return CommonResponse.success(res, equipamento);
   }
 
-  async criar(req, res) {
-    const dados = equipamentoSchema.parse(req.body);
+async criar(req, res) {
+  const dados = equipamentoSchema.parse(req.body);
 
-    const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
+  const equipamento = await this.service.criarEquipamento(dados);
 
-    const equipamento = await this.service.criarEquipamento(dados, usuarioId);
-    return CommonResponse.created(res, {
-      mensagem: "Equipamento cadastrado. Aguardando aprovação.",
-      equipamento,
-    });
-  }
+  return CommonResponse.created(res, {
+    mensagem: "Equipamento cadastrado. Aguardando aprovação.",
+    equipamento,
+  });
+}
 
   async atualizar(req, res) {
     const id = EquipamentoIdSchema.parse(req.params.id);
@@ -49,14 +48,13 @@ class EquipamentoController {
     });
   }
 
-  async deletar(req, res) {
-    const id = EquipamentoIdSchema.parse(req.params.id);
+async deletar(req, res) {
+  const id = EquipamentoIdSchema.parse(req.params.id);
+  const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
 
-    const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
-
-    await this.service.inativarEquipamento(id, usuarioId);
-    return CommonResponse.success(res, { mensagem: "Equipamento inativado." });
-  }
+  await this.service.excluirEquipamento(id, usuarioId);
+  return CommonResponse.success(res, { mensagem: "Equipamento excluído com sucesso." });
+}
 }
 
 export default EquipamentoController;
