@@ -35,13 +35,13 @@ class UsuarioController {
         const parseData = await UsuarioUpdateSchema.parseAsync(req.body)
         console.log("BODY:", parseData)
         const data = await this.service.updateUsuario(id, parseData)
-        return CommonResponse.success(res, data)
+        return CommonResponse.success(res, data, 200, 'Usuário atualizado com sucesso!')
     }
     async cadastrarUsuario(req, res){
         console.log("Estou no cadastrarUsuario")
         await UsuarioSchema.parseAsync(req.body)
         const data = await this.service.cadastrarUsuario(req)
-        return CommonResponse.success(res, data)
+        return CommonResponse.success(res, data, 201, 'Usuário criado com sucesso!')
     }
 }
 

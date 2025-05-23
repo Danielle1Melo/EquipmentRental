@@ -1,123 +1,142 @@
-import UsuarioController from '../../controllers/UsuarioController.js';
-import UsuarioService from '../../services/UsuarioService.js';
-import { CommonResponse } from '../../utils/helpers/index.js';
-import { describe, test, it, beforeEach } from '@jest/globals';
+import { beforeAll, beforeEach, describe, expect, jest } from "@jest/globals";
+import UsuarioController from "../../controllers/UsuarioController.js";
+import UsuarioService from "../../services/UsuarioService.js";
+import { CommonResponse, messages } from "../../utils/helpers/index.js";
+import { UsuarioIdSchema, UsuarioQuerySchema } from "../../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js";
+import { UsuarioSchema } from "../../utils/validators/schemas/zod/UsuarioSchema.js";
+import { UsuarioUpdateSchema } from "../../utils/validators/schemas/zod/UsuarioSchema.js";
+import { error, query } from "winston";
+import { errors } from "mongodb-memory-server";
 
-/**
- * @jest-environment node
- */
-jest.mock('../../services/UsuarioService.js');
-jest.mock('../../utils/helpers/index.js', () => ({
-    CommonResponse: {
-        success: jest.fn(),
-    },
-}));
+jest.mock("../../services/UsuarioService.js")
 
 describe('UsuarioController', () => {
-    let controller;
-    let req;
-    let res;
+    let req, res, usuarioController;
 
-    beforeEach(() => {
-        controller = new UsuarioController();
-        req = { params: {}, query: {}, body: {} };
-        res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-    });
-    it('listar deve chamar o serviço listar corretamente e retornar todos os usuários', async () => {
-        controller.service.listar = jest.fn().mockResolvedValue([
-            { id: '682e08436c8fce3d955960f9', nome: 'Teste' },
-            { id: '682e08436c8fce3d955960fa', nome: 'Teste Dois' }
-        ]);
-        req.params = undefined
-        await controller.listar(req, res);
-
-        expect(controller.service.listar).toHaveBeenCalledWith(req);
-        expect(CommonResponse.success).toHaveBeenCalledWith(res, [
-            { id: '682e08436c8fce3d955960f9', nome: 'Teste' },
-            { id: '682e08436c8fce3d955960fa', nome: 'Teste Dois' }
-        ]);
-    });
-
-    it('listar deve chamar o serviço listar corretamente ao receber params', async () => {
-        req.params = { id: '682e08436c8fce3d955960f9' }; 
-        controller.service.listar = jest.fn().mockResolvedValue([
-            { id: '682e08436c8fce3d955960f9', nome: 'Teste' }
-        ]);
-
-        req.query = undefined
-        await controller.listar(req, res);
-
-        expect(controller.service.listar).toHaveBeenCalledWith(req);
-        expect(CommonResponse.success).toHaveBeenCalledWith(res, [
-            { id: '682e08436c8fce3d955960f9', nome: 'Teste' }
-        ]);
-    });
-
-    it('listar deve chamar o serviço listar corretamente ao receber queries', async () => {
-        req.query = {
-            nome: "Genuário",
-            email: "genuario@gmail.com",
-            status: "ativo",
-            tipoUsuario: "usuario"
+    beforeEach(() =>{
+        req = {params: {}, body: {}, query: {}}
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn().mockReturnThis()
         };
-        controller.service.listar = jest.fn().mockResolvedValue([
-            { id: '682e08436c8fce3d955960f9', nome: 'Teste' }
-        ]);
-
-        await controller.listar(req, res);
-
-        expect(controller.service.listar).toHaveBeenCalledWith(req);
-        expect(CommonResponse.success).toHaveBeenCalledWith(res, [
-            { id: '682e08436c8fce3d955960f9', nome: 'Teste' }
-        ]);
+        UsuarioService.mockClear();
+        usuarioController = new UsuarioController()
     });
 
-    it('cadastrarUsuario deve chamar o serviço corretamente', async () => {
-        const dataUser = {
-            nome: "Fulano Beltrano Silvano Gilbertano",
-            email: "fulano@gmail.com",
-            telefone: "+55 (69) 9999-8888",
-            senha: "Fulano@123",
-            dataNascimento: "2000-01-01",
-            CPF: "54425888065",
+    it('deve listar todos os usuarios', async() => {
+        const mockData = [{
+            id: '67959501ea0999e0a0fa9f58',
+            nome: 'Usuario'
+        }]
+        req.params = undefined
+        usuarioController.service.listar.mockResolvedValue(mockData)
+        await usuarioController.listar(req, res)
+        expect(usuarioController.service.listar).toHaveBeenCalledTimes(1)
+        expect(usuarioController.service.listar).toHaveBeenCalledWith(req)
+        expect(res.status).toHaveBeenCalledWith(200)
+        
+        expect(res.json).toHaveBeenCalledWith({
+            
+            data: mockData,
+            errors: [],
+            message: "Requisição bem-sucedida",
+        })
+    });
+    it('deve listar um usuario por id com params', async( )=> {
+        const mockData = {id: '67959501ea0999e0a0fa9f58',
+            nome: 'Usuario'}
+        req.params = {id:'67959501ea0999e0a0fa9f58'}
+        req.query = undefined
+        usuarioController.service.listar.mockResolvedValue(mockData)
+        await usuarioController.listar(req, res)
+        expect(usuarioController.service.listar).toHaveBeenCalledTimes(1)
+        expect(usuarioController.service.listar).toHaveBeenCalledWith(req)
+        expect(res.status).toHaveBeenCalledWith(200)
+        expect(res.json).toHaveBeenCalledWith({
+            data:mockData,
+            errors:[],
+            message: "Requisição bem-sucedida"
+        })
+    });
+    it('deve listar um usuário pelas queries', async()=>{
+        const mockData = [{
+            id: '67959501ea0999e0a0fa9f58',
+            nome: 'Usuario',
+            email: 'usuario@gmail.com'
+        },{
+            id: '67959501ea0999e0a0fa9f59',
+            nome: 'Usuario Dois',
+            email: 'usuario2@gmail.com'
+        }]
+        req.query = {email: 'usuario@gmail.com'}
+        usuarioController.service.listar.mockResolvedValue(mockData.find(user => user.email == req.query.email))
+        await usuarioController.listar(req, res)
+        expect(usuarioController.service.listar).toHaveBeenCalledTimes(1)
+        expect(usuarioController.service.listar).toHaveBeenCalledWith(req)
+        expect(res.status).toHaveBeenCalledWith(200)
+        expect(res.json).toHaveBeenCalledWith({
+            data:mockData[0],
+            errors: [],
+            message: "Requisição bem-sucedida"
+        })
+    });
+    it('deve cadastrar um usuário pelo body', async() => {
+        req.body = {
+            nome: "TESTE",
+            email: "teste1234@gmail.com",
+            telefone: "(69) 99999-8888",
+            senha: "Laravel@123",
+            dataNascimento: "2000-08-08",
+            CPF: "96945788253",
             status: "ativo",
             tipoUsuario: "usuario",
-            fotoUsuario: "https://s3.amazonaws.com/uifaces/faces/twitter/johannesneu/128.jpg"
-        };
-        req.body = dataUser;
-        controller.service.cadastrarUsuario = jest.fn().mockResolvedValue(dataUser);
+            fotoUsuario: "http://lorempixel.com/640/480"
+        }
+            usuarioController.service.cadastrarUsuario.mockResolvedValue({...req.body, id:'67959501ea0999e0a0fa9f59'})
+            await usuarioController.cadastrarUsuario(req, res)
+            expect(usuarioController.service.cadastrarUsuario).toHaveBeenCalledTimes(1)
+            expect(usuarioController.service.cadastrarUsuario).toHaveBeenCalledWith(req)
+            expect(res.status).toHaveBeenCalledWith(201)
+            expect(res.json).toHaveBeenCalledWith({
+                data: {...req.body, id:'67959501ea0999e0a0fa9f59'},
+                errors:[],
+                message: 'Usuário criado com sucesso!'
+            })
 
-        await controller.cadastrarUsuario(req, res);
-
-        expect(controller.service.cadastrarUsuario).toHaveBeenCalledWith(req);
-        expect(CommonResponse.success).toHaveBeenCalledWith(res, dataUser);
     });
+    it('deve atualizar um usuário pelo id recibo no req.params', async () => {
+        const mockUsuario = {
+            id: '67959501ea0999e0a0fa9f59',
+            nome: "TESTE",
+            email: "teste1234@gmail.com",
+            telefone: "(69) 99999-8888",
+            senha: "Laravel@123",
+            dataNascimento: "2000-08-08",
+            CPF: "96945788253",
+            status: "ativo",
+            tipoUsuario: "usuario",
+            fotoUsuario: "http://lorempixel.com/640/480"
+        }
+        req.params = {id:'67959501ea0999e0a0fa9f59'}
+        req.body = {nome: "Nome Alterado Com Sucesso",
+                    email: "emailalteradocomsucesso@gmail.com",
+                    telefone: "(69) 99999-9999"
+        }
+        usuarioController.service.updateUsuario.mockResolvedValue({...mockUsuario, ...req.body})
+        await usuarioController.updateUsuario(req, res)
+        expect(usuarioController.service.updateUsuario).toHaveBeenCalledTimes(1)
+        expect(usuarioController.service.updateUsuario).toHaveBeenCalledWith(req.params.id, req.body)
+        expect(res.status).toHaveBeenCalledWith(200)
+        expect(res.json).toHaveBeenCalledWith({
+            data: {...mockUsuario, ...req.body},
+            errors: [],
+            message: "Usuário atualizado com sucesso!"
+        })
 
-    it('updateUsuario deve chamar o serviço corretamente', async () => {
-        const updateUser = {
-            nome: "Novo Nome",
-            email: "novo@gmail.com",
-            telefone: "+55 (69) 99999-9999"
-        };
-        req.body = updateUser;
-        req.params = { id: '682e08436c8fce3d955960f9' };
-        controller.service.updateUsuario = jest.fn().mockResolvedValue(updateUser);
-
-        await controller.updateUsuario(req, res);
-
-        expect(controller.service.updateUsuario).toHaveBeenCalledWith(req.params.id, updateUser);
-        expect(CommonResponse.success).toHaveBeenCalledWith(res, updateUser);
     });
-    
-    it('updateUsuario deve retornar ao receber id undefined', async() =>{
-        const updateUser = {
-            nome: "Novo Nome",
-            email: "novo@gmail.com",
-            telefone: "+55 (69) 99999-9999"
-        };
-        req.body = updateUser;
+    it('deve retornar um erro ao tentar atualizar o usuário sem id', async() => {
         req.params = undefined
-        await expect(controller.updateUsuario(req, res)).rejects.toThrowErrorMatchingInlineSnapshot(`
+        await expect(usuarioController.updateUsuario(req, res)).rejects.toThrowErrorMatchingInlineSnapshot(`
 "[
   {
     "code": "invalid_type",
@@ -127,6 +146,6 @@ describe('UsuarioController', () => {
     "message": "Required"
   }
 ]"
-`);
+`)
     })
 });
