@@ -2,60 +2,67 @@ import mongoose from "mongoose";
 import { equipamentoSchema, equipamentoUpdateSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
 import { EquipamentoQuerySchema, EquipamentoIdSchema } from "../utils/validators/schemas/zod/querys/EquipamentoQuerySchema.js";
 import EquipamentoService from "../services/EquipamentoService.js";
-import { CommonResponse } from "../utils/helpers/index.js";
+import { CommonResponse, asyncWrapper } from "../utils/helpers/index.js";
 
 class EquipamentoController {
   constructor() {
     this.service = new EquipamentoService();
   }
 
-  async listar(req, res) {
-    const filtros = EquipamentoQuerySchema.parse(req.query);
-    const resultado = await this.service.buscarEquipamentos(filtros);
-    return CommonResponse.success(res, resultado);
-  }
+  listar = asyncWrapper(async (req, res) => {
+    const query = req.query || {};
+    if (Object.keys(query).length !== 0) {
+      await EquipamentoQuerySchema.parseAsync(query);
+    }
 
-  async obterPorId(req, res) {
-    const id = EquipamentoIdSchema.parse(req.params.id);
+    const data = await this.service.buscarEquipamentos(query);
+    return CommonResponse.success(res, data);
+  });
 
-    const usuarioId = req.user?.id || "64f50c786bfa9c0012345678";
+  obterPorId = asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    EquipamentoIdSchema.parse(id);
 
+   const usuarioId = "682520e98e38a049ac569";
     const equipamento = await this.service.detalharEquipamento(id, usuarioId);
     return CommonResponse.success(res, equipamento);
-  }
+  });
 
-async criar(req, res) {
-  const dados = equipamentoSchema.parse(req.body);
+  criar = asyncWrapper(async (req, res) => {
+    const dados = equipamentoSchema.parse(req.body);
+    const equipamento = await this.service.criarEquipamento(dados);
 
-  const equipamento = await this.service.criarEquipamento(dados);
+    return CommonResponse.created(res, {
+      mensagem: 'Equipamento cadastrado. Aguardando aprovação.',
+      equipamento,
+    });
+  });
 
-  return CommonResponse.created(res, {
-    mensagem: "Equipamento cadastrado. Aguardando aprovação.",
-    equipamento,
+  atualizar = asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    EquipamentoIdSchema.parse(id);
+
+    const dadosAtualizados = equipamentoUpdateSchema.parse(req.body);
+
+    const equipamento = await this.service.atualizarEquipamento(id, dadosAtualizados);
+
+    return CommonResponse.success(res, {
+      mensagem: 'Equipamento atualizado com sucesso.',
+      equipamento,
+    });
+  });
+
+  deletar = asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    EquipamentoIdSchema.parse(id);
+
+
+    await this.service.excluirEquipamento(id);
+
+    return CommonResponse.success(res, {
+      mensagem: 'Equipamento excluído com sucesso.',
+    });
   });
 }
 
-  async atualizar(req, res) {
-    const id = EquipamentoIdSchema.parse(req.params.id);
-    const dadosAtualizados = equipamentoUpdateSchema.parse(req.body);
-
-    const usuarioId = req.headers['user-id'] || "64f50c786bfa9c0012345678";
-
-    const equipamento = await this.service.atualizarEquipamento(id, usuarioId, dadosAtualizados);
-    return CommonResponse.success(res, {
-      mensagem: "Equipamento atualizado.",
-      equipamento,
-    });
-  }
-
-async deletar(req, res) {
-  const id = EquipamentoIdSchema.parse(req.params.id);
-  const usuarioId = req.headers['user-id'] || "64f50c786bfa9c0012345678";
-
-  await this.service.excluirEquipamento(id, usuarioId);
-  return CommonResponse.success(res, { mensagem: "Equipamento excluído com sucesso." });
-}
-}
-
 export default EquipamentoController;
-

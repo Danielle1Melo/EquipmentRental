@@ -58,7 +58,7 @@ Endereco: {
       usuario: [{_id: new mongoose.Types.ObjectId().to}]
     }, 
 Equipamento: {
-  nomeEquipamento: () => fakebr.random.arrayElement([
+  equiNome: () => fakebr.random.arrayElement([
     "Furadeira Bosch",
     "Parafusadeira Makita",
     "Serra Circular Dewalt",
@@ -68,15 +68,15 @@ Equipamento: {
     "Betoneira CSM 400L",
     "Soldador Inversor Vonder"
   ]),
-  descricao: () => fakebr.lorem.sentence(),
-  valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
-  quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
-  categoria: () => fakebr.commerce.department(),
-  statusEquipamento: () => fakebr.random.boolean(), 
-  usuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
-  foto: () => fakebr.image.imageUrl(),
-  notaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
-  endereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
+  equiDescricao: () => fakebr.lorem.sentence(),
+  equiValorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
+  equiQuantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
+  equiCategoria: () => fakebr.commerce.department(),
+  equiStatus: () => fakebr.random.boolean(), 
+  equiUsuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
+  equiFoto: () => fakebr.image.imageUrl(),
+  equiNotaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
+  equiEndereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
 }
 
 }
