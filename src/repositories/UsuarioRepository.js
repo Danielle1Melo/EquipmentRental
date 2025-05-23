@@ -99,14 +99,12 @@ class UsuarioRepository {
         // console.log("Estou no buscarPorCpf no UsuarioRepository")
         const documento = await this.model.findOne({CPF:cpf, _id:{$ne: id}})
         console.log(documento)
-        console.log("AQUI O CPF", cpf)
         if(documento){
-            console.log()
             throw new CustomError({
                 statusCode: 409,
                 errorType:"Conflict",
                 details:[],
-                customMessage: messages.error.resourceConflict("Usuário")
+                customMessage: messages.error.resourceConflict("Usuário", "CPF")
 
             })
         }
