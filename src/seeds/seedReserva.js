@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Reserva from "../models/Reserva.js";
-import DbConnect from "../config/DbConnect.js";
-import getGlobalFakeMapping from "./globalFakeMapping.js";
+import DbConnect from "../config/Dbconnect.js";
+import getGlobalFakeMapping from "./globalFakemapping.js";
 import Usuario from "../models/Usuario.js";
 import Equipamento from "../models/Equipamento.js";
 
@@ -36,7 +36,7 @@ async function SeedReserva() {
         quantidadeEquipamento: globalFakeMapping.quantidadeEquipamento(),
         valorEquipamento: globalFakeMapping.valorEquipamento(),
         enderecoEquipamento: globalFakeMapping.enderecoEquipamento(),
-        status: globalFakeMapping.status(),
+        statusReserva: globalFakeMapping.statusReserva(),
         equipamento: [equipamentoAleatorio._id],
         usuario: [usuarioAleatorio._id]
     });

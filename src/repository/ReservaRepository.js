@@ -3,6 +3,7 @@ import Equipamento from "../models/Equipamento.js"
 import Usuario from "../models/Usuario.js"
 import mongoose from 'mongoose';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
+import ReservaFilterBuilder from './filters/ReservaFilterBuilder.js';
 
 class ReservaRepository {
     constructor({
@@ -62,12 +63,52 @@ class ReservaRepository {
             return data;
         }
 
-        return this.reservaModel
-            .find()
-            .populate([
-                { path: 'equipamentos', select: 'nome' },
-                { path: 'usuarios', select: 'nome' },
-            ]);
+        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, valorEquipamento, enderecoEquipamento, statusReserva} = req.query
+        const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
+        const page = parseInt(req.query.page, 10) || 1;
+
+        const filterBuild = new ReservaFilterBuilder()
+            .comDataInicial(dataInicial || '')
+            .comDataFinal(dataFinal || '')
+            .comDataFinalAtrasada(dataFinalAtrasada || '')
+            .comQuantidadeEquipamento(quantidadeEquipamento || '')
+            .comValorEquipamento(valorEquipamento || '')
+            .comEnderecoEquipamento(enderecoEquipamento || '')
+            .comStatus(statusReserva || '')
+
+        if(typeof filterBuild.build !== 'function') {
+            throw new CustomError({
+                statusCode: 500,
+                errorType: 'internalServerError',
+                field: 'Reserva',
+                details: [],
+                customMessage: messages.error.internalServerError("Reserva")
+            });
+        }
+
+        const filtros = filterBuild.build();
+
+        const options = {
+            page: parseInt(page, 10),
+            limit: parseInt(limite, 10),
+            sort: { nome: 1 },
+        };
+
+        const resultado = await this.reservaModel.paginate(filtros, options);
+
+        resultado.docs = resultado.docs.map(doc => {
+            const reservaObj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
+            return reservaObj;
+        });
+
+        return resultado;
+
+        // return this.reservaModel
+        //     .find()
+        //     .populate([
+        //         { path: 'equipamentos', select: 'nome' },
+        //         { path: 'usuarios', select: 'nome' },
+        //     ]);
     }
 
     async criar(dadosReserva) {

@@ -29,7 +29,7 @@ export const ReservaQuerySchema = z.object({
       message: 'Data final inválida',
     })
     .transform((val) => (val ? new Date(val) : undefined)),
-  status: z
+  statusReserva: z
     .enum(['pendente', 'confirmada', 'cancelada'])
     .optional(),
   usuarioNome: z

@@ -10,7 +10,7 @@ class Reserva {
             quantidadeEquipamento: { type: Number, required: true },
             valorEquipamento: { type: Number, required: true },
             enderecoEquipamento: { type: String, required: true },
-            status: { type: String, enum: ['pendente', 'confirmada', 'cancelada'], default: 'pendente' },
+            statusReserva: { type: String, enum: ['pendente', 'confirmada', 'cancelada'], default: 'pendente' },
             equipamentos: { type: mongoose.Schema.Types.ObjectId, ref: 'equipamento', required: true },
             usuarios: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario', required: true },
         },
