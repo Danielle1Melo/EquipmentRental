@@ -95,7 +95,7 @@ describe('UsuarioController', () => {
             usuarioController.service.cadastrarUsuario.mockResolvedValue({...req.body, id:'67959501ea0999e0a0fa9f59'})
             await usuarioController.cadastrarUsuario(req, res)
             expect(usuarioController.service.cadastrarUsuario).toHaveBeenCalledTimes(1)
-            expect(usuarioController.service.cadastrarUsuario).toHaveBeenCalledWith(req)
+            expect(usuarioController.service.cadastrarUsuario).toHaveBeenCalledWith(req.body)
             expect(res.status).toHaveBeenCalledWith(201)
             expect(res.json).toHaveBeenCalledWith({
                 data: {...req.body, id:'67959501ea0999e0a0fa9f59'},

@@ -13,6 +13,9 @@ class UsuarioService {
     }
     async updateUsuario(id, parseData){
         console.log("Estou no updateUsuario Service")
+        await this.repository.buscarPorCpf(parseData.cpf)
+        await this.repository.buscarPorEmail(parseData.email)
+        await this.repository.buscarPorTelefone(parseData.telefone)
         const data = await this.repository.updateUsuario(id, parseData)
         return data
     }
@@ -33,8 +36,11 @@ class UsuarioService {
     async validateEmail(email, id = null){
         const usuarioExistente = await this.repository.buscarPorEmail(email)
     }
-    async cadastrarUsuario(req){
-        const data = await this.repository.cadastrarUsuario(req)
+    async cadastrarUsuario(body){
+        await this.repository.buscarPorCpf(body.CPF)
+        await this.repository.buscarPorEmail(body.email)
+        await this.repository.buscarPorTelefone(body.telefone)
+        const data = await this.repository.cadastrarUsuario(body)
         return data
     }
 }
