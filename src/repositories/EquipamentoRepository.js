@@ -1,30 +1,40 @@
-import Equipamento from '../models/Equipamento.js';
+import EquipamentoModel from '../models/Equipamento.js';
 
 class EquipamentoRepository {
-  async criar(dados) {
-    const novoEquipamento = new Equipamento(dados);
+  constructor({
+    equipamentoModel = EquipamentoModel
+  } = {}) {
+    this.model = equipamentoModel;
+  }
+
+  async criar(dadosEquipamentos) {
+    const novoEquipamento = new this.model(dadosEquipamentos);
     return await novoEquipamento.save();
   }
 
   async buscarPorId(id) {
-    return await Equipamento.findById(id).exec();
+    const data = await this.model.findById(id);
+    return data;
   }
 
   async atualizarPorId(id, dados) {
-    return await Equipamento.findByIdAndUpdate(id, dados, { new: true }).exec();
+    const equipamento = await this.model.findByIdAndUpdate(id, dados, { new: true });
+
+    return equipamento;
   }
 
 async excluirPorId(id) {
-  return await Equipamento.findByIdAndDelete(id).exec();
+  const equipamento = await this.model.findByIdAndDelete(id);
+  return equipamento;
 }
 
   async buscarComFiltros(query, pagina = 1, limite = 10) {
-    const equipamentos = await Equipamento.find(query)
+    const equipamentos = await this.model.find(query)
       .skip((pagina - 1) * limite)
       .limit(limite)
       .exec();
 
-    const total = await Equipamento.countDocuments(query);
+    const total = await this.model.countDocuments(query);
     return { equipamentos, total };
   }
 }

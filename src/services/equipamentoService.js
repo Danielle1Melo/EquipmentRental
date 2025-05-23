@@ -86,7 +86,8 @@ class EquipamentoService {
       });
     }
 
-    return await this.repository.atualizarPorId(id, dadosAtualizados);
+    const data = await this.repository.atualizarPorId(id, dadosAtualizados);
+    return data;
   }
 
   async excluirEquipamento(id) {
