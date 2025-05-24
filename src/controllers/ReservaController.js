@@ -1,76 +1,68 @@
-// // import ReservaService from '../services/ReservaService.js';
-// // import { ReservaIdSchema, ReservaQuerySchema } from '../utils/validators/schemas/zod/querys/ReservaQuerySchema.js';
-// // import { ReservaSchema, ReservaUpdateSchema } from '../utils/validators/schemas/zod/ReservaSchema.js';
-// import {
-//     CommonResponse,
-//     CustomError,
-//     HttpStatusCodes,
-//     errorHandler,
-//     messages,
-//     StatusService,
-//     asyncWrapper
-// } from '../utils/helpers/index.js';
+import ReservaService from '../service/ReservaService.js';
+import mongoose from 'mongoose';
 
-// class ReservaController {
-//     constructor() {
-//         this.service = new ReservaService();
-//     }
+import {
+    CommonResponse,
+    CustomError,
+    HttpStatusCodes,
+    errorHandler,
+    messages,
+    StatusService,
+    asyncWrapper
+} from '../utils/helpers/index.js';
+import { ReservaIdSchema, ReservaQuerySchema } from '../utils/validators/schemas/zod/querys/ReservaQuerySchema.js';
 
-//     async listar(req, res) {
-//         console.log('Estou no listar em ReservaController');
+class ReservaController {
+    constructor() {
+        this.service = new ReservaService();
+    }
 
-//         const { id } = req.params || {};
-//         if (id) {
-//             ReservaIdSchema.parse(id);
-        
-//             const existe = await this.service.existe(id);
-//             if (!existe) {
-//                 throw new CustomError({
-//                     statusCode: HttpStatusCodes.NOT_FOUND.code,
-//                     errorType: 'notFound',
-//                     field: 'id',
-//                     details: [],
-//                     customMessage: 'Reserva não encontrada.'
-//                 });
-//             }
-//         }
+    async listar(req, res) {
+        console.log('Estou no listar em ReservaController');
+        console.log('req.query:', req.query);
+        console.log('req.params:', req.params);
+        console.log('typeof req.query:', typeof req.query);
+        console.log('Object.keys(req.query):', Object.keys(req.query || {}));
 
-//         const query = req.query || {};
-//         if (Object.keys(query).length !== 0) {
-//             await ReservaQuerySchema.parseAsync(query);
-//         }
+        const { id } = req.params || {};
+        if (id) {
+            ReservaIdSchema.parse(id);
+        }
 
-//         const data = await this.service.listar(req);
-//         const message = id ? 'Reserva encontrada com sucesso.' : 'Reservas listadas com sucesso.';
-//         return CommonResponse.success(res, { message, dados: data });
-//     }
+        const query = Object.keys(req.query || {}).length !== 0 
+        ? await ReservaQuerySchema.parseAsync(req.query)
+        : {};
 
-//     async criar(req, res) {
-//         console.log('Estou no criar em ReservaController');
+        const data = await this.service.listar(req);
+        const message = id ? 'Reserva encontrada com sucesso.' : 'Reservas listadas com sucesso.';
+        return CommonResponse.success(res, { message, dados: data });
+    }
 
-//         const parsedData = ReservaSchema.parse(req.body);
-//         const data = await this.service.criar(parsedData);
+    async criar(req, res) {
+        console.log('Estou no criar em ReservaController');
 
-//         const reservaLimpa = data.toObject();
-//         delete reservaLimpa.__v;
+        let data = await this.service.criar(req.body);
 
-//         return CommonResponse.created(res, { message: 'Reserva criada com sucesso.', dados: reservaLimpa });
-//     }
+        let reservaLimpa = data.toObject();
 
-//     async atualizar(req, res) {
-//         console.log('Estou no atualizar em ReservaController');
+        return CommonResponse.created(res, reservaLimpa);
+    }
 
-//         const { id } = req.params;
-//         ReservaIdSchema.parse(id);
+    async atualizar(req, res) {
+        console.log('Estou no atualizar em ReservaController');
 
-//         const parsedData = ReservaUpdateSchema.parse(req.body);
-//         const data = await this.service.atualizar(id, parsedData);
+        const { id } = req.params;
+        ReservaIdSchema.parse(id);
 
-//         const reservaLimpa = data.toObject();
-//         delete reservaLimpa.__v;
+        // const parsedData = UsuarioUpdateSchema.parse(req.body);
+        const parsedData = req.body;
 
-//         return CommonResponse.success(res, { message: 'Reserva atualizada com sucesso.', dados: reservaLimpa }, 200);
-//     }
-// }
+        const data = await this.service.atualizar(id, parsedData);
 
-// export default ReservaController;
+
+        return CommonResponse.success(res, data, 200, 'Reserva atualizada com sucesso.');
+    }
+
+}
+
+export default ReservaController;
