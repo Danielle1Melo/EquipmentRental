@@ -2,7 +2,7 @@ import Avaliacao from "../models/Avaliacao.js"
 import DbConnect from "../config/Dbconnect.js"
 import Usuario from "../models/Usuario.js"
 import { faker } from "@faker-js/faker"
-import getGlobalFakeMapping from "./globalFakemapping.js"
+import getGlobalFakeMapping from "./globalFakeMapping.js"
 
 
 async function SeedAvaliacao(usuario) {

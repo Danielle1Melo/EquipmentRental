@@ -1,4 +1,4 @@
-import getGlobalFakeMapping from "./globalFakemapping.js";
+import getGlobalFakeMapping from "./globalFakeMapping.js";
 //import mongoose from "mongoose";
 import Equipamento from "../models/Equipamento.js";
 import Usuario from "../models/Usuario.js";

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Reserva from "../models/Reserva.js";
 import DbConnect from "../config/Dbconnect.js";
-import getGlobalFakeMapping from "./globalFakemapping.js";
+import getGlobalFakeMapping from "./globalFakeMapping.js";
 import Usuario from "../models/Usuario.js";
 import Equipamento from "../models/Equipamento.js";
 
