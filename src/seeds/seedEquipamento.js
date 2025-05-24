@@ -28,18 +28,17 @@ async function SeedEquipamentos(usuario, enderecos, avaliacoes) {
 
     for(let i = 0; i < usuario.length; i++){
     equipamentos.push({
-      nome: fake.nome(),
-      descricao:fake.descricao(),
-      valorDiaria: fake.valorDiaria(),
-      quantidadeDisponivel:fake.quantidadeDisponivel(),
-      categoria: categoriasValidas[Math.floor(Math.random() * categoriasValidas.length)],
-      status: fake.status(),
-      usuario:{_id:usuario[i]._id},
-      endereco: { _id: enderecos[i]._id },
-      foto: fake.foto(),
-      notaMediaAvaliacao: {_id: avaliacoes[i]._id}
+      equiNome: fake.equiNome(),
+      equiDescricao:fake.equiDescricao(),
+      equiValorDiaria: fake.equiValorDiaria(),
+      equiQuantidadeDisponivel:fake.equiQuantidadeDisponivel(),
+      equiCategoria: categoriasValidas[Math.floor(Math.random() * categoriasValidas.length)],
+      equiStatus: fake.equiStatus(),
+      equiUsuario:{_id:usuario[i]._id},
+      equiEndereco: { _id: enderecos[i]._id },
+      equiFoto: fake.equiFoto(),
+      equiNotaMediaAvaliacao: {_id: avaliacoes[i]._id}
     });
-
   }
 
   await Equipamento.collection.insertMany(equipamentos)

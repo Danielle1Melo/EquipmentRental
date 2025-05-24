@@ -6,6 +6,9 @@ import logRoutes from "../middlewares/LogRoutesMiddleware.js";
 import dotenv from "dotenv";
 
 import reserva from "./reservaRoutes.js"
+import equipamentoRoutes from "./equipamentoRoutes.js";
+import { equipamentoSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
+
 
 dotenv.config();
 
@@ -27,7 +30,8 @@ const routes = (app) => {
     // });
 
     app.use(express.json(),
-        reserva
+        reserva,
+        equipamentoRoutes
     );
 
     // Se não é nenhuma rota válida, produz 404
