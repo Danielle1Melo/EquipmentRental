@@ -5,7 +5,7 @@ import express from "express";
 import logRoutes from "../middlewares/LogRoutesMiddleware.js";
 import dotenv from "dotenv";
 
-import reserva from "./reservaRouter.js"
+import reserva from "./reservaRoutes.js"
 import equipamentoRoutes from "./equipamentoRoutes.js";
 import { equipamentoSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
 

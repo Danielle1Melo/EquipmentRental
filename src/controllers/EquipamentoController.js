@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { equipamentoSchema, equipamentoUpdateSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
 import { EquipamentoQuerySchema, EquipamentoIdSchema } from "../utils/validators/schemas/zod/querys/EquipamentoQuerySchema.js";
-import EquipamentoService from "../services/equipamentoService.js";
+import EquipamentoService from "../service/EquipamentoService.js";
 import { CommonResponse} from "../utils/helpers/index.js";
 
 class EquipamentoController {
