@@ -1,0 +1,30 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/.78159bbaeda3d52b75c54e22adc671d93bb565e2-audit.json",
+    "files": [
+        {
+            "date": 1747268803186,
+            "name": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/error-2025-05-14.log",
+            "hash": "b3502fbd7034e149ff406199c22610c8869702eff31aa9a356288a0f24d43265"
+        },
+        {
+            "date": 1747354828598,
+            "name": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/error-2025-05-15.log",
+            "hash": "b4005df5618e3d850b5f92f4dc03c9f88648181143e4377d317d261f7c9d4208"
+        },
+        {
+            "date": 1747698510807,
+            "name": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/error-2025-05-19.log",
+            "hash": "e70abc4f65df79167e27c336847f7f805fc72550c52c34b4a3e77d427575c702"
+        },
+        {
+            "date": 1747870831913,
+            "name": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/error-2025-05-21.log",
+            "hash": "64513a7b1559d1684df665d4a9a791ec1a7c8abca12fcabeb59a3281e2568a52"
+        }
+    ],
+    "hashType": "sha256"
+}

@@ -1,5 +1,3 @@
-// src/routes/index.js
-
 import express from "express";
 // import swaggerJsDoc from "swagger-jsdoc";
 // import swaggerUI from "swagger-ui-express";
@@ -23,7 +21,6 @@ const routes = (app) => {
         res.redirect("/docs");
     }
     );
-
 
     //configurando swagger e criando a rota /docs
     // const swaggerDocs = swaggerJsDoc(getSwaggerOptions());

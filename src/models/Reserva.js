@@ -10,9 +10,9 @@ class Reserva {
             quantidadeEquipamento: { type: Number, required: true },
             valorEquipamento: { type: Number, required: true },
             enderecoEquipamento: { type: String, required: true },
-            status: { type: String, enum: ['pendente', 'confirmada', 'cancelada'], default: 'pendente' },
-            equipamento: { type: mongoose.Schema.Types.ObjectId, ref: 'equipamento', required: true },
-            usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario', required: true },
+            statusReserva: { type: String, enum: ['pendente', 'confirmada', 'cancelada'], default: 'pendente' },
+            equipamentos: { type: mongoose.Schema.Types.ObjectId, ref: 'equipamento', required: true },
+            usuarios: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario', required: true },
         },
         {
             timestamps: true,
@@ -20,12 +20,12 @@ class Reserva {
         }
     );
 
-    reservaSchema.pre('save', function (next) {
-        if (this.dataFinal <= this.dataInicial) {
-          return next(new Error('A data final da reserva deve ser posterior à data inicial.'));
-        }
-        next();
-    });
+    // reservaSchema.pre('save', function (next) {
+    //     if (this.dataFinal <= this.dataInicial) {
+    //       return next(new Error('A data final da reserva deve ser posterior à data inicial.'));
+    //     }
+    //     next();
+    // });
 
 
     reservaSchema.plugin(mongoosePaginate)

@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 
 import { faker } from "@faker-js/faker";
 
-
 import DbConnect from "../config/Dbconnect.js";
 
 // Models principais
@@ -25,11 +24,11 @@ await DbConnect.conectar();
 
 async function main(){
     try {
-        await SeedReserva();
         const usuario = await SeedUsuario();
         const enderecos = await SeedEndereco(usuario);   
         const avaliacoes = await SeedAvaliacao(usuario);
         await SeedEquipamentos(usuario, enderecos, avaliacoes);
+        await SeedReserva();
 
         console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
       } catch (err) {

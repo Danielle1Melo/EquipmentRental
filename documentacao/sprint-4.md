@@ -1,8 +1,9 @@
+## 4° Sprint (13/05/2025 - 23/05/2025)
+
 # Rotas do Sistema
 
 ## Usuários (Silvio Huan)
-- `POST /login`
-- `POST /register`
+- `POST /usuario`
 - `GET /usuario/:id`
 - `PATCH /usuario/:id`
 
@@ -19,28 +20,18 @@
 
 # Desenvolvimento dos **controllers** das rotas implementadas
 
- - ReservaController (Dani)
- - EquipamentoController (Taline)
- - UsuarioController (Silvio)
+ - ReservaController (Danielle Melo)
+ - EquipamentoController (Taline Rodrigues)
+ - UsuarioController (Silvio Huan)
+ 
 # Desenvolvimento dos **services** das rotas implementadas
-> - /*colocar services*/
 
-> /* Seguindo as regras de negócio */
+ - ReservaService (Danielle Melo)
+ - EquipamentoService (Taline Rodrigues)
+ - UsuarioService (Silvio Huan)
 
-# Testes
+ # Desenvolvimento dos **repository** das rotas implementadas
 
-Criar cenários de teste baseados nas regras de negócio ()
-
-## Implementar testes unitários para fluxos principais
-- Usuários (Silvio Huan)
-- Equipamentos (Taline Rodrigues)
-- Reservas (Danielle Melo)
-
-
-# Desenvolvimento
-
-- Desenvolvimento dos **controllers** das rotas implementadas
-- Desenvolvimento dos **services** das rotas implementadas
-
->  Seguindo as regras de negócio 
-
+ - ReservaRepository (Danielle Melo)
+ - EquipamentoRepository (Taline Rodrigues)
+ - UsuarioRepository (Silvio Huan)

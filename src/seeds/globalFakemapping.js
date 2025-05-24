@@ -5,10 +5,6 @@ import { v4 as uuid } from 'uuid';
 import loadModels from './loadModels.js';
 import { gerarDataAleatoria } from '../utils/helpers/randomPasteDate.js'
 
-
-
-//173
-
 const fakeMappings = {
     common: {
 
@@ -46,9 +42,9 @@ Endereco: {
       quantidadeEquipamento: () => fakebr.random.number({ min: 1, max: 10 }),
       valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
       enderecoEquipamento: () => fakebr.address.streetAddress(),
-      status: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
-      equipamento: [{_id: new mongoose.Types.ObjectId().toString}],
-      usuario: [{_id: new mongoose.Types.ObjectId().toString}],
+      statusReserva: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
+      equipamentos: [{_id: new mongoose.Types.ObjectId().toString}],
+      usuarios: [{_id: new mongoose.Types.ObjectId().toString}],
     }, 
 
     Avaliacao: {
