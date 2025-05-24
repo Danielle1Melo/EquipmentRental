@@ -1,4 +1,4 @@
-import EquipamentoRepository from '../repository/EquipamentoRepository.js';
+import EquipamentoRepository from '../repositories/EquipamentoRepository.js';
 import { CustomError, HttpStatusCodes, messages } from '../utils/helpers/index.js';
 import Avaliacao from '../models/Avaliacao.js';
 

@@ -1,4 +1,4 @@
-import ReservaService from '../service/ReservaService.js';
+import ReservaService from '../services/ReservaService.js';
 import mongoose from 'mongoose';
 
 import {

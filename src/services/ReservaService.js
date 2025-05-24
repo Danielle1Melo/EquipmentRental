@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import ReservaRepository from '../repository/ReservaRepository.js';
+import ReservaRepository from '../repositories/ReservaRepository.js';
 import CustomError from '../utils/helpers/CustomError.js'
 import { parse } from 'dotenv';
 import Equipamento from '../models/Equipamento.js';
