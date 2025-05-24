@@ -17,36 +17,37 @@ class EquipamentoService {
 
     const query = {};
 
-    if (filtrosQuery.categoria) query.categoria = filtrosQuery.categoria;
-    if (filtrosQuery.status) {
-      query.status = filtrosQuery.status === 'ativo';
+    if (filtrosQuery.categoria) query.equiCategoria = filtrosQuery.categoria;
+
+
+    if (filtrosQuery.status !== undefined) {
+      if (filtrosQuery.status === 'true') query.equiStatus = true;
+      else if (filtrosQuery.status === 'false') query.equiStatus = false;
+    } else {
+      query.equiStatus = true;
     }
+
     if (filtrosQuery.minValor || filtrosQuery.maxValor) {
-      query.valorDiaria = {};
-      if (filtrosQuery.minValor) query.valorDiaria.$gte = Number(filtrosQuery.minValor);
-      if (filtrosQuery.maxValor) query.valorDiaria.$lte = Number(filtrosQuery.maxValor);
+      query.equiValorDiaria = {};
+      if (filtrosQuery.minValor) query.equiValorDiaria.$gte = Number(filtrosQuery.minValor);
+      if (filtrosQuery.maxValor) query.equiValorDiaria.$lte = Number(filtrosQuery.maxValor);
     }
 
     return await this.repository.buscarComFiltros(query, pagina, limite);
   }
 
-  
   async criarEquipamento(dados) {
-
     // usuario fixo para simular
     const usuario = { _id: "682520e98e38a049ac2ac569" };
 
-    //id de avaliação para teste
+    // id de avaliação para teste
     const avaliacaoIdTeste = "682520e98e38a049ac2ac570";
-
-    const statusAleatorio = Math.random() < 0.5;
-
 
     return await this.repository.criar({
       ...dados,
-      usuario,
-      avaliacao: avaliacaoIdTeste,
-      status: statusAleatorio,
+      equiUsuario: usuario._id,
+      equiNotaMediaAvaliacao: avaliacaoIdTeste,
+      equiStatus: false, // equipamento fica inativo até a aprovação do ADM
     });
   }
 
@@ -61,9 +62,9 @@ class EquipamentoService {
     }
 
     if (
-      !equipamento.status &&
-      equipamento.usuario &&
-      equipamento.usuario.toString() !== usuarioId
+      !equipamento.equiStatus &&
+      equipamento.equiUsuario &&
+      equipamento.equiUsuario.toString() !== usuarioId
     ) {
       throw new CustomError({
         statusCode: HttpStatusCodes.FORBIDDEN.code,
@@ -71,19 +72,26 @@ class EquipamentoService {
       });
     }
 
-
     return equipamento;
   }
 
   async atualizarEquipamento(id, dadosAtualizados) {
     const equipamento = await this.repository.buscarPorId(id);
 
-
     if (!equipamento) {
       throw new CustomError({
         statusCode: HttpStatusCodes.FORBIDDEN.code,
         customMessage: messages.error.resourceNotFound('Equipamento'),
       });
+    }
+
+    // verifica alterações criticas e retorna para a aprovação
+    const alteracaoCritica =
+      (dadosAtualizados.equiNome && dadosAtualizados.equiNome !== equipamento.equiNome) ||
+      (dadosAtualizados.equiCategoria && dadosAtualizados.equiCategoria !== equipamento.equiCategoria);
+
+    if (alteracaoCritica) {
+      dadosAtualizados.equiStatus = false; // volta para aguardando aprovação
     }
 
     const data = await this.repository.atualizarPorId(id, dadosAtualizados);
