@@ -2,6 +2,7 @@ import UsuarioService from "../../services/UsuarioService";
 import UsuarioRepository from "../../repositories/UsuarioRepository";
 import { afterEach, beforeAll, beforeEach, describe, expect, jest } from "@jest/globals";
 import { CustomError, messages } from "../../utils/helpers";
+import { it } from "faker-br/lib/locales";
 jest.mock('../../repositories/UsuarioRepository')
 
 describe('UsuarioService', () => {
@@ -112,7 +113,30 @@ describe('UsuarioService', () => {
 
     await expect(usuarioService.cadastrarUsuario(mockData)).rejects.toThrowErrorMatchingInlineSnapshot(`"Conflito de recurso em Usuário contém CPF."`)
     expect(usuarioService.repository.buscarPorCpf).toHaveBeenCalledWith(mockData.CPF)
-});
+})
+    it('deve lançar um erro se o E-mail já estiver em uso', async () => {
+        const dataMock = {
+            nome: "TESTE",
+            email: "teste1234@gmail.com",
+            telefone: "(69) 99999-8888",
+            senha: "Laravel@123",
+            dataNascimento: "2000-08-08",
+            CPF: "96945788253",
+            status: "ativo",
+            tipoUsuario: "usuario",
+            fotoUsuario: "http://lorempixel.com/640/480"
+        }
+
+        req.body = dataMock
+        usuarioService.repository.buscarPorCpf.mockRejectedValue(null)
+        usuarioService.repository.buscarPorEmail.mockResolvedValue(new CustomError({
+                statusCode: 409,
+                errorType:"Conflict",
+                details:[],
+                customMessage: messages.error.resourceConflict("Usuário", "E-mail")
+            }))
+        usuarioService.repository.buscarPorTelefone.mockRejectedValue(null)
+    })  
 
     })
 })
