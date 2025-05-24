@@ -7,10 +7,10 @@ import express from "express";
 import logRoutes from "../middlewares/LogRoutesMiddleware.js";
 import dotenv from "dotenv";
 
-// import reserva from "./reservaRoutes.js"
+import reserva from "./reservaRouter.js"
 import equipamentoRoutes from "./equipamentoRoutes.js";
 import { equipamentoSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
-// import ReservaController from "../controllers/ReservaController.js";
+
 
 dotenv.config();
 
@@ -32,8 +32,10 @@ const routes = (app) => {
     //     swaggerUI.setup(swaggerDocs)(req, res, next);
     // });
 
-    app.use(express.json());
-    app.use(equipamentoRoutes);
+    app.use(express.json(),
+        reserva,
+        equipamentoRoutes
+    );
 
     // Se não é nenhuma rota válida, produz 404
     app.use((req, res) => {

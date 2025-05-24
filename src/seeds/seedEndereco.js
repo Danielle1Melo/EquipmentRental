@@ -1,5 +1,5 @@
 import Endereco from "../models/Endereco.js";
-import getGlobalFakeMapping from "./globalFakeMapping.js"
+import getGlobalFakeMapping from "./globalFakermapping.js"
 
 async function SeedEndereco(usuario) {
   await Endereco.deleteMany();
