@@ -8,6 +8,64 @@ class EquipamentoService {
   }
 
   async buscarEquipamentos(filtros) {
+    const { query, pagina, limite } = this._processarFiltros(filtros);
+    return await this.repository.buscarComFiltros(query, pagina, limite);
+  }
+
+  async criarEquipamento(dados) {
+    const usuario = { _id: "682520e98e38a049ac2ac569" };
+    const avaliacaoIdTeste = "682520e98e38a049ac2ac570";
+
+    this._validarCamposObrigatorios(dados);
+
+    return await this.repository.criar({
+      ...dados,
+      equiUsuario: usuario._id,
+      equiNotaMediaAvaliacao: avaliacaoIdTeste,
+      equiStatus: false,
+    });
+  }
+
+  async detalharEquipamento(id, usuarioId) {
+    const equipamento = await this._buscarEquipamentoExistente(id);
+
+    if (!equipamento.equiStatus && equipamento.equiUsuario.toString() !== usuarioId) {
+      throw new CustomError({
+        statusCode: HttpStatusCodes.FORBIDDEN.code,
+        customMessage: 'Equipamento não disponível para visualização.',
+      });
+    }
+
+    return equipamento;
+  }
+
+  async atualizarEquipamento(id, dadosAtualizados) {
+    const equipamento = await this._buscarEquipamentoExistente(id);
+
+    this._verificarAtualizacaoPermitida(equipamento, dadosAtualizados);
+
+    const data = await this.repository.atualizarPorId(id, dadosAtualizados);
+    return data;
+  }
+
+  async excluirEquipamento(id) {
+
+    const equipamento = await this._buscarEquipamentoExistente(id);
+
+    const temLocacoesAtivas = false; 
+
+    if (temLocacoesAtivas) {
+      throw new CustomError({
+        statusCode: HttpStatusCodes.CONFLICT.code,
+        customMessage: 'Não é possível excluir equipamento com locações ativas.',
+      });
+    }
+
+    return await this.repository.excluirPorId(id);
+  }
+
+
+  _processarFiltros(filtros) {
     const pagina = parseInt(filtros.page) || 1;
     const limite = parseInt(filtros.limit) || 10;
 
@@ -19,10 +77,8 @@ class EquipamentoService {
 
     if (filtrosQuery.categoria) query.equiCategoria = filtrosQuery.categoria;
 
-
     if (filtrosQuery.status !== undefined) {
-      if (filtrosQuery.status === 'true') query.equiStatus = true;
-      else if (filtrosQuery.status === 'false') query.equiStatus = false;
+      query.equiStatus = filtrosQuery.status === 'true';
     } else {
       query.equiStatus = true;
     }
@@ -33,91 +89,55 @@ class EquipamentoService {
       if (filtrosQuery.maxValor) query.equiValorDiaria.$lte = Number(filtrosQuery.maxValor);
     }
 
-    return await this.repository.buscarComFiltros(query, pagina, limite);
+    return { query, pagina, limite };
   }
 
-  async criarEquipamento(dados) {
-    // usuario fixo para simular
-    const usuario = { _id: "682520e98e38a049ac2ac569" };
-
-    // id de avaliação para teste
-    const avaliacaoIdTeste = "682520e98e38a049ac2ac570";
-
-    return await this.repository.criar({
-      ...dados,
-      equiUsuario: usuario._id,
-      equiNotaMediaAvaliacao: avaliacaoIdTeste,
-      equiStatus: false, // equipamento fica inativo até a aprovação do ADM
-    });
-  }
-
-  async detalharEquipamento(id, usuarioId) {
+  async _buscarEquipamentoExistente(id) {
     const equipamento = await this.repository.buscarPorId(id);
-
     if (!equipamento) {
       throw new CustomError({
         statusCode: HttpStatusCodes.NOT_FOUND.code,
         customMessage: messages.error.resourceNotFound('Equipamento'),
       });
     }
-
-    if (
-      !equipamento.equiStatus &&
-      equipamento.equiUsuario &&
-      equipamento.equiUsuario.toString() !== usuarioId
-    ) {
-      throw new CustomError({
-        statusCode: HttpStatusCodes.FORBIDDEN.code,
-        customMessage: 'Equipamento não disponível para visualização.',
-      });
-    }
-
     return equipamento;
   }
 
-  async atualizarEquipamento(id, dadosAtualizados) {
-    const equipamento = await this.repository.buscarPorId(id);
+_verificarAtualizacaoPermitida(equipamento, dadosAtualizados) {
+  const camposPermitidos = ['equiValorDiaria', 'equiQuantidadeDisponivel', 'equiStatus'];
+  const camposAtualizados = Object.keys(dadosAtualizados);
 
-    if (!equipamento) {
+  // verifica se o equipamento está ativo 
+  if (!equipamento.equiStatus) {
+
+    if (camposAtualizados.length === 1 && 'equiStatus' in dadosAtualizados && dadosAtualizados.equiStatus === true) {
+      return;
+    } else {
       throw new CustomError({
         statusCode: HttpStatusCodes.FORBIDDEN.code,
-        customMessage: messages.error.resourceNotFound('Equipamento'),
+        customMessage: 'Equipamento inativo. Não é possível atualizar.',
       });
     }
-
-    // verifica alterações criticas e retorna para a aprovação
-    const alteracaoCritica =
-      (dadosAtualizados.equiNome && dadosAtualizados.equiNome !== equipamento.equiNome) ||
-      (dadosAtualizados.equiCategoria && dadosAtualizados.equiCategoria !== equipamento.equiCategoria);
-
-    if (alteracaoCritica) {
-      dadosAtualizados.equiStatus = false; // volta para aguardando aprovação
-    }
-
-    const data = await this.repository.atualizarPorId(id, dadosAtualizados);
-    return data;
   }
 
-  async excluirEquipamento(id) {
-    const equipamento = await this.repository.buscarPorId(id);
+  //se estiver ativo -- validação dos campo que nao podem ser atualizados
+  const camposInvalidos = camposAtualizados.filter(campo => !camposPermitidos.includes(campo));
+  if (camposInvalidos.length > 0) {
+    throw new CustomError({
+      statusCode: HttpStatusCodes.BAD_REQUEST.code,
+      customMessage: `Não é permitido alterar os seguintes campos: ${camposInvalidos.join(', ')}`,
+    });
+  }
+}
 
-    if (!equipamento) {
+
+  _validarCamposObrigatorios(dados) {
+    if (!dados.equiNome || !dados.equiCategoria) {
       throw new CustomError({
-        statusCode: HttpStatusCodes.NOT_FOUND.code,
-        customMessage: messages.error.resourceNotFound('Equipamento'),
+        statusCode: HttpStatusCodes.BAD_REQUEST.code,
+        customMessage: 'Campos obrigatórios não preenchidos.',
       });
     }
-
-    const temLocacoesAtivas = false;
-
-    if (temLocacoesAtivas) {
-      throw new CustomError({
-        statusCode: HttpStatusCodes.CONFLICT.code,
-        customMessage: 'Não é possível excluir equipamento com locações ativas.',
-      });
-    }
-
-    return await this.repository.excluirPorId(id);
   }
 }
 

@@ -18,7 +18,7 @@ export const equipamentoSchema = z.object({
     required_error: "Valor da diária é obrigatório",
     invalid_type_error: "Valor da diária deve ser um número",
   }),
-  equiQuantidade: z.number({
+  equiQuantidadeDisponivel: z.number({
     required_error: "Quantidade é obrigatória",
     invalid_type_error: "Quantidade deve ser um número",
   }),
@@ -27,11 +27,7 @@ export const equipamentoSchema = z.object({
 });
 
 export const equipamentoUpdateSchema = z.object({
-  equiNome: z.string().min(2).optional(),
-  equiDescricao: z.string().min(5).optional(),
   equiValorDiaria: z.number().positive().optional(),
   equiQuantidadeDisponivel: z.number().int().nonnegative().optional(),
-  equiCategoria: z.enum(categoriasValidas).optional(),
-  equiFoto: z.string().url().optional(),
-  avaliacao: z.string().length(24).optional()
-});
+  equiStatus: z.boolean().optional()
+}).strict();
