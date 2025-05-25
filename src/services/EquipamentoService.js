@@ -13,16 +13,15 @@ class EquipamentoService {
     return await this.repository.buscarComFiltros(query, pagina, limite);
   }
 
+  //nao vai possuir avaliações porque o equipamento nem foi anunciado ainda, precisa da aprovação do adm 
   async criarEquipamento(dados) {
     const usuario = { _id: "682520e98e38a049ac2ac569" };
-    const avaliacaoIdTeste = "682520e98e38a049ac2ac570";
-
-    this._validarCamposObrigatorios(dados);
 
     return await this.repository.criar({
       ...dados,
       equiUsuario: usuario._id,
-      equiNotaMediaAvaliacao: avaliacaoIdTeste,
+      avaliacoes: [],
+      equiNotaMediaAvaliacao: 0,
       equiStatus: false,
     });
   }
@@ -89,25 +88,25 @@ class EquipamentoService {
     return equipamento;
   }
 
-_processarFiltros(filtros) {
-  const pagina = parseInt(filtros.page) || 1;
-  const limite = parseInt(filtros.limit) || 10;
+  _processarFiltros(filtros) {
+    const pagina = parseInt(filtros.page) || 1;
+    const limite = parseInt(filtros.limit) || 10;
 
-  const builder = new EquipamentoFilterBuilder();
+    const builder = new EquipamentoFilterBuilder();
 
-  const status = (typeof filtros.status === 'boolean')
-    ? filtros.status
-    : (filtros.status === 'true' ? true : (filtros.status === 'false' ? false : true));
+    const status = (typeof filtros.status === 'boolean')
+      ? filtros.status
+      : (filtros.status === 'true' ? true : (filtros.status === 'false' ? false : true));
 
-  builder
-    .comCategoria(filtros.categoria)
-    .comStatus(status)
-    .comFaixaDeValor(filtros.minValor, filtros.maxValor);
+    builder
+      .comCategoria(filtros.categoria)
+      .comStatus(status)
+      .comFaixaDeValor(filtros.minValor, filtros.maxValor);
 
-  const query = builder.build();
+    const query = builder.build();
 
-  return { query, pagina, limite };
-}
+    return { query, pagina, limite };
+  }
 
   async _buscarEquipamentoExistente(id) {
     const equipamento = await this.repository.buscarPorId(id);
