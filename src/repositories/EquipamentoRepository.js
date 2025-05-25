@@ -23,19 +23,15 @@ class EquipamentoRepository {
     return equipamento;
   }
 
-async excluirPorId(id) {
-  const equipamento = await this.model.findByIdAndDelete(id);
-  return equipamento;
-}
+  async excluirPorId(id) {
+    const equipamento = await this.model.findByIdAndDelete(id);
+    return equipamento;
+  }
 
-  async buscarComFiltros(query, pagina = 1, limite = 10) {
-    const equipamentos = await this.model.find(query)
+  async buscarComFiltros(query, pagina, limite) {
+    return await EquipamentoModel.find(query)
       .skip((pagina - 1) * limite)
-      .limit(limite)
-      .exec();
-
-    const total = await this.model.countDocuments(query);
-    return { equipamentos, total };
+      .limit(limite);
   }
 }
 
