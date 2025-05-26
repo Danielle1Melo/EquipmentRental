@@ -8,25 +8,12 @@ class EquipamentoService {
     this.repository = new EquipamentoRepository();
   }
 
-  async buscarEquipamentos(filtros) {
-    const { query, pagina, limite } = await this._processarFiltros(filtros);
-    return await this.repository.buscarComFiltros(query, pagina, limite);
+  async listar(filtros) {
+    const { query, pagina, limite } = this._processarFiltros(filtros);
+    return await this.repository.listar(query, pagina, limite);
   }
 
-  //nao vai possuir avaliações porque o equipamento nem foi anunciado ainda, precisa da aprovação do adm 
-  async criarEquipamento(dados) {
-    const usuario = { _id: "682520e98e38a049ac2ac569" };
-
-    return await this.repository.criar({
-      ...dados,
-      equiUsuario: usuario._id,
-      avaliacoes: [],
-      equiNotaMediaAvaliacao: 0,
-      equiStatus: false,
-    });
-  }
-
-  async detalharEquipamento(id, usuarioId) {
+  async listarPorId(id, usuarioId) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
     if (!equipamento.equiStatus && equipamento.equiUsuario.toString() !== usuarioId) {
@@ -39,18 +26,30 @@ class EquipamentoService {
     return equipamento;
   }
 
-  async atualizarEquipamento(id, dadosAtualizados) {
+  async criar(dados) {
+    const usuario = { _id: "682520e98e38a049ac2ac569" }; //teste
+
+    return await this.repository.criar({
+      ...dados,
+      equiUsuario: usuario._id,
+      avaliacoes: [],
+      equiNotaMediaAvaliacao: 0,
+      equiStatus: false,
+    });
+  }
+
+  async atualizar(id, dadosAtualizados) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
     this._verificarAtualizacaoPermitida(equipamento, dadosAtualizados);
 
-    const data = await this.repository.atualizarPorId(id, dadosAtualizados);
-    return data;
+    return await this.repository.atualizar(id, dadosAtualizados);
   }
 
-  async excluirEquipamento(id) {
+  async deletar(id) {
     const equipamento = await this._buscarEquipamentoExistente(id);
-    const temLocacoesAtivas = false;
+
+    const temLocacoesAtivas = false; 
 
     if (temLocacoesAtivas) {
       throw new CustomError({
@@ -59,33 +58,7 @@ class EquipamentoService {
       });
     }
 
-    return await this.repository.excluirPorId(id);
-  }
-
-  _processarFiltros(filtros) {
-    const pagina = parseInt(filtros.page) || 1;
-    const limite = parseInt(filtros.limit) || 10;
-
-    const builder = new EquipamentoFilterBuilder();
-
-    builder
-      .comCategoria(filtros.categoria)
-      .comStatus(status)
-      .comFaixaDeValor(filtros.minValor, filtros.maxValor);
-
-    const query = builder.build();
-    return { query, pagina, limite };
-  }
-
-  async _buscarEquipamentoExistente(id) {
-    const equipamento = await this.repository.buscarPorId(id);
-    if (!equipamento) {
-      throw new CustomError({
-        statusCode: HttpStatusCodes.NOT_FOUND.code,
-        customMessage: messages.error.resourceNotFound('Equipamento'),
-      });
-    }
-    return equipamento;
+    return await this.repository.deletar(id);
   }
 
   _processarFiltros(filtros) {
@@ -104,12 +77,11 @@ class EquipamentoService {
       .comFaixaDeValor(filtros.minValor, filtros.maxValor);
 
     const query = builder.build();
-
     return { query, pagina, limite };
   }
 
   async _buscarEquipamentoExistente(id) {
-    const equipamento = await this.repository.buscarPorId(id);
+    const equipamento = await this.repository.listarPorId(id);
     if (!equipamento) {
       throw new CustomError({
         statusCode: HttpStatusCodes.NOT_FOUND.code,
@@ -155,7 +127,6 @@ class EquipamentoService {
       });
     }
   }
-
 }
 
 export default EquipamentoService;

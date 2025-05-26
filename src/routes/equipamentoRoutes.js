@@ -11,7 +11,7 @@ router
     .get("/equipamentos", asyncWrapper(equipamentoController.listar.bind(equipamentoController)))
 
     //lista um equipamento especifico
-    .get("/equipamentos/:id", asyncWrapper(equipamentoController.obterPorId.bind(equipamentoController)))
+    .get("/equipamentos/:id", asyncWrapper(equipamentoController.listarPorId.bind(equipamentoController)))
 
     //cadastrar um equipamento
     .post("/equipamentos", asyncWrapper(equipamentoController.criar.bind(equipamentoController)))
