@@ -15,10 +15,6 @@ class Equipamento {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'usuario'
       },
-      equiEndereco: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'endereco'
-      },
       equiNotaMediaAvaliacao: {
         type: Number,
         default: 0

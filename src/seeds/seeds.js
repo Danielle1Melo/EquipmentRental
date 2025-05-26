@@ -26,7 +26,7 @@ async function main() {
   try {
     const usuario = await SeedUsuario();
     const enderecos = await SeedEndereco(usuario);
-    const equipamentos = await SeedEquipamentos(usuario, enderecos);
+    const equipamentos = await SeedEquipamentos(usuario);
     const avaliacoes = await SeedAvaliacao(usuario, equipamentos);
     await SeedReserva();
 

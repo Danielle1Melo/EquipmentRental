@@ -73,7 +73,6 @@ Equipamento: {
   equiUsuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
   equiFoto: () => fakebr.image.imageUrl(),
   equiNotaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
-  equiEndereco: [{ _id: new mongoose.Types.ObjectId().toString() }],
   equiAvaliacoes: [{ _id: new mongoose.Types.ObjectId().toString() }]
 }
 

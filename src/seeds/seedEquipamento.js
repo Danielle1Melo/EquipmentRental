@@ -28,7 +28,6 @@ async function SeedEquipamentos(usuarios, enderecos) {
       equiCategoria: categoriasValidas[Math.floor(Math.random() * categoriasValidas.length)],
       equiStatus: fake.equiStatus(),
       equiUsuario: usuarios[i]._id,
-      equiEndereco: enderecos[i]._id,
       equiFoto: fake.equiFoto(),
       equiNotaMediaAvaliacao: 0,
       equiAvaliacoes: [] 
