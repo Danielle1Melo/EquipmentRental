@@ -6,36 +6,19 @@ class UsuarioService {
         this.repository = new UsuarioRepository()
     }
     async listar(req){
-        console.log("Estou no listar em Usuario")
+        // console.log("Estou no listar em Usuario")
         const data = await this.repository.listar(req)
-        console.log("Estou retornando os dados em UsuarioService")
+        // console.log("Estou retornando os dados em UsuarioService")
         return data
     }
     async updateUsuario(id, parseData){
-        console.log("Estou no updateUsuario Service")
-        await this.repository.buscarPorCpf(parseData.cpf)
-        await this.repository.buscarPorEmail(parseData.email)
-        await this.repository.buscarPorTelefone(parseData.telefone)
+        // console.log("Estou no updateUsuario Service")
+        await this.repository.buscarPorEmail(parseData.email, id)
+        await this.repository.buscarPorTelefone(parseData.telefone, id)
         const data = await this.repository.updateUsuario(id, parseData)
         return data
     }
-    async ensureUserExists(id){
-        const usuarioExistente = await this.repository.buscarPorId(id)
-         if (!usuarioExistente) {
-            throw new CustomError({
-                statusCode: 404,
-                errorType: 'resourceNotFound',
-                field: 'Usuário',
-                details: [],
-                customMessage: messages.error.resourceNotFound('Usuário'),
-            });
-        }
-        return usuarioExistente;
 
-    }
-    async validateEmail(email, id = null){
-        const usuarioExistente = await this.repository.buscarPorEmail(email)
-    }
     async cadastrarUsuario(body){
         await this.repository.buscarPorCpf(body.CPF)
         await this.repository.buscarPorEmail(body.email)

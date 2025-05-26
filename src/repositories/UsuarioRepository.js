@@ -12,7 +12,7 @@ class UsuarioRepository {
         this.model = usuarioModel
     }
     async listar(req) {
-        console.log("Estou no listar em UsuarioRepository")
+        // console.log("Estou no listar em UsuarioRepository")
         const id = req.params.id || null
         if(id){
             const data = await this.model.findById(id)
@@ -20,7 +20,8 @@ class UsuarioRepository {
         }
 
         // TODO: Fazer opções de consulta com filtros
-        const { nome, email, status, tipoUsuario } = req.query
+        const { nome, email, status, tipoUsuario, page = 1 } = req.query
+        const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100);
         const filterBuilder = new UsuarioFilterBuilder()
         .comNome(nome, '')
         .comEmail(email, '')
@@ -28,8 +29,13 @@ class UsuarioRepository {
         .comTipoUsuario(tipoUsuario, '')
         
         let filtros = filterBuilder.build()
-        const data = await this.model.find(filtros)
-        console.log(data)
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limite),
+            sort: {nome: 1}
+        }
+        const data = await this.model.paginate(filtros, options)
+        // console.log(data)
         return data
 
     }
@@ -75,14 +81,14 @@ class UsuarioRepository {
                 statusCode: 409,
                 errorType:"Conflict",
                 details:[],
-                customMessage: messages.error.resourceConflict("Usuário")
+                customMessage: messages.error.resourceConflict("Usuário", "Email")
 
             })
         }
     }
     async buscarPorTelefone(telefone, id = null){
         console.log("Estou no buscarPorTelefone no UsuarioRepository")
-        const documento = await this.model.findOne({telefone:telefone, _id:{$ne: id}})
+        const documento = await this.model.findOne({telefone:telefone, _id:{$ne: id}}, '+senha')
         console.log("Pesquisa conluida com sucesso")
         console.log("Telefone encontrado:",documento)
         if(documento){
@@ -90,7 +96,7 @@ class UsuarioRepository {
                 statusCode: 409,
                 errorType:"Conflict",
                 details:[],
-                customMessage: messages.error.resourceConflict("Usuário")
+                customMessage: messages.error.resourceConflict("Usuário","Telefone")
 
             })
         }

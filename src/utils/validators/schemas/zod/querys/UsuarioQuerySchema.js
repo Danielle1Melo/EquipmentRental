@@ -10,17 +10,12 @@ export const UsuarioQuerySchema = z.object({
         .string()
         .optional()
         .refine((val) => !val || val.trim().length > 0, {
-            message: "Nome não pode ser vazio",
+            message: "Nome não pode ser vazio ou apenas espaços",
         })
         .transform((val) => val?.trim()),
     email: z
         .union([z.string().email("Formato de email inválido"), z.undefined()])
         .optional(),
-    cpf: z.string()
-        .optional()
-        .refine((val) => !val ||regexCPF.test(val), {
-            message: "CPF inválido"
-        }),
     page: z
         .string()
         .optional()

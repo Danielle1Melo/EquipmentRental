@@ -23,8 +23,8 @@ afterAll(async () => {
 
 // Limpeza após cada teste para garantir isolamento
 afterEach(async () => {
-    jest.clearAllMocks();
     await Usuario.deleteMany({});
+    jest.clearAllMocks();
 });
 
 

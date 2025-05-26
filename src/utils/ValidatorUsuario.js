@@ -10,7 +10,7 @@ class UsuarioValidator {
         if (cleanCPF.length !== 11) return false;
 
         // Evitar CPFs com números repetidos (ex: 111.111.111-11)
-        if (/^(\d)\1+$/.test(cleanCPF)) return false;
+        if (/^(?:(\d)\1{10})$/.test(cleanCPF)) return false;
 
         // Cálculo do primeiro dígito verificador
         const calcularDigito = (slice, peso) => {

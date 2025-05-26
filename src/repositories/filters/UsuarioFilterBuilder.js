@@ -13,7 +13,7 @@ class UsuarioFilterBuilder {
     }
     comEmail(email){
         if(email){
-            this.filtros.email = {$eq: email}
+            this.filtros.email = {$regex: email, $options: 'i'}
         }
         return this
     }

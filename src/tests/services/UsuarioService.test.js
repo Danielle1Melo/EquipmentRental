@@ -2,7 +2,7 @@ import UsuarioService from "../../services/UsuarioService";
 import UsuarioRepository from "../../repositories/UsuarioRepository";
 import { afterEach, beforeAll, beforeEach, describe, expect, jest } from "@jest/globals";
 import { CustomError, messages } from "../../utils/helpers";
-import { it } from "faker-br/lib/locales";
+import { it } from '@jest/globals';
 jest.mock('../../repositories/UsuarioRepository')
 
 describe('UsuarioService', () => {
@@ -80,7 +80,7 @@ describe('UsuarioService', () => {
         usuarioService.repository.buscarPorTelefone.mockResolvedValue(null)
         usuarioService.repository.cadastrarUsuario.mockResolvedValue({id:'67959501ea0999e0a0fa9f58', ...mockData})
         const resultado = await usuarioService.cadastrarUsuario(mockData)
-        console.log("Resultado:", resultado)
+        // console.log("Resultado:", resultado)
         expect(resultado).toHaveProperty('id')
         expect(usuarioService.repository.buscarPorCpf).toHaveBeenCalledWith(mockData.CPF)
         expect(usuarioService.repository.buscarPorEmail).toHaveBeenCalledWith(mockData.email)
@@ -128,15 +128,109 @@ describe('UsuarioService', () => {
         }
 
         req.body = dataMock
-        usuarioService.repository.buscarPorCpf.mockRejectedValue(null)
-        usuarioService.repository.buscarPorEmail.mockResolvedValue(new CustomError({
+        usuarioService.repository.buscarPorCpf.mockResolvedValue(null)
+        usuarioService.repository.buscarPorEmail.mockRejectedValue(new CustomError({
                 statusCode: 409,
                 errorType:"Conflict",
                 details:[],
                 customMessage: messages.error.resourceConflict("Usuário", "E-mail")
             }))
-        usuarioService.repository.buscarPorTelefone.mockRejectedValue(null)
-    })  
+        usuarioService.repository.buscarPorTelefone.mockResolvedValue(null)
+        await expect(usuarioService.cadastrarUsuario(dataMock)).rejects.toThrowErrorMatchingInlineSnapshot(`"Conflito de recurso em Usuário contém E-mail."`)
+    });
+    it('deve lançar um erro se o telefone já estiver em uso', async() => {
+        const mockData = {
+            nome: "TESTE",
+            email: "teste1234@gmail.com",
+            telefone: "(69) 99999-8888",
+            senha: "Laravel@123",
+            dataNascimento: "2000-08-08",
+            CPF: "96945788253",
+            status: "ativo",
+            tipoUsuario: "usuario",
+            fotoUsuario: "http://lorempixel.com/640/480"
+        }
+        req.body = mockData
+        usuarioService.repository.buscarPorCpf.mockResolvedValue(null)
+        usuarioService.repository.buscarPorEmail.mockResolvedValue(null)
+        usuarioService.repository.buscarPorTelefone.mockRejectedValue(new CustomError({
+                statusCode: 409,
+                errorType:"Conflict",
+                details:[],
+                customMessage: messages.error.resourceConflict("Usuário", "Telefone")
 
-    })
+            }));
+
+        await expect(usuarioService.cadastrarUsuario(mockData)).rejects.toThrowErrorMatchingInlineSnapshot(`"Conflito de recurso em Usuário contém Telefone."`)
+    });  
+
+    });
+    describe('atualizar', () => {
+        it('deve atualizar todos os campos permitidos pela regra de negócios de usuário com todas as credenciais válidas', async () => {
+            const mockData = {
+                nome: "Usuario Atualizado",
+                telefone: "(69) 8888-7777",
+                email: "novo@gmail.com",
+                fotoUsuario: "http://lorempixel.com/780/560"
+            }
+            req.body = mockData
+            req.params = {id:'67959501ea0999e0a0fa9f58'}
+            usuarioService.repository.buscarPorEmail.mockResolvedValue(null)
+            usuarioService.repository.buscarPorTelefone.mockResolvedValue(null)
+            usuarioService.repository.updateUsuario.mockResolvedValue({...req.params, ...mockData})
+            const resultado = await usuarioService.updateUsuario({...req.params},{mockData})
+            expect(resultado).toEqual({...req.params, ...mockData})
+        });
+        it('deve atualizar parte dos dados de um usuário com credenciais válidas', async () => {
+            const mockData = {
+                nome: "Usuario Atualizado",
+                email: "novo@gmail.com",
+                telefone: "(69) 8888-7777",
+                fotoUsuario: "http://lorempixel.com/780/560"
+            }
+            const mockDataAtualazido = mockData
+            mockDataAtualazido.nome = "Novo Nome"
+            req.body = mockDataAtualazido
+            req.params = {id:'67959501ea0999e0a0fa9f58'}
+            usuarioService.repository.buscarPorEmail.mockResolvedValue(null)
+            usuarioService.repository.buscarPorTelefone.mockResolvedValue(null)
+            usuarioService.repository.updateUsuario.mockResolvedValue({...req.params, ...mockDataAtualazido})
+            const resultado = await usuarioService.updateUsuario({...req.params},mockDataAtualazido.nome)
+            expect(resultado).toEqual({...req.params, ...mockDataAtualazido})
+        });
+        it('deve retornar um erro ao tentar atualizar o email já persistente em outro usuário', async () => {
+            const mockData = {
+                nome: "Usuario Atualizado",
+                email: "novo@gmail.com",
+                telefone: "(69) 8888-7777",
+                fotoUsuario: "http://lorempixel.com/780/560"
+            }
+            req.params = {id:'67959501ea0999e0a0fa9f58'}
+            usuarioService.repository.buscarPorEmail.mockRejectedValue(new CustomError({
+                statusCode: 409,
+                errorType:"Conflict",
+                details:[],
+                customMessage: messages.error.resourceConflict("Usuário", "E-mail")
+            }))
+            usuarioService.repository.buscarPorTelefone.mockResolvedValue(null)
+            await expect(usuarioService.updateUsuario(req.params, mockData)).rejects.toThrowErrorMatchingInlineSnapshot(`"Conflito de recurso em Usuário contém E-mail."`)
+        });
+        it('deve retornar um erro ao tentar atualizar o telefone já persistente em outro usuário', async () => {
+            const mockData = {
+                nome: "Usuario Atualizado",
+                email: "novo@gmail.com",
+                telefone: "(69) 8888-7777",
+                fotoUsuario: "http://lorempixel.com/780/560"
+            }
+            req.params = {id:'67959501ea0999e0a0fa9f58'}
+            usuarioService.repository.buscarPorEmail.mockResolvedValue(null)
+            usuarioService.repository.buscarPorTelefone.mockRejectedValue(new CustomError({
+                statusCode: 409,
+                errorType:"Conflict",
+                details:[],
+                customMessage: messages.error.resourceConflict("Usuário", "Telefone")
+            }))
+            await expect(usuarioService.updateUsuario(req.params, mockData)).rejects.toThrowErrorMatchingInlineSnapshot(`"Conflito de recurso em Usuário contém Telefone."`)
+        });
+    });
 })
