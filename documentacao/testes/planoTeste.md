@@ -40,10 +40,46 @@ A aplicação adota uma arquitetura modular em camadas, implementada com as tecn
 
 ## 4 - Casos de Teste
 
+Os casos de teste serão implementados ao longo do desenvolvimento, organizados em arquivos complementares. De forma geral, serão considerados cenários de sucesso, cenários de falha e as regras de negócio associadas a cada funcionalidade.
+
 ## 5 - Estratégia de Teste
+
+A estratégia de teste adotada neste projeto busca garantir a qualidade funcional e estrutural do sistema da biblioteca por meio da aplicação de testes em múltiplos níveis, alinhados ao ciclo de desenvolvimento.
+
+Serão executados testes em todos os níveis conforme a descrição abaixo.
+
+**Testes Unitários**: Focados em verificar o comportamento isolado das funções, serviços e regras de negócio, o código terá uma cobertura de 60% de testes unitários, que são de responsabilidade dos desenvolvedores.
+
+**Testes de Integração**: Verificarão a interação entre diferentes camadas (ex: controller + service + repository) e a integração com o banco de dados, serão executados testes de integração em todos os endpoints, e esses testes serão dos desenvolvedores.
+
+**Testes Manuais**: Realizados pontualmente na API por meio do Swagger ou Postman, com o objetivo de validar diferentes fluxos de uso e identificar comportamentos inesperados durante o desenvolvimento. A execução desses testes é de responsabilidade dos desenvolvedores, tanto durante quanto após a implementação das funcionalidades.
+
+Os testes serão implementados de forma incremental, acompanhando o desenvolvimento das funcionalidades. Cada funcionalidade terá seu próprio plano de teste específico, com os casos detalhados, critérios de aceitação e cenários de sucesso e falha.
 
 ## 6 -	Ambiente e Ferramentas
 
+Os testes serão feitos do ambiente de desenvolvimento, e contém as mesmas configurações do ambiente de produção.
+
+As seguintes ferramentas serão utilizadas no teste:
+
+Ferramenta | 	Time |	Descrição 
+-----------|--------|--------
+POSTMAN, Swagger UI 	| Desenvolvimento|	Ferramenta para realização de testes manuais de API
+Jest|	Desenvolvimento |Framework utilizada para testes unitários e integração
+Supertest|	Desenvolvimento|	Framework utilizada para testes de endpoints REST
+MongoDB Memory Server|	Desenvolvimento|	Para testes com banco em memória, garantindo isolamento dos dados
+
 ## 7 - Classificação de Bugs
 
-### 8 - Definição de Pronto 
+Os Bugs serão classificados com as seguintes severidades:
+
+ID 	|Nivel de Severidade |	Descrição 
+-----------|--------|--------
+1	|Blocker |	●	Bug que bloqueia o teste de uma função ou feature causa crash na aplicação. <br>●	Botão não funciona impedindo o uso completo da funcionalidade. <br>●	Bloqueia a entrega. 
+2	|Grave |	●	Funcionalidade não funciona como o esperado <br>●	Input incomum causa efeitos irreversíveis
+3	|Moderada |	●	Funcionalidade não atinge certos critérios de aceitação, mas sua funcionalidade em geral não é afetada <br>●	Mensagem de erro ou sucesso não é exibida
+4	|Pequena |	●	Quase nenhum impacto na funcionalidade porém atrapalha a experiência  <br>●	Erro ortográfico<br>● Pequenos erros de UI
+
+### 8 - 	Definição de Pronto
+
+Será considerada pronta as funcionalidades que passarem pelas verificações e testes descritas nos casos de teste, não apresentarem bugs com a severidade acima de moderada, e passarem por uma validação da equipe.
