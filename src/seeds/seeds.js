@@ -22,21 +22,21 @@ import Endereco from "../models/Endereco.js";
 
 await DbConnect.conectar();
 
-async function main(){
-    try {
-        const usuario = await SeedUsuario();
-        const enderecos = await SeedEndereco(usuario);   
-        const avaliacoes = await SeedAvaliacao(usuario);
-        await SeedEquipamentos(usuario, enderecos, avaliacoes);
-        await SeedReserva();
+async function main() {
+  try {
+    const usuario = await SeedUsuario();
+    const enderecos = await SeedEndereco(usuario);
+    const equipamentos = await SeedEquipamentos(usuario);
+    const avaliacoes = await SeedAvaliacao(usuario, equipamentos);
+    await SeedReserva();
 
-        console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
-      } catch (err) {
-        console.error("Erro ao executar SEED:", err);
-      } finally {
-        mongoose.connection.close();
-        process.exit(0);
-      }
+    console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
+  } catch (err) {
+    console.error("Erro ao executar SEED:", err);
+  } finally {
+    mongoose.connection.close();
+    process.exit(0);
+  }
 }
 
 main();

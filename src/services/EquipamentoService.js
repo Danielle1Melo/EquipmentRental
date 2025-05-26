@@ -1,4 +1,5 @@
 import EquipamentoRepository from '../repositories/EquipamentoRepository.js';
+import EquipamentoFilterBuilder from '../repositories/filters/EquipamentoFilterBuilder.js';
 import { CustomError, HttpStatusCodes, messages } from '../utils/helpers/index.js';
 import Avaliacao from '../models/Avaliacao.js';
 
@@ -7,26 +8,12 @@ class EquipamentoService {
     this.repository = new EquipamentoRepository();
   }
 
-  async buscarEquipamentos(filtros) {
+  async listar(filtros) {
     const { query, pagina, limite } = this._processarFiltros(filtros);
-    return await this.repository.buscarComFiltros(query, pagina, limite);
+    return await this.repository.listar(query, pagina, limite);
   }
 
-  async criarEquipamento(dados) {
-    const usuario = { _id: "682520e98e38a049ac2ac569" };
-    const avaliacaoIdTeste = "682520e98e38a049ac2ac570";
-
-    this._validarCamposObrigatorios(dados);
-
-    return await this.repository.criar({
-      ...dados,
-      equiUsuario: usuario._id,
-      equiNotaMediaAvaliacao: avaliacaoIdTeste,
-      equiStatus: false,
-    });
-  }
-
-  async detalharEquipamento(id, usuarioId) {
+  async listarPorId(id, usuarioId) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
     if (!equipamento.equiStatus && equipamento.equiUsuario.toString() !== usuarioId) {
@@ -39,17 +26,27 @@ class EquipamentoService {
     return equipamento;
   }
 
-  async atualizarEquipamento(id, dadosAtualizados) {
+  async criar(dados) {
+    const usuario = { _id: "682520e98e38a049ac2ac569" }; //teste
+
+    return await this.repository.criar({
+      ...dados,
+      equiUsuario: usuario._id,
+      avaliacoes: [],
+      equiNotaMediaAvaliacao: 0,
+      equiStatus: false,
+    });
+  }
+
+  async atualizar(id, dadosAtualizados) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
     this._verificarAtualizacaoPermitida(equipamento, dadosAtualizados);
 
-    const data = await this.repository.atualizarPorId(id, dadosAtualizados);
-    return data;
+    return await this.repository.atualizar(id, dadosAtualizados);
   }
 
-  async excluirEquipamento(id) {
-
+  async deletar(id) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
     const temLocacoesAtivas = false; 
@@ -61,39 +58,30 @@ class EquipamentoService {
       });
     }
 
-    return await this.repository.excluirPorId(id);
+    return await this.repository.deletar(id);
   }
-
 
   _processarFiltros(filtros) {
     const pagina = parseInt(filtros.page) || 1;
     const limite = parseInt(filtros.limit) || 10;
 
-    const filtrosQuery = { ...filtros };
-    delete filtrosQuery.page;
-    delete filtrosQuery.limit;
+    const builder = new EquipamentoFilterBuilder();
 
-    const query = {};
+    const status = (typeof filtros.status === 'boolean')
+      ? filtros.status
+      : (filtros.status === 'true' ? true : (filtros.status === 'false' ? false : true));
 
-    if (filtrosQuery.categoria) query.equiCategoria = filtrosQuery.categoria;
+    builder
+      .comCategoria(filtros.categoria)
+      .comStatus(status)
+      .comFaixaDeValor(filtros.minValor, filtros.maxValor);
 
-    if (filtrosQuery.status !== undefined) {
-      query.equiStatus = filtrosQuery.status === 'true';
-    } else {
-      query.equiStatus = true;
-    }
-
-    if (filtrosQuery.minValor || filtrosQuery.maxValor) {
-      query.equiValorDiaria = {};
-      if (filtrosQuery.minValor) query.equiValorDiaria.$gte = Number(filtrosQuery.minValor);
-      if (filtrosQuery.maxValor) query.equiValorDiaria.$lte = Number(filtrosQuery.maxValor);
-    }
-
+    const query = builder.build();
     return { query, pagina, limite };
   }
 
   async _buscarEquipamentoExistente(id) {
-    const equipamento = await this.repository.buscarPorId(id);
+    const equipamento = await this.repository.listarPorId(id);
     if (!equipamento) {
       throw new CustomError({
         statusCode: HttpStatusCodes.NOT_FOUND.code,
@@ -103,19 +91,30 @@ class EquipamentoService {
     return equipamento;
   }
 
-_verificarAtualizacaoPermitida(equipamento, dadosAtualizados) {
-  const camposPermitidos = ['equiValorDiaria', 'equiQuantidadeDisponivel', 'equiStatus'];
-  const camposAtualizados = Object.keys(dadosAtualizados);
+  _verificarAtualizacaoPermitida(equipamento, dadosAtualizados) {
+    const camposPermitidos = ['equiValorDiaria', 'equiQuantidadeDisponivel', 'equiStatus'];
+    const camposAtualizados = Object.keys(dadosAtualizados);
 
-  // verifica se o equipamento está ativo 
-  if (!equipamento.equiStatus) {
+    if (!equipamento.equiStatus) {
+      if (
+        camposAtualizados.length === 1 &&
+        'equiStatus' in dadosAtualizados &&
+        dadosAtualizados.equiStatus === true
+      ) {
+        return;
+      } else {
+        throw new CustomError({
+          statusCode: HttpStatusCodes.FORBIDDEN.code,
+          customMessage: 'Equipamento inativo. Não é possível atualizar.',
+        });
+      }
+    }
 
-    if (camposAtualizados.length === 1 && 'equiStatus' in dadosAtualizados && dadosAtualizados.equiStatus === true) {
-      return;
-    } else {
+    const camposInvalidos = camposAtualizados.filter(campo => !camposPermitidos.includes(campo));
+    if (camposInvalidos.length > 0) {
       throw new CustomError({
-        statusCode: HttpStatusCodes.FORBIDDEN.code,
-        customMessage: 'Equipamento inativo. Não é possível atualizar.',
+        statusCode: HttpStatusCodes.BAD_REQUEST.code,
+        customMessage: `Não é permitido alterar os seguintes campos: ${camposInvalidos.join(', ')}`,
       });
     }
   }

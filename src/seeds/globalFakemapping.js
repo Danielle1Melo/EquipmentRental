@@ -47,12 +47,13 @@ Endereco: {
       usuarios: [{_id: new mongoose.Types.ObjectId().toString}],
     }, 
 
-    Avaliacao: {
-      nota: () => fakebr.random.number({ min: 1, max: 5 }),
-      descricao: () => fakebr.lorem.sentence(),
-      dataAvaliacao: () => fakebr.date.past(),
-      usuario: [{_id: new mongoose.Types.ObjectId().to}]
-    }, 
+Avaliacao: {
+  nota: () => fakebr.random.number({ min: 1, max: 5 }),
+  descricao: () => fakebr.lorem.sentence(),
+  dataAvaliacao: () => fakebr.date.past(),
+  usuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
+  equipamento: [{ _id: new mongoose.Types.ObjectId().toString() }] // ✅ ADICIONE ISSO
+},
 Equipamento: {
   equiNome: () => fakebr.random.arrayElement([
     "Furadeira Bosch",
@@ -72,7 +73,7 @@ Equipamento: {
   equiUsuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
   equiFoto: () => fakebr.image.imageUrl(),
   equiNotaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
-  equiEndereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
+  equiAvaliacoes: [{ _id: new mongoose.Types.ObjectId().toString() }]
 }
 
 }

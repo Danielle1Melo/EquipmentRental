@@ -8,31 +8,29 @@ class Equipamento {
       equiDescricao: { type: String, required: true },
       equiValorDiaria: { type: Number, required: true },
       equiCategoria: { type: String, required: true },
-      equiFoto: { type: String, required: false },
+      equiFoto: { type: String },
       equiQuantidadeDisponivel: { type: Number, required: true },
       equiStatus: { type: Boolean, default: false },
       equiUsuario: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'usuario'
       },
-      equiNotaMediaAvaliacao: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'avaliacao', 
-        required: false 
+      equiNotaMediaAvaliacao: {
+        type: Number,
+        default: 0
       },
-       equiEndereco: {
+      equiAvaliacoes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'endereco',
-        required: false
-      }
+        ref: 'avaliacoes'
+      }]
     }, {
       timestamps: true,
       versionKey: false
-    });
+    })
 
-    equipamentoSchema.plugin(mongoosePaginate);
-    this.model = mongoose.model('equipamentos', equipamentoSchema);
+    equipamentoSchema.plugin(mongoosePaginate)
+    this.model = mongoose.model('equipamentos', equipamentoSchema)
   }
 }
 
-export default new Equipamento().model;
+export default new Equipamento().model
