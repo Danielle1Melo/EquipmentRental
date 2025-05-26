@@ -119,6 +119,17 @@ class EquipamentoService {
     }
   }
 
+  //se estiver ativo -- validação dos campo que nao podem ser atualizados
+  const camposInvalidos = camposAtualizados.filter(campo => !camposPermitidos.includes(campo));
+  if (camposInvalidos.length > 0) {
+    throw new CustomError({
+      statusCode: HttpStatusCodes.BAD_REQUEST.code,
+      customMessage: `Não é permitido alterar os seguintes campos: ${camposInvalidos.join(', ')}`,
+    });
+  }
+}
+
+
   _validarCamposObrigatorios(dados) {
     if (!dados.equiNome || !dados.equiCategoria) {
       throw new CustomError({
