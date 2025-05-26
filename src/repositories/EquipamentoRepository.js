@@ -6,10 +6,15 @@ class EquipamentoRepository {
   }
 
   async listar(query, pagina, limite) {
-    return await this.model.find(query)
-      .skip((pagina - 1) * limite)
-      .limit(limite);
+    const options = {
+      page: pagina,
+      limit: limite,
+      sort: { equiNome: 1 },
+    };
+
+    return await this.model.paginate(query, options);
   }
+
 
   async listarPorId(id) {
     return await this.model.findById(id);
