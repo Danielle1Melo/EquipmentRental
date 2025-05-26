@@ -1,7 +1,10 @@
 import { z } from "zod";
 import mongoose from 'mongoose';
 
-export const UsuarioIdSchema = z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+export const UsuarioIdSchema = z.string().refine((id) => id!==undefined && id.trim() !== "",{
+    message:`ID não pode ser undefined ou vazio`
+})
+.refine((id) => mongoose.Types.ObjectId.isValid(id), {
     message: "ID inválido",
 });
 const regexCPF = /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/

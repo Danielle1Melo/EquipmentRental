@@ -1,4 +1,4 @@
-import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
+import { CommonResponse } from '../utils/helpers/index.js';
 import UsuarioService from '../services/UsuarioService.js';
 import { UsuarioIdSchema, UsuarioQuerySchema } from '../utils/validators/schemas/zod/querys/UsuarioQuerySchema.js';
 import { UsuarioSchema, UsuarioUpdateSchema } from '../utils/validators/schemas/zod/UsuarioSchema.js';
@@ -41,7 +41,7 @@ class UsuarioController {
             return obj;
         }, {});
         UsuarioIdSchema.parse(id)
-        console.log(dadosFiltrados)
+        // console.log(dadosFiltrados)
         await UsuarioUpdateSchema.parseAsync(req.body)
         // console.log("BODY:", parseData)
         const data = await this.service.updateUsuario(id, dadosFiltrados)

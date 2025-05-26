@@ -1,6 +1,5 @@
-import { populate } from "dotenv"
 import UsuarioModel from "../models/Usuario.js"
-import AvaliacaoModel from "../models/Avaliacao.js"
+// import AvaliacaoModel from "../models/Avaliacao.js"
 import CustomError from "../utils/helpers/CustomError.js"
 import messages from "../utils/helpers/messages.js"
 import UsuarioFilterBuilder from "./filters/UsuarioFilterBuilder.js"
@@ -40,7 +39,7 @@ class UsuarioRepository {
 
     }
     async updateUsuario(id, parseData){
-        console.log("Estou no updateUsuario em UsuarioRepository")
+        // console.log("Estou no updateUsuario em UsuarioRepository")
         
         
         const usuarioAtualizado = await this.model.findByIdAndUpdate(id, {$set: parseData}, {new: true})
@@ -57,7 +56,7 @@ class UsuarioRepository {
 
     }
     async buscarPorId(id, includeTokens = false){
-        console.log("Estou no bucarPorId no UsuarioRepository")
+        // console.log("Estou no bucarPorId no UsuarioRepository")
         let query = this.model.findById(id)
 
         const user = await query
@@ -73,9 +72,9 @@ class UsuarioRepository {
         return user
     }
     async buscarPorEmail(email, idIgnorado = null){
-    console.log("Estou na buscarPorEmail Repository")
+    // console.log("Estou na buscarPorEmail Repository")
         const documento = await this.model.findOne({email:email, _id: {$ne: idIgnorado}})
-        console.log("Pesquisa conluida com sucesso")
+        // console.log("Pesquisa conluida com sucesso")
         if(documento){
             throw new CustomError({
                 statusCode: 409,
@@ -87,10 +86,10 @@ class UsuarioRepository {
         }
     }
     async buscarPorTelefone(telefone, id = null){
-        console.log("Estou no buscarPorTelefone no UsuarioRepository")
+        // console.log("Estou no buscarPorTelefone no UsuarioRepository")
         const documento = await this.model.findOne({telefone:telefone, _id:{$ne: id}}, '+senha')
-        console.log("Pesquisa conluida com sucesso")
-        console.log("Telefone encontrado:",documento)
+        // console.log("Pesquisa conluida com sucesso")
+        // console.log("Telefone encontrado:",documento)
         if(documento){
             throw new CustomError({
                 statusCode: 409,
@@ -104,7 +103,7 @@ class UsuarioRepository {
     async buscarPorCpf(cpf, id = null) {
         // console.log("Estou no buscarPorCpf no UsuarioRepository")
         const documento = await this.model.findOne({CPF:cpf, _id:{$ne: id}})
-        console.log(documento)
+        // console.log(documento)
         if(documento){
             throw new CustomError({
                 statusCode: 409,

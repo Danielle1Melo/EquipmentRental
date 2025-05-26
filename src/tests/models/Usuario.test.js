@@ -46,8 +46,6 @@ describe('Modelo de Usuário', () =>{
         await user.save()
         
         const savedUser = await Usuario.findById(user._id).select('-senha')
-        // console.log(savedUser.dataNascimento)
-        // console.log(userData.dataNascimento)
         expect(savedUser.nome).toBe(userData.nome)
         expect(savedUser.email).toBe(userData.email)
         expect(savedUser.telefone).toBe(userData.telefone)
