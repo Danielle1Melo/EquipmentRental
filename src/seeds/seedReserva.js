@@ -1,22 +1,21 @@
 import mongoose from "mongoose";
 import Reserva from "../models/Reserva.js";
-import getGlobalFakeMapping from "./globalFakeMapping.js";
 import DbConnect from "../config/Dbconnect.js";
+import getGlobalFakeMapping from "./globalFakeMapping.js";
 import Usuario from "../models/Usuario.js";
 import Equipamento from "../models/Equipamento.js";
 
-
 await DbConnect.conectar();
 
-async function SeedReserva(usuarios, equipamentos) {
+async function SeedReserva() {
   await Reserva.deleteMany();
 
   const globalFakeMapping = await getGlobalFakeMapping();
   
   const reservas = [];
 
-  // const usuarios = await Usuario.find()
-  // const equipamentos = await Equipamento.find()
+  const usuarios = await Usuario.find()
+  const equipamentos = await Equipamento.find()
 
   if (usuarios.length === 0) {
     throw new Error("Nenhum usuário encontrado. Rode o seed de usuários primeiro.");
@@ -37,7 +36,7 @@ async function SeedReserva(usuarios, equipamentos) {
         quantidadeEquipamento: globalFakeMapping.quantidadeEquipamento(),
         valorEquipamento: globalFakeMapping.valorEquipamento(),
         enderecoEquipamento: globalFakeMapping.enderecoEquipamento(),
-        status: globalFakeMapping.status(),
+        statusReserva: globalFakeMapping.statusReserva(),
         equipamento: [equipamentoAleatorio._id],
         usuario: [usuarioAleatorio._id]
     });

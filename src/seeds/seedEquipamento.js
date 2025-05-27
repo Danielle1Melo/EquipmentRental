@@ -1,17 +1,14 @@
-import getGlobalFakeMapping from "./globalFakeMapping.js";
-//import mongoose from "mongoose";
-import Equipamento from "../models/Equipamento.js";
+
 import Usuario from "../models/Usuario.js";
-//import DbConnect from "../config/DbConnect.js";
+
+import getGlobalFakeMapping from "./globalFakeMapping.js";
+import Equipamento from "../models/Equipamento.js"
 
 
+async function SeedEquipamentos(usuarios, enderecos) {
+  await Equipamento.deleteMany()
 
-async function SeedEquipamentos(usuario, enderecos, avaliacoes) {
-
-  await Equipamento.deleteMany();
-
-
-  const fake = await getGlobalFakeMapping();
+  const fake = await getGlobalFakeMapping()
 
   const categoriasValidas = [
     "Furadeira",
@@ -22,33 +19,28 @@ async function SeedEquipamentos(usuario, enderecos, avaliacoes) {
     "Compressor de Ar",
     "Soldador",
     "Betoneira"
-  ];
+  ]
 
   const equipamentos = []
 
-    for(let i = 0; i < usuario.length; i++){
+  for (let i = 0; i < usuarios.length; i++) {
     equipamentos.push({
-      nome: fake.nome(),
-      descricao:fake.descricao(),
-      valorDiaria: fake.valorDiaria(),
-      quantidadeDisponivel:fake.quantidadeDisponivel(),
-      categoria: categoriasValidas[Math.floor(Math.random() * categoriasValidas.length)],
-      status: fake.status(),
-      usuario:{_id:usuario[i]._id},
-      endereco: { _id: enderecos[i]._id },
-      foto: fake.foto(),
-      notaMediaAvaliacao: {_id: avaliacoes[i]._id}
-    });
-
+      equiNome: fake.equiNome(),
+      equiDescricao: fake.equiDescricao(),
+      equiValorDiaria: fake.equiValorDiaria(),
+      equiQuantidadeDisponivel: fake.equiQuantidadeDisponivel(),
+      equiCategoria: categoriasValidas[Math.floor(Math.random() * categoriasValidas.length)],
+      equiStatus: fake.equiStatus(),
+      equiUsuario: usuarios[i]._id,
+      equiFoto: fake.equiFoto(),
+      equiNotaMediaAvaliacao: 0,
+      equiAvaliacoes: [] 
+    })
   }
 
-  await Equipamento.collection.insertMany(equipamentos)
-  
-  console.log(`${Equipamento.length} Equipamentos inseridos com sucesso!`)
-
-  return await Equipamento.find();
+  const result = await Equipamento.insertMany(equipamentos)
+  console.log(`${result.length} Equipamentos inseridos com sucesso!`)
+  return result
 }
 
-
-export default SeedEquipamentos;
-
+export default SeedEquipamentos

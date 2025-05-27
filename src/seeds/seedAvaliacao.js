@@ -1,32 +1,50 @@
 import Avaliacao from "../models/Avaliacao.js"
 import DbConnect from "../config/Dbconnect.js"
 import Usuario from "../models/Usuario.js"
+
 import getGlobalFakeMapping from "./globalFakeMapping.js"
+import Equipamento from "../models/Equipamento.js"
 
 
+async function SeedAvaliacao(usuarios, equipamentos) {
+  await Avaliacao.deleteMany()
+ 
+  const fake = await getGlobalFakeMapping()
+  const avaliacoes = []
 
-async function SeedAvaliacao(usuario) {
-    await Avaliacao.deleteMany()
-    const avaliacoes = []
-    const fake =  await getGlobalFakeMapping()
-    for(let i = 0; i < usuario.length; i++){
-        const descricao = fake.descricao();
-        const nota = fake.nota()
-        const dataAvaliacao = fake.dataAvaliacao()
+  for (let i = 0; i < equipamentos.length; i++) {
+    const usuario = usuarios[i % usuarios.length]
+    const nota = fake.nota()
+    const descricao = fake.descricao()
 
+    const avaliacao = await Avaliacao.create({
+      nota,
+      descricao,
+      usuario: usuario._id,
+      equipamento: equipamentos[i]._id
+    })
 
-        avaliacoes.push({
-            descricao,
-            nota,
-            usuarioId:{_id:usuario[i]._id},
-            dataAvaliacao
-        })
-    }
+    avaliacoes.push(avaliacao)
 
-    await Avaliacao.collection.insertMany(avaliacoes)
-    console.log(`${avaliacoes.length} avaliaçoes inseridas com sucesso!`);
+    await Equipamento.findByIdAndUpdate(
+      equipamentos[i]._id,
+      { $push: { equiAvaliacoes: avaliacao._id } }
+    )
+  }
 
-    return await Avaliacao.find()
+  for (const equipamento of equipamentos) {
+    const equipamentoPopulado = await Equipamento.findById(equipamento._id).populate("equiAvaliacoes")
+    const notas = equipamentoPopulado.equiAvaliacoes.map(av => av.nota)
+    const media = notas.reduce((a, b) => a + b, 0) / notas.length || 0
+
+    await Equipamento.findByIdAndUpdate(
+      equipamento._id,
+      { equiNotaMediaAvaliacao: media.toFixed(1) }
+    )
+  }
+
+  // console.log(`${avaliacoes.length} avaliações inseridas com sucesso!`)
+  return avaliacoes
 }
 
 export default SeedAvaliacao
