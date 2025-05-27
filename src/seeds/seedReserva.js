@@ -45,7 +45,7 @@ async function SeedReserva() {
   const resultados = await Reserva.collection.insertMany(reservas);
   console.log(Object.keys(resultados.insertedIds).length + "Reservas concluídas!");
   
-  return Reserva.find();
+  return resultados
 }  
 
 
