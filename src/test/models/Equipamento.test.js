@@ -73,7 +73,7 @@ describe('Modelo Equipamento', () => {
     ).rejects.toThrow(mongoose.Error.ValidationError);
   });
 
-  it('Deve falhar ao salvar equipamento sem valor diário', async () => {
+  it('Deve falhar ao salvar equipamento sem valor da diária', async () => {
     await expect(
       new Equipamento({
         equiNome: 'Serra elétrica',
