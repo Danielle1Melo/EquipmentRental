@@ -30,6 +30,7 @@ describe('Modelo Equipamento', () => {
       equiDescricao: 'Furadeira industrial de alta potência',
       equiValorDiaria: 150,
       equiCategoria: 'Ferramentas',
+      equiFoto: ['foto1.jpg', 'foto2.jpg'], 
       equiQuantidadeDisponivel: 5,
     });
 
@@ -41,12 +42,11 @@ describe('Modelo Equipamento', () => {
     expect(saved.equiDescricao).toBe('Furadeira industrial de alta potência');
     expect(saved.equiValorDiaria).toBe(150);
     expect(saved.equiCategoria).toBe('Ferramentas');
+    expect(saved.equiFoto).toEqual(['foto1.jpg', 'foto2.jpg']);
     expect(saved.equiQuantidadeDisponivel).toBe(5);
     expect(saved.equiStatus).toBe(false); 
     expect(saved.equiNotaMediaAvaliacao).toBe(0); 
     expect(saved.equiAvaliacoes).toEqual([]); 
-    expect(saved.createdAt).toBeDefined();
-    expect(saved.updatedAt).toBeDefined();
   });
 
   it('Deve falhar ao salvar equipamento sem nome', async () => {
@@ -55,6 +55,7 @@ describe('Modelo Equipamento', () => {
         equiDescricao: 'Equipamento sem nome',
         equiValorDiaria: 100,
         equiCategoria: 'Ferramentas',
+        equiFoto: ['foto.jpg'],
         equiQuantidadeDisponivel: 3,
       }).save()
     ).rejects.toThrow(mongoose.Error.ValidationError);
@@ -66,7 +67,56 @@ describe('Modelo Equipamento', () => {
         equiNome: 'Serra elétrica',
         equiValorDiaria: 90,
         equiCategoria: 'Ferramentas',
+        equiFoto: ['foto.jpg'],
         equiQuantidadeDisponivel: 2,
+      }).save()
+    ).rejects.toThrow(mongoose.Error.ValidationError);
+  });
+
+  it('Deve falhar ao salvar equipamento sem valor diário', async () => {
+    await expect(
+      new Equipamento({
+        equiNome: 'Serra elétrica',
+        equiDescricao: 'Serra elétrica potente',
+        equiCategoria: 'Ferramentas',
+        equiFoto: ['foto.jpg'],
+        equiQuantidadeDisponivel: 2,
+      }).save()
+    ).rejects.toThrow(mongoose.Error.ValidationError);
+  });
+
+  it('Deve falhar ao salvar equipamento sem categoria', async () => {
+    await expect(
+      new Equipamento({
+        equiNome: 'Serra elétrica',
+        equiDescricao: 'Serra elétrica potente',
+        equiValorDiaria: 90,
+        equiFoto: ['foto.jpg'],
+        equiQuantidadeDisponivel: 2,
+      }).save()
+    ).rejects.toThrow(mongoose.Error.ValidationError);
+  });
+
+  it('Deve falhar ao salvar equipamento sem fotos', async () => {
+    await expect(
+      new Equipamento({
+        equiNome: 'Serra elétrica',
+        equiDescricao: 'Serra elétrica potente',
+        equiValorDiaria: 90,
+        equiCategoria: 'Ferramentas',
+        equiQuantidadeDisponivel: 2,
+      }).save()
+    ).rejects.toThrow(mongoose.Error.ValidationError);
+  });
+
+  it('Deve falhar ao salvar equipamento sem quantidade disponível', async () => {
+    await expect(
+      new Equipamento({
+        equiNome: 'Serra elétrica',
+        equiDescricao: 'Serra elétrica potente',
+        equiValorDiaria: 90,
+        equiCategoria: 'Ferramentas',
+        equiFoto: ['foto.jpg'],
       }).save()
     ).rejects.toThrow(mongoose.Error.ValidationError);
   });
@@ -78,6 +128,7 @@ describe('Modelo Equipamento', () => {
       equiDescricao: 'Betoneira de 400 litros',
       equiValorDiaria: 200,
       equiCategoria: 'Construção',
+      equiFoto: ['foto.jpg'],
       equiQuantidadeDisponivel: 1,
     });
 
@@ -86,20 +137,6 @@ describe('Modelo Equipamento', () => {
     expect(saved.equiStatus).toBe(false);
   });
 
-  it('Deve permitir salvar equipamento sem foto e sem avaliações', async () => {
-    const equipamento = new Equipamento({
-      equiNome: 'Martelo Pneumático',
-      equiDescricao: 'Martelo de impacto para obras pesadas',
-      equiValorDiaria: 120,
-      equiCategoria: 'Ferramentas',
-      equiQuantidadeDisponivel: 2,
-    });
-
-    const saved = await equipamento.save();
-
-    expect(saved.equiFoto).toBeUndefined();
-    expect(saved.equiAvaliacoes.length).toBe(0);
-  });
 
   //não é possivel criar uma avaliação juntos com o equipamento
   it('Deve criar equipamento com campo equiNotaMediaAvaliacao como 0 por padrão', async () => {
@@ -108,6 +145,7 @@ describe('Modelo Equipamento', () => {
       equiDescricao: 'Compressor de ar industrial 50L',
       equiValorDiaria: 180,
       equiCategoria: 'Industrial',
+      equiFoto: ['foto.jpg'],
       equiQuantidadeDisponivel: 3,
     });
 
@@ -117,30 +155,32 @@ describe('Modelo Equipamento', () => {
   });
 
   it('Deve retornar todos os equipamentos cadastrados', async () => {
-  const e1 = new Equipamento({
-    equiNome: 'Furadeira',
-    equiDescricao: 'Furadeira de impacto',
-    equiValorDiaria: 100,
-    equiCategoria: 'Ferramentas',
-    equiQuantidadeDisponivel: 3,
+    const e1 = new Equipamento({
+      equiNome: 'Furadeira',
+      equiDescricao: 'Furadeira de impacto',
+      equiValorDiaria: 100,
+      equiCategoria: 'Ferramentas',
+      equiFoto: ['foto1.jpg'],
+      equiQuantidadeDisponivel: 3,
+    });
+
+    const e2 = new Equipamento({
+      equiNome: 'Lixadeira',
+      equiDescricao: 'Lixadeira orbital',
+      equiValorDiaria: 80,
+      equiCategoria: 'Ferramentas',
+      equiFoto: ['foto2.jpg'],
+      equiQuantidadeDisponivel: 2,
+    });
+
+    await e1.save();
+    await e2.save();
+
+    const equipamentos = await Equipamento.find();
+
+    expect(equipamentos.length).toBe(2);
+    const nomes = equipamentos.map(e => e.equiNome);
+    expect(nomes).toContain('Furadeira');
+    expect(nomes).toContain('Lixadeira');
   });
-
-  const e2 = new Equipamento({
-    equiNome: 'Lixadeira',
-    equiDescricao: 'Lixadeira orbital',
-    equiValorDiaria: 80,
-    equiCategoria: 'Ferramentas',
-    equiQuantidadeDisponivel: 2,
-  });
-
-  await e1.save();
-  await e2.save();
-
-  const equipamentos = await Equipamento.find();
-
-  expect(equipamentos.length).toBe(2);
-  const nomes = equipamentos.map(e => e.equiNome);
-  expect(nomes).toContain('Furadeira');
-  expect(nomes).toContain('Lixadeira');
-});
 });
