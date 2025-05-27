@@ -9,8 +9,12 @@ class Equipamento {
       equiValorDiaria: { type: Number, required: true },
       equiCategoria: { type: String, required: true },
       equiFoto: {
-        type: [String], 
-        required: true
+        type: [String],
+        required: true,
+        validate: {
+          validator: (arr) => Array.isArray(arr) && arr.length > 0,
+          message: 'O equipamento deve ter pelo menos uma foto',
+        },
       },
       equiQuantidadeDisponivel: { type: Number, required: true },
       equiStatus: { type: Boolean, default: false },
