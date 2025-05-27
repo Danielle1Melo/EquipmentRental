@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 
+
 class Avaliacao {
   constructor() {
     const avaliacaoSchema = new mongoose.Schema({
@@ -26,4 +27,7 @@ class Avaliacao {
   }
 }
 
-export default new Avaliacao().model
+
+export default new Avaliacao().model;
+
+

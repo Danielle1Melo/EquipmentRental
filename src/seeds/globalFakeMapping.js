@@ -3,7 +3,7 @@ import fakebr from 'faker-br';
 import mongoose from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import loadModels from './loadModels.js';
-import { gerarDataAleatoria } from '../utils/helpers/randomPasteDate.js'
+import { gerarDataAleatoria } from '../utils/helpers/randomPastDate.js';
 
 const fakeMappings = {
     common: {
@@ -71,7 +71,11 @@ Equipamento: {
   equiCategoria: () => fakebr.commerce.department(),
   equiStatus: () => fakebr.random.boolean(), 
   equiUsuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
-  equiFoto: () => fakebr.image.imageUrl(),
+  equiFoto: () => [
+  fakebr.image.imageUrl(),
+  fakebr.image.imageUrl(),
+  fakebr.image.imageUrl()
+],
   equiNotaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
   equiAvaliacoes: [{ _id: new mongoose.Types.ObjectId().toString() }]
 }

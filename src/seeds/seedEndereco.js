@@ -23,7 +23,7 @@ async function SeedEndereco(usuario) {
 
   await Endereco.insertMany(enderecos);
 
-  console.log(`${enderecos.length} endereços inseridos com sucesso.`);
+  // console.log(`${enderecos.length} endereços inseridos com sucesso.`);
 
   return await Endereco.find();
 }

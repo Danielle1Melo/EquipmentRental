@@ -27,17 +27,23 @@ class EquipamentoService {
   }
 
   async criar(dados) {
-    const usuario = { _id: "682520e98e38a049ac2ac569" }; //teste
+    if (!dados.equiFoto || !Array.isArray(dados.equiFoto) || dados.equiFoto.length === 0) {
+      throw new CustomError({
+        statusCode: HttpStatusCodes.BAD_REQUEST.code,
+        customMessage: "Pelo menos uma foto é obrigatória",
+      });
+    }
+
+    const usuario = { _id: "682520e98e38a049ac2ac569" }; // teste
 
     return await this.repository.criar({
       ...dados,
       equiUsuario: usuario._id,
-      avaliacoes: [],
+      equiAvaliacoes: [],
       equiNotaMediaAvaliacao: 0,
       equiStatus: false,
     });
   }
-
   async atualizar(id, dadosAtualizados) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
@@ -49,7 +55,7 @@ class EquipamentoService {
   async deletar(id) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
-    const temLocacoesAtivas = false; 
+    const temLocacoesAtivas = false;
 
     if (temLocacoesAtivas) {
       throw new CustomError({
@@ -118,18 +124,6 @@ class EquipamentoService {
       });
     }
   }
-
-  //se estiver ativo -- validação dos campo que nao podem ser atualizados
-  const camposInvalidos = camposAtualizados.filter(campo => !camposPermitidos.includes(campo));
-  if (camposInvalidos.length > 0) {
-    throw new CustomError({
-      statusCode: HttpStatusCodes.BAD_REQUEST.code,
-      customMessage: `Não é permitido alterar os seguintes campos: ${camposInvalidos.join(', ')}`,
-    });
-  }
-}
-
-
   _validarCamposObrigatorios(dados) {
     if (!dados.equiNome || !dados.equiCategoria) {
       throw new CustomError({
@@ -138,6 +132,8 @@ class EquipamentoService {
       });
     }
   }
+
 }
+
 
 export default EquipamentoService;
