@@ -8,7 +8,7 @@ class Equipamento {
       equiDescricao: { type: String, required: true },
       equiValorDiaria: { type: Number, required: true },
       equiCategoria: { type: String, required: true },
-      equiFoto: { type: String },
+      equiFoto: { type: String, required: true },
       equiQuantidadeDisponivel: { type: Number, required: true },
       equiStatus: { type: Boolean, default: false },
       equiUsuario: {

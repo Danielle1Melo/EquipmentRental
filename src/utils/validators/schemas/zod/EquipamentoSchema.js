@@ -23,7 +23,10 @@ export const equipamentoSchema = z.object({
     invalid_type_error: "Quantidade deve ser um número",
   }),
   equiCategoria: z.enum(categoriasValidas),
-  equiFoto: z.string().url().optional(), 
+   equiFoto: z.string({
+    required_error: "URL da foto é obrigatória",
+    invalid_type_error: "A foto deve ser uma URL válida"
+  }).url()
 });
 
 export const equipamentoUpdateSchema = z.object({
