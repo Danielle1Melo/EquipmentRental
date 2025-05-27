@@ -71,7 +71,11 @@ Equipamento: {
   equiCategoria: () => fakebr.commerce.department(),
   equiStatus: () => fakebr.random.boolean(), 
   equiUsuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
-  equiFoto: () => fakebr.image.imageUrl(),
+  equiFoto: () => [
+  fakebr.image.imageUrl(),
+  fakebr.image.imageUrl(),
+  fakebr.image.imageUrl()
+],
   equiNotaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
   equiAvaliacoes: [{ _id: new mongoose.Types.ObjectId().toString() }]
 }

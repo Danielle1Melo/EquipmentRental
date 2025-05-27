@@ -27,17 +27,23 @@ class EquipamentoService {
   }
 
   async criar(dados) {
-    const usuario = { _id: "682520e98e38a049ac2ac569" }; //teste
+    if (!dados.equiFoto || !Array.isArray(dados.equiFoto) || dados.equiFoto.length === 0) {
+      throw new CustomError({
+        statusCode: HttpStatusCodes.BAD_REQUEST.code,
+        customMessage: "Pelo menos uma foto é obrigatória",
+      });
+    }
+
+    const usuario = { _id: "682520e98e38a049ac2ac569" }; // teste
 
     return await this.repository.criar({
       ...dados,
       equiUsuario: usuario._id,
-      avaliacoes: [],
+      equiAvaliacoes: [],
       equiNotaMediaAvaliacao: 0,
       equiStatus: false,
     });
   }
-
   async atualizar(id, dadosAtualizados) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
@@ -49,7 +55,7 @@ class EquipamentoService {
   async deletar(id) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
-    const temLocacoesAtivas = false; 
+    const temLocacoesAtivas = false;
 
     if (temLocacoesAtivas) {
       throw new CustomError({
@@ -118,7 +124,7 @@ class EquipamentoService {
       });
     }
   }
-    _validarCamposObrigatorios(dados) {
+  _validarCamposObrigatorios(dados) {
     if (!dados.equiNome || !dados.equiCategoria) {
       throw new CustomError({
         statusCode: HttpStatusCodes.BAD_REQUEST.code,
