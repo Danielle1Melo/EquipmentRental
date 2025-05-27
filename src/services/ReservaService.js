@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 import ReservaRepository from '../repositories/ReservaRepository.js';
 import CustomError from '../utils/helpers/CustomError.js'
 import { parse } from 'dotenv';
@@ -123,6 +124,7 @@ class ReservaService {
             });
         }
 
+
         const data = await this.repository.criar(parsedData);
 
         return data;
@@ -139,6 +141,7 @@ class ReservaService {
     }
 
 
+
     async ensureReservaExists(id) {
         const reservaExistente = await this.repository.buscarPorID(id);
         if (!reservaExistente) {
@@ -152,6 +155,7 @@ class ReservaService {
         }
         return reservaExistente;
     }
+
 }
 
 export default ReservaService;

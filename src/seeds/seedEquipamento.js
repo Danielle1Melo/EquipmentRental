@@ -1,5 +1,9 @@
-import getGlobalFakeMapping from "./globalFakeMapping.js"
+
+import Usuario from "../models/Usuario.js";
+
+import getGlobalFakeMapping from "./globalFakeMapping.js";
 import Equipamento from "../models/Equipamento.js"
+
 
 async function SeedEquipamentos(usuarios, enderecos) {
   await Equipamento.deleteMany()

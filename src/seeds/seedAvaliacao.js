@@ -1,10 +1,14 @@
 import Avaliacao from "../models/Avaliacao.js"
+import DbConnect from "../config/Dbconnect.js"
+import Usuario from "../models/Usuario.js"
+
 import getGlobalFakeMapping from "./globalFakeMapping.js"
 import Equipamento from "../models/Equipamento.js"
 
+
 async function SeedAvaliacao(usuarios, equipamentos) {
   await Avaliacao.deleteMany()
-
+ 
   const fake = await getGlobalFakeMapping()
   const avaliacoes = []
 
@@ -39,7 +43,7 @@ async function SeedAvaliacao(usuarios, equipamentos) {
     )
   }
 
-  console.log(`${avaliacoes.length} avaliações inseridas com sucesso!`)
+  // console.log(`${avaliacoes.length} avaliações inseridas com sucesso!`)
   return avaliacoes
 }
 
