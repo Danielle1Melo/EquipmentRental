@@ -4,35 +4,33 @@ import mongoosePaginate from 'mongoose-paginate-v2'
 class Equipamento {
   constructor() {
     const equipamentoSchema = new mongoose.Schema({
-      nome: { type: String, required: true },
-      descricao: { type: String, required: true },
-      valorDiaria: { type: Number, required: true },
-      categoria: { type: String, required: true },
-      foto: { type: String, required: false },
-      quantidadeDisponivel: { type: Number, required: true },
-      status: { type: Boolean, default: false },
-      usuario: {
+      equiNome: { type: String, required: true },
+      equiDescricao: { type: String, required: true },
+      equiValorDiaria: { type: Number, required: true },
+      equiCategoria: { type: String, required: true },
+      equiFoto: { type: String },
+      equiQuantidadeDisponivel: { type: Number, required: true },
+      equiStatus: { type: Boolean, default: false },
+      equiUsuario: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'usuario'
       },
-      notaMediaAvaliacao: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'avaliacao', 
-        required: false 
+      equiNotaMediaAvaliacao: {
+        type: Number,
+        default: 0
       },
-       endereco: {
+      equiAvaliacoes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'endereco',
-        required: false
-      }
+        ref: 'avaliacoes'
+      }]
     }, {
       timestamps: true,
       versionKey: false
-    });
+    })
 
-    equipamentoSchema.plugin(mongoosePaginate);
-    this.model = mongoose.model('equipamentos', equipamentoSchema);
+    equipamentoSchema.plugin(mongoosePaginate)
+    this.model = mongoose.model('equipamentos', equipamentoSchema)
   }
 }
 
-export default new Equipamento().model;
+export default new Equipamento().model

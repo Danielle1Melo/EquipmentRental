@@ -37,37 +37,49 @@ Endereco: {
    
 },
 
- Reserva: {
+  Reserva: {
       dataInicial: () => fakebr.date.past(),
       dataFinal: () => fakebr.date.future(),
       dataFinalAtrasada: () => fakebr.date.future(),
       quantidadeEquipamento: () => fakebr.random.number({ min: 1, max: 10 }),
       valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
       enderecoEquipamento: () => fakebr.address.streetAddress(),
-      status: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
-      equipamento: [{_id: new mongoose.Types.ObjectId().toString}],
-      usuario: [{_id: new mongoose.Types.ObjectId().toString()}],
+      statusReserva: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
+      equipamentos: [{_id: new mongoose.Types.ObjectId().toString}],
+      usuarios: [{_id: new mongoose.Types.ObjectId().toString}],
     }, 
 
-    Avaliacao: {
-      nota: () => fakebr.random.number({ min: 1, max: 5 }),
-      descricao: () => fakebr.lorem.sentence(),
-      dataAvaliacao: () => fakebr.date.past(),
-      usuario: [{_id: new mongoose.Types.ObjectId().toString()}]
-    }, 
+   Avaliacao: {
+  nota: () => fakebr.random.number({ min: 1, max: 5 }),
+  descricao: () => fakebr.lorem.sentence(),
+  dataAvaliacao: () => fakebr.date.past(),
+  usuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
+  equipamento: [{ _id: new mongoose.Types.ObjectId().toString() }] // ✅ ADICIONE ISSO
+}
+, 
 
-    Equipamento: {
-      nome: () => fakebr.commerce.productName(),
-      descricao: () => fakebr.lorem.sentence(),
-      valorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
-      quantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
-      categoria: () => fakebr.commerce.department(),
-      status: () => fakebr.random.arrayElement(['disponível', 'indisponível']),
-      usuario: [{_id: new mongoose.Types.ObjectId().to}],
-      foto: () => fakebr.image.imageUrl(),
-      notaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
-      endereco: [{ _id: new mongoose.Types.ObjectId().toString() }]
-    }
+   Equipamento: {
+  equiNome: () => fakebr.random.arrayElement([
+    "Furadeira Bosch",
+    "Parafusadeira Makita",
+    "Serra Circular Dewalt",
+    "Lixadeira Orbital Black+Decker",
+    "Compressor Schulz",
+    "Multímetro Digital ICEL",
+    "Betoneira CSM 400L",
+    "Soldador Inversor Vonder"
+  ]),
+  equiDescricao: () => fakebr.lorem.sentence(),
+  equiValorDiaria: () => fakebr.random.number({ min: 10, max: 100 }),
+  equiQuantidadeDisponivel: () => fakebr.random.number({ min: 1, max: 50 }),
+  equiCategoria: () => fakebr.commerce.department(),
+  equiStatus: () => fakebr.random.boolean(), 
+  equiUsuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
+  equiFoto: () => fakebr.image.imageUrl(),
+  equiNotaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
+  equiAvaliacoes: [{ _id: new mongoose.Types.ObjectId().toString() }]
+}
+
 }
 
 
