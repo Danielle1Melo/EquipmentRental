@@ -11,16 +11,16 @@ const fakeMappings = {
     },
 
    Usuario: {
-        nome: () => fakebr.name.firstName(),
-        sobrenome: () => fakebr.name.lastName(),
+        nome: () => fakebr.name.firstName() + " " + fakebr.name.lastName(),
         email: () => fakebr.internet.email(),
         telefone: () => fakebr.phone.phoneNumber(),
         senha: () => fakebr.internet.password(),
         dataNascimento: () => gerarDataAleatoria(),
-        cpf: () => fakebr.br.cpf(),
+        CPF: () => fakebr.br.cpf(),
         notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
+        fotoUsuario: () => fakebr.internet.avatar(),
         
     }, 
 Endereco: {
@@ -31,11 +31,11 @@ Endereco: {
     endeCep: () => fakebr.address.zipCode(),
     endeCidade: () => fakebr.address.city(),
     endeComplemento: () => fakebr.address.secondaryAddress(),
-    usuario: [{_id: new mongoose.Types.ObjectId().to}],
+    usuario: [{_id: new mongoose.Types.ObjectId().toString()}],
    
 },
 
- Reserva: {
+  Reserva: {
       dataInicial: () => fakebr.date.past(),
       dataFinal: () => fakebr.date.future(),
       dataFinalAtrasada: () => fakebr.date.future(),
@@ -53,6 +53,7 @@ Avaliacao: {
   dataAvaliacao: () => fakebr.date.past(),
   usuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
   equipamento: [{ _id: new mongoose.Types.ObjectId().toString() }] // ✅ ADICIONE ISSO
+
 },
 Equipamento: {
   equiNome: () => fakebr.random.arrayElement([

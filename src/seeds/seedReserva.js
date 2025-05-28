@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Reserva from "../models/Reserva.js";
-import DbConnect from "../config/Dbconnect.js";
+import DbConnect from "../config/DbConnect.js";
 import getGlobalFakeMapping from "./globalFakeMapping.js";
 import Usuario from "../models/Usuario.js";
 import Equipamento from "../models/Equipamento.js";
@@ -45,7 +45,7 @@ async function SeedReserva() {
   const resultados = await Reserva.collection.insertMany(reservas);
   console.log(Object.keys(resultados.insertedIds).length + "Reservas concluídas!");
   
-  return Reserva.find();
+  return resultados
 }  
 
 

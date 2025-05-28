@@ -1,6 +1,6 @@
 // src/config/DbConnect.js
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 import { URL } from 'url';
 import SendMail from '../utils/SendMail.js'; // Assegure-se de que este caminho está correto
 import logger from '../utils/logger.js';
@@ -19,6 +19,7 @@ class DbConnect {
         try {
             const mongoUri = process.env.DB_URL;
 
+            console.log(mongoUri);
             if (!mongoUri) {
                 throw new Error("A variável de ambiente DB_URL não está definida.");
             }
