@@ -1,4 +1,4 @@
-## 3° Sprint (30/05/2025 - 12/05/2025)
+## 3° Sprint (30/04/2025 - 12/05/2025)
 **Implementar Models**
 - Reserva (Danielle Melo)
 - Usuário (Silvio Huan)
