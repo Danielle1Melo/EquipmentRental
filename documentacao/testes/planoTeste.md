@@ -2,13 +2,14 @@
 
 **Projeto Aluguel de Equipamentos**
 
-*versão 1.0*    
+*versão 2.0*    
 
 ## Histórico das alterações 
 
    Data    | Versão |    Descrição   | Autor(a)
 -----------|--------|----------------|-----------------
 20/05/2025 |  1.0   | Primeira Versão Da API | Danielle Melo
+27/05/2025 |  2.0   | Primeira Versão Da API | Danielle Melo
 
 ## 1 - Introdução
 

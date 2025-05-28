@@ -24,9 +24,7 @@ async function main(){
       const enderecos = await SeedEndereco(usuarios);
       const equipamentos = await SeedEquipamentos(usuarios);
       const avaliacoes = await SeedAvaliacao(usuarios, equipamentos);
-      await SeedReserva();
-
-
+      const resevas = await SeedReserva(usuarios, equipamentos);
 
     console.log(">>> SEED FINALIZADO COM SUCESSO! <<<");
   } catch (err) {

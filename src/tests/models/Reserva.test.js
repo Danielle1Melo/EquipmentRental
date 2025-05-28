@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Reserva from "../../models/Reserva.js";
 import Equipamento from "../../models/Equipamento.js";
 import Usuario from "../../models/Usuario.js";
-import { it, expect, describe, beforeAll, afterAll } from "@jest/globals";
+//import { it, expect, describe, beforeAll, afterAll } from "@jest/globals";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
 let mongoServer;
@@ -23,15 +23,26 @@ describe("Modelo Reserva", () => {
 
   beforeAll(async () => {
     const equipamento = await new Equipamento({
-      nome: "Câmera",
-      quantidadeDisponivel: 10,
+      equiNome: "Kensei",
+      equiDescricao: "Voluptas fugiat veritatis maiores cum culpa.",
+      equiValorDiaria: 43, 
+      equiCategoria: "Soldador",
+      equiQuantidadeDisponivel: 2,
       valor: 100,
+      equiFoto: "http://lorempixel.com/640/480"
     }).save();
     equipamentoId = equipamento._id;
 
     const usuario = await new Usuario({
-      nome: "João Silva",
-      email: "joao@example.com",
+      nome: "João",
+      sobrenome: "Silva",
+      email: "joao.silva@example.com",
+      telefone: "11987654321",
+      senha: "senhaSegura123",
+      dataNascimento: new Date("1990-05-15"),
+      cpf: "12345678900",
+      status: "ativo",
+      tipoUsuario: "cliente"
     }).save();
     usuarioId = usuario._id;
   });
@@ -43,9 +54,9 @@ describe("Modelo Reserva", () => {
       quantidadeEquipamento: 2,
       valorEquipamento: 200,
       enderecoEquipamento: "Rua Exemplo, 123",
-      equipamento: equipamentoId,
-      usuario: usuarioId,
-      status: "confirmada",
+      statusReserva: "confirmada",
+      equipamentos: equipamentoId,
+      usuarios: usuarioId,
     });
 
     const savedReserva = await reserva.save();
@@ -56,7 +67,7 @@ describe("Modelo Reserva", () => {
     expect(savedReserva.quantidadeEquipamento).toBe(2);
     expect(savedReserva.valorEquipamento).toBe(200);
     expect(savedReserva.enderecoEquipamento).toBe("Rua Exemplo, 123");
-    expect(savedReserva.status).toBe("confirmada");
+    expect(savedReserva.statusReserva).toBe("confirmada");
     expect(savedReserva.createdAt).toBeDefined();
     expect(savedReserva.updatedAt).toBeDefined();
   });
@@ -67,8 +78,8 @@ describe("Modelo Reserva", () => {
       quantidadeEquipamento: 2,
       valorEquipamento: 200,
       enderecoEquipamento: "Rua Exemplo, 123",
-      equipamento: equipamentoId,
-      usuario: usuarioId,
+      equipamentos: equipamentoId,
+      usuarios: usuarioId,
     });
 
     let error;
@@ -90,8 +101,8 @@ describe("Modelo Reserva", () => {
       quantidadeEquipamento: 2,
       valorEquipamento: 200,
       enderecoEquipamento: "Rua Exemplo, 123",
-      equipamento: equipamentoId,
-      usuario: usuarioId,
+      equipamentos: equipamentoId,
+      usuarios: usuarioId,
     });
 
     let error;
@@ -113,13 +124,13 @@ describe("Modelo Reserva", () => {
       quantidadeEquipamento: 2,
       valorEquipamento: 200,
       enderecoEquipamento: "Rua Exemplo, 123",
-      equipamento: equipamentoId,
-      usuario: usuarioId,
+      equipamentos: equipamentoId,
+      usuarios: usuarioId,
     });
 
     const savedReserva = await reserva.save();
 
-    expect(savedReserva.status).toBe("pendente");
+    expect(savedReserva.statusReserva).toBe("pendente");
   });
 
   it("Deve registrar timestamps automaticamente", async () => {
@@ -129,8 +140,8 @@ describe("Modelo Reserva", () => {
       quantidadeEquipamento: 2,
       valorEquipamento: 200,
       enderecoEquipamento: "Rua Exemplo, 123",
-      equipamento: equipamentoId,
-      usuario: usuarioId,
+      equipamentos: equipamentoId,
+      usuarios: usuarioId,
     });
 
     const savedReserva = await reserva.save();
@@ -148,8 +159,8 @@ describe("Modelo Reserva", () => {
       quantidadeEquipamento: 0,
       valorEquipamento: 200,
       enderecoEquipamento: "Rua Exemplo, 123",
-      equipamento: equipamentoId,
-      usuario: usuarioId,
+      equipamentos: equipamentoId,
+      usuarios: usuarioId,
     });
 
     let error;

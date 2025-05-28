@@ -7,7 +7,7 @@ class Reserva {
             dataInicial: { type: Date, required: [true, "A data inicial é obrigatória"]},
             dataFinal: { type: Date, required: true },
             dataFinalAtrasada: { type: Date, required: false },
-            quantidadeEquipamento: { type: Number, required: true },
+            quantidadeEquipamento: { type: Number, required: true, min: [1, "A quantidade de equipamento deve ser no mínimo 1"] },
             valorEquipamento: { type: Number, required: true },
             enderecoEquipamento: { type: String, required: true },
             statusReserva: { type: String, enum: ['pendente', 'confirmada', 'cancelada'], default: 'pendente' },
