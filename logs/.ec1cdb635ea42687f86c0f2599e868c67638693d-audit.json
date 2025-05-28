@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/Users/silviohuan/Desktop/Pasta Escola/Fabrica-II/aluguel-de-equipamentos/logs/.ec1cdb635ea42687f86c0f2599e868c67638693d-audit.json",
+    "files": [
+        {
+            "date": 1747336053615,
+            "name": "/Users/silviohuan/Desktop/Pasta Escola/Fabrica-II/aluguel-de-equipamentos/logs/error-2025-05-15.log",
+            "hash": "3ac8d0785416dea58d06406952bdf030aa097ef5874ac272b7d2ae2e938cbf7c"
+        },
+        {
+            "date": 1747419827325,
+            "name": "/Users/silviohuan/Desktop/Pasta Escola/Fabrica-II/aluguel-de-equipamentos/logs/error-2025-05-16.log",
+            "hash": "2a120b2fa4c798f050fb983e84f47322b9ff2f77c6596866066c3cea9ef7798e"
+        },
+        {
+            "date": 1748028222878,
+            "name": "/Users/silviohuan/Desktop/Pasta Escola/Fabrica-II/aluguel-de-equipamentos/logs/error-2025-05-23.log",
+            "hash": "af8520a1102231ed48cfbfef31ee8c8dbde874223bf40fd50cd7a08279f8e471"
+        }
+    ],
+    "hashType": "sha256"
+}
