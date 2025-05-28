@@ -217,6 +217,11 @@ describe("EquipamentoService", () => {
       mockEquipamentoRepositoryInstance.listarPorId.mockResolvedValue(equipamentoInativo);
       const dadosAtivacao = { equiStatus: true };
 
+      mockEquipamentoRepositoryInstance.atualizar.mockResolvedValue({
+        ...equipamentoInativo,
+        ...dadosAtivacao,
+      });
+
       const resultado = await equipamentoService.atualizar("1", dadosAtivacao);
 
       expect(mockEquipamentoRepositoryInstance.atualizar).toHaveBeenCalledWith("1", dadosAtivacao);
@@ -377,7 +382,8 @@ describe("EquipamentoService", () => {
       const equipamentoInativo = { ...mockEquipamento, equiStatus: false };
       const dadosAtualizados = { equiValorDiaria: 150 };
 
-      expect(() => equipamentoService._verificarAtualizacaoPermitida(equipamentoInativo, dadosAtualizados)).toThrow(Error);
+      expect(() => equipamentoService._verificarAtualizacaoPermitida(equipamentoInativo, dadosAtualizados)).toThrow();
+
       expect(mockCustomError).toHaveBeenCalledWith(
         expect.objectContaining({
           statusCode: HttpStatusCodes.FORBIDDEN.code,
