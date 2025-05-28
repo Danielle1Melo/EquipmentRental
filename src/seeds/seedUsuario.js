@@ -3,9 +3,7 @@ import Usuario from "../models/Usuario.js"
 // import getGlobalFakeMapping from "../globalFakeMapping"
 import bcrypt from "bcryptjs";
 import { faker } from "@faker-js/faker";
-
 import getGlobalFakeMapping from "./globalFakeMapping.js";
-
 
 
 // await DbConect.conectar();
@@ -56,7 +54,7 @@ async function SeedUsuario(){
 
     // Inserir no banco
     await Usuario.collection.insertMany(usuarios);
-    console.log(`${usuarios.length} usuários inseridos com sucesso!`);
+    // console.log(`${usuarios.length} usuários inseridos com sucesso!`);
 
     // Fechar conexão
     return await Usuario.find()

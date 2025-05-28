@@ -15,4 +15,3 @@ router
 .patch("/reservas/:id", asyncWrapper(reservaController.atualizar.bind(reservaController)))
 
 export default router;
-

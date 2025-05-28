@@ -1,11 +1,9 @@
 import fakebr from 'faker-br';
 //import { fa } from 'faker-br/lib/locales';
 import mongoose from 'mongoose';
+import { v4 as uuid } from 'uuid';
 import loadModels from './loadModels.js';
 import { gerarDataAleatoria } from '../utils/helpers/randomPastDate.js';
-
-
-//173
 
 const fakeMappings = {
     common: {
@@ -49,16 +47,15 @@ Endereco: {
       usuarios: [{_id: new mongoose.Types.ObjectId().toString}],
     }, 
 
-   Avaliacao: {
+Avaliacao: {
   nota: () => fakebr.random.number({ min: 1, max: 5 }),
   descricao: () => fakebr.lorem.sentence(),
   dataAvaliacao: () => fakebr.date.past(),
   usuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
   equipamento: [{ _id: new mongoose.Types.ObjectId().toString() }] // ✅ ADICIONE ISSO
-}
-, 
 
-   Equipamento: {
+},
+Equipamento: {
   equiNome: () => fakebr.random.arrayElement([
     "Furadeira Bosch",
     "Parafusadeira Makita",
@@ -75,7 +72,11 @@ Endereco: {
   equiCategoria: () => fakebr.commerce.department(),
   equiStatus: () => fakebr.random.boolean(), 
   equiUsuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
-  equiFoto: () => fakebr.image.imageUrl(),
+  equiFoto: () => [
+  fakebr.image.imageUrl(),
+  fakebr.image.imageUrl(),
+  fakebr.image.imageUrl()
+],
   equiNotaMediaAvaliacao: [{ _id: new mongoose.Types.ObjectId().toString() }],
   equiAvaliacoes: [{ _id: new mongoose.Types.ObjectId().toString() }]
 }
