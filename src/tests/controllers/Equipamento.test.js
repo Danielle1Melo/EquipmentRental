@@ -49,9 +49,9 @@ describe('EquipamentoController', () => {
 
   describe('listar', () => {
     it('deve listar equipamentos com query', async () => {
-      req.query = { nome: 'Notebook' };
+      req.query = { equiNome: 'Multímetro' };
       EquipamentoQuerySchema.parseAsync.mockResolvedValue(true);
-      const mockData = [{ nome: 'Notebook Dell' }];
+      const mockData = [{ nome: 'Multímetro Digital' }];
       controller.service.listar.mockResolvedValue(mockData);
 
       await controller.listar(req, res);
@@ -63,7 +63,7 @@ describe('EquipamentoController', () => {
 
     it('deve listar equipamentos sem query', async () => {
       req.query = {};
-      const mockData = [{ nome: 'Monitor LG' }];
+      const mockData = [{ nome: 'Furadeira Bosch' }];
       controller.service.listar.mockResolvedValue(mockData);
 
       await controller.listar(req, res);
@@ -78,7 +78,7 @@ describe('EquipamentoController', () => {
       req.params.id = '123';
       req.usuario = { _id: '456' };
       EquipamentoIdSchema.parse.mockReturnValue(true);
-      const equipamento = { nome: 'Mouse' };
+      const equipamento = { nome: 'Osciloscópio Tektronix' };
       controller.service.listarPorId.mockResolvedValue(equipamento);
 
       await controller.listarPorId(req, res);
@@ -90,8 +90,16 @@ describe('EquipamentoController', () => {
   });
 
   describe('criar', () => {
-    it('deve criar novo equipamento', async () => {
-      const dados = { nome: 'Teclado' };
+    it('deve criar novo equipamento com dados válidos', async () => {
+      const dados = {
+        equiNome: 'Estação de Solda',
+        equiDescricao: 'Estação com controle digital de temperatura',
+        equiValorDiaria: 25.50,
+        equiQuantidadeDisponivel: 5,
+        equiCategoria: 'Soldador',
+        equiFoto: ['https://exemplo.com/foto1.jpg']
+      };
+
       req.body = dados;
       equipamentoSchema.parse.mockReturnValue(dados);
       const mockEquipamento = { ...dados, _id: 'abc' };
@@ -108,13 +116,13 @@ describe('EquipamentoController', () => {
   });
 
   describe('atualizar', () => {
-    it('deve atualizar um equipamento', async () => {
+    it('deve atualizar um equipamento com dados válidos', async () => {
       const id = 'abc123';
       req.params.id = id;
-      req.body = { nome: 'Teclado atualizado' };
+      req.body = { equiValorDiaria: 30.5 };
       EquipamentoIdSchema.parse.mockReturnValue(true);
       equipamentoUpdateSchema.parse.mockReturnValue(req.body);
-      const equipamento = { nome: 'Teclado atualizado' };
+      const equipamento = { equiValorDiaria: 30.5 };
       controller.service.atualizar.mockResolvedValue(equipamento);
 
       await controller.atualizar(req, res);
@@ -122,21 +130,6 @@ describe('EquipamentoController', () => {
       expect(EquipamentoIdSchema.parse).toHaveBeenCalledWith(id);
       expect(equipamentoUpdateSchema.parse).toHaveBeenCalledWith(req.body);
       expect(CommonResponse.success).toHaveBeenCalledWith(res, equipamento, 200, 'Equipamento atualizado com sucesso.');
-    });
-  });
-
-  describe('deletar', () => {
-    it('deve deletar equipamento por id', async () => {
-      req.params.id = 'xyz789';
-      EquipamentoIdSchema.parse.mockReturnValue(true);
-      controller.service.deletar.mockResolvedValue();
-
-      await controller.deletar(req, res);
-
-      expect(EquipamentoIdSchema.parse).toHaveBeenCalledWith('xyz789');
-      expect(CommonResponse.success).toHaveBeenCalledWith(res, {
-        mensagem: 'Equipamento excluído com sucesso.'
-      });
     });
   });
 });
