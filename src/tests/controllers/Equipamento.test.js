@@ -82,7 +82,7 @@ describe('EquipamentoController', () => {
     it('deve lançar erro se dados de atualização forem inválidos', async () => {
       const id = 'abc123';
       req.params.id = id;
-      req.body = { equiNome: 'Nome inválido' }; // suponha inválido para update
+      req.body = { equiNome: 'Nome inválido' }; 
       EquipamentoIdSchema.parse.mockReturnValue(true);
       equipamentoUpdateSchema.parse.mockImplementation(() => {
         throw { name: 'ZodError', message: 'Dados inválidos' };
