@@ -1,29 +1,24 @@
 import { z } from "zod";
 import mongoose from 'mongoose';
 
-export const UsuarioIdSchema = z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+export const UsuarioIdSchema = z.string().refine((id) => id!==undefined && id.trim() !== "",{
+    message:`ID não pode ser undefined ou vazio`
+})
+.refine((id) => mongoose.Types.ObjectId.isValid(id), {
     message: "ID inválido",
 });
-
+const regexCPF = /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/
 export const UsuarioQuerySchema = z.object({
     nome: z
         .string()
         .optional()
         .refine((val) => !val || val.trim().length > 0, {
-            message: "Nome não pode ser vazio",
+            message: "Nome não pode ser vazio ou apenas espaços",
         })
         .transform((val) => val?.trim()),
     email: z
         .union([z.string().email("Formato de email inválido"), z.undefined()])
         .optional(),
-    ativo: z
-        .string()
-        .optional()
-        .refine((value) => !value || value === "true" || value === "false", {
-            message: "Ativo deve ser 'true' ou 'false'",
-        }),
-    grupo: z.string().optional().transform((val) => val?.trim()),
-    unidade: z.string().optional().transform((val) => val?.trim()),
     page: z
         .string()
         .optional()

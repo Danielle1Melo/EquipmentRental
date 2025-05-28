@@ -3,7 +3,9 @@ import Equipamento from "../models/Equipamento.js"
 import Usuario from "../models/Usuario.js"
 import mongoose from 'mongoose';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
+
 import ReservaFilterBuilder from './filters/ReservaFilterBuilder.js';
+
 
 class ReservaRepository {
     constructor({
@@ -26,6 +28,7 @@ class ReservaRepository {
 
     //     const user = await query;
 
+
     //     if (!user) {
     //         throw new CustomError({
     //             statusCode: 404,
@@ -37,10 +40,9 @@ class ReservaRepository {
     //     }
     // } 
 
-
-
     async listar(req) {
         const { id } = req.params;
+
 
         if (id) {
             const data = await this.reservaModel
@@ -59,6 +61,7 @@ class ReservaRepository {
                     customMessage: messages.error.resourceNotFound('Reserva')
                 });
             }
+
 
             return data;
         }
@@ -117,6 +120,7 @@ class ReservaRepository {
     }
 
     async atualizar(id, parsedData) {
+
         const reserva = await this.reservaModel
             .findByIdAndUpdate(id, parsedData, { new: true })
 
@@ -151,6 +155,7 @@ class ReservaRepository {
             });
         }
     }
+
 
 }
 

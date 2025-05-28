@@ -11,6 +11,7 @@ beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
+  await mongoose.model('usuarios').createIndexes();
 });
 
 afterAll(async () => {
@@ -40,7 +41,7 @@ describe("Modelo Reserva", () => {
       telefone: "11987654321",
       senha: "senhaSegura123",
       dataNascimento: new Date("1990-05-15"),
-      cpf: "12345678900",
+      CPF: "12345678900",
       status: "ativo",
       tipoUsuario: "cliente"
     }).save();

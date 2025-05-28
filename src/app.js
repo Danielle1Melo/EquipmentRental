@@ -1,15 +1,14 @@
-// src/app.js
-
 import express from "express";
 import routes from "./routes/index.js";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
-import DbConnect from './config/Dbconnect.js';
+import DbConnect from './config/DbConnect.js';
 import errorHandler from './utils/helpers/errorHandler.js';
 import logger from './utils/logger.js';
 import CommonResponse from './utils/helpers/CommonResponse.js';
 import fileUpload from 'express-fileupload';
+
 
 const app = express();
 
@@ -55,6 +54,8 @@ app.use((req, res, next) => {
 });
 
 
+app.use(errorHandler);
+
 // Listener para erros não tratados (opcional, mas recomendado)
 process.on('unhandledRejection', (reason, promise) => {
     logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
@@ -68,9 +69,10 @@ process.on('uncaughtException', (error) => {
 });
 
 // Middleware de Tratamento de Erros (deve ser adicionado após as rotas)
-app.use(errorHandler);
+
 
 // exportando para o server.js fazer uso
+
 export default app;
 
 

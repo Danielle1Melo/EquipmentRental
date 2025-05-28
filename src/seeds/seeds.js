@@ -1,7 +1,7 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 
-import DbConnect from "../config/Dbconnect.js";
+import DbConnect from "../config/DbConnect.js";
 
 // Models principais
 import Usuario from "../models/Usuario.js";
