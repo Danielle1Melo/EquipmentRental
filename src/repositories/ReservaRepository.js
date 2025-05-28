@@ -139,8 +139,9 @@ class ReservaRepository {
 
     async findReservasSobrepostas(equipamentoId, dataInicial, dataFinal) {
         try {
+            const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentoId);
             return await this.reservaModel.find({
-                equipamento: { $in: [equipamentoId] }, // Suporta array de equipamentos
+                equipamentos: equipamentoObjectId, // Changed from 'equipamento' to 'equipamentos'
                 dataInicial: { $lte: dataFinal },
                 dataFinal: { $gte: dataInicial },
             });

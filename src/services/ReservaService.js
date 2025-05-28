@@ -22,7 +22,7 @@ class ReservaService {
         console.log("Estou em criar no ReservaService")
 
         //chama o repositório
-        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, equipamento } = parsedData;
+        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, equipamentos } = parsedData;
 
         if (dataInicial >= dataFinal) {
             throw new CustomError({
@@ -34,7 +34,7 @@ class ReservaService {
             });
         }
 
-        if (dataFinalAtrasada >= dataFinal) {
+        if (dataFinalAtrasada <= dataFinal) {
             throw new CustomError({
                 statusCode: 400,
                 errorType: 'invalidData',
@@ -65,23 +65,23 @@ class ReservaService {
             });
         }
 
-        if (!equipamento || !equipamento.length) {
+        if (!equipamentos || !equipamentos.length) {
             throw new CustomError({
                 statusCode: 400,
                 errorType: 'invalidData',
-                field: 'equipamento',
+                field: 'equipamentos',
                 details: [],
                 customMessage: 'Pelo menos um equipamento deve ser especificado.',
             });
         }
 
-        const equipamentoId = equipamento; //Assumindo equipamento único para simplificar
+        const equipamentoId = equipamentos; //Assumindo equipamento único para simplificar
 
         if (!mongoose.Types.ObjectId.isValid(equipamentoId)) {
             throw new CustomError({
                 statusCode: 400,
                 errorType: 'invalidData',
-                field: 'equipamento',
+                field: 'equipamentos',
                 details: [],
                 customMessage: `ID de equipamento inválido: ${equipamentoId}`,
             });
@@ -92,7 +92,7 @@ class ReservaService {
             throw new CustomError({
                 statusCode: 404,
                 errorType: 'resourceNotFound',
-                field: 'equipamento',
+                field: 'equipamentos',
                 details: [],
                 customMessage: 'Equipamento não encontrado.',
             });

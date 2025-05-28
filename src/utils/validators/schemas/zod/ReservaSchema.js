@@ -22,7 +22,8 @@ const ReservaSchema = z.object({
     .positive({ message: 'Valor do equipamento deve ser um número positivo' }),
   quantidadeEquipamento: z
     .number().int()
-    .positive({ message: 'Quantidade de equipamento deve ser um número inteiro positivo' }),
+    .positive({ message: 'Quantidade de equipamento deve ser um número inteiro positivo' })
+    .min(1, { message: 'Quantidade de equipamento deve ser no mínimo 1' }),
   enderecoEquipamento: z
     .string()
     .min(1, { message: 'Endereço do equipamento é obrigatório' }),

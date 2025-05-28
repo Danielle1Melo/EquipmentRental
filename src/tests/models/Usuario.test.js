@@ -1,7 +1,7 @@
 import { it, describe } from '@jest/globals'
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import Usuario from '../../models/Usuario';
+import Usuario from '../../models/Usuario.js';
 
 let mongoServer;
 
@@ -13,6 +13,7 @@ beforeAll(async () => {
     await mongoose.connect(uri, {
         // Opções de conexão não são necessárias no Mongoose 6+
     });
+    await mongoose.model('usuarios').createIndexes();
 });
 
 // Limpeza após todos os testes
@@ -137,8 +138,8 @@ describe('Modelo de Usuário', () => {
             fotoUsuario: "https://s3.amazonaws.com/uifaces/faces/twitter/johannesneu/128.jpg"
         }
         const user1 = new Usuario(userData)
-        const user2 = new Usuario(userData2)
         await user1.save()
+        const user2 = new Usuario(userData2)
         await expect(user2.save()).rejects.toThrow(/E11000 duplicate key error/)
     });
 })
