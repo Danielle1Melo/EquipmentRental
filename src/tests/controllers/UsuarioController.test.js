@@ -69,6 +69,7 @@ describe('UsuarioController', () => {
                 nome: 'Usuario Dois',
                 email: 'usuario2@gmail.com'
             }]
+            req.params = undefined
             req.query = { email: 'usuario@gmail.com' }
             usuarioController.service.listar.mockResolvedValue(mockData.find(user => user.email == req.query.email))
             await usuarioController.listar(req, res)
