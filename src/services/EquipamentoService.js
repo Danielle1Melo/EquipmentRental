@@ -27,6 +27,8 @@ class EquipamentoService {
   }
 
   async criar(dados) {
+    this._validarCamposObrigatorios(dados); 
+
     if (!dados.equiFoto || !Array.isArray(dados.equiFoto) || dados.equiFoto.length === 0) {
       throw new CustomError({
         statusCode: HttpStatusCodes.BAD_REQUEST.code,
@@ -44,6 +46,7 @@ class EquipamentoService {
       equiStatus: false,
     });
   }
+
   async atualizar(id, dadosAtualizados) {
     const equipamento = await this._buscarEquipamentoExistente(id);
 
@@ -124,6 +127,7 @@ class EquipamentoService {
       });
     }
   }
+
   _validarCamposObrigatorios(dados) {
     if (!dados.equiNome || !dados.equiCategoria) {
       throw new CustomError({
@@ -132,8 +136,6 @@ class EquipamentoService {
       });
     }
   }
-
 }
-
 
 export default EquipamentoService;
