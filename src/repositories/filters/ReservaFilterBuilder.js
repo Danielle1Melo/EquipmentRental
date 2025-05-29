@@ -30,15 +30,21 @@ class ReservaFilterBuilder{
     }
 
     comQuantidadeEquipamento(quantidadeEquipamento){
-        if(quantidadeEquipamento){
-            this.filtros.quantidadeEquipamento = parseInt(quantidadeEquipamento)
+        if (quantidadeEquipamento) {
+            const parsed = parseInt(quantidadeEquipamento, 10);
+            if (!isNaN(parsed)) {
+                this.filtros.quantidadeEquipamento = parsed;
+            }
         }
         return this;
     }
 
     comValorEquipamento(valorEquipamento){
-        if(valorEquipamento){
-            this.filtros.valorEquipamento = parseFloat(valorEquipamento)
+        if (valorEquipamento) {
+            const parsed = parseFloat(valorEquipamento);
+            if (!isNaN(parsed)) {
+                this.filtros.valorEquipamento = parsed;
+            }
         }
         return this;
     }
