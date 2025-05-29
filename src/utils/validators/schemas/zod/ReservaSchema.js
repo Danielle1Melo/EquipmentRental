@@ -21,17 +21,18 @@ const ReservaSchema = z.object({
   valorEquipamento: z.number()
     .positive({ message: 'Valor do equipamento deve ser um número positivo' }),
   quantidadeEquipamento: z
-    .number().int()
-    .positive({ message: 'Quantidade de equipamento deve ser um número inteiro positivo' })
-    .min(1, { message: 'Quantidade de equipamento deve ser no mínimo 1' }),
+    .number()
+        .int({ message: 'Quantidade de equipamento deve ser um número inteiro' })
+        .positive({ message: 'Quantidade de equipamento deve ser um número positivo' })
+        .min(1, { message: 'Quantidade de equipamento deve ser no mínimo 1' }),
   enderecoEquipamento: z
     .string()
     .min(1, { message: 'Endereço do equipamento é obrigatório' }),
   statusReserva: z
     .enum(['pendente', 'confirmada', 'cancelada'])
     .default('pendente'),
-  equipamentos: z.array(objectIdSchema).default([]),
-  usuarios: z.array(objectIdSchema).default([]),
+  equipamento: objectIdSchema,
+  usuario: objectIdSchema,
 })
 
 const ReservaUpdateSchema = ReservaSchema.partial();
