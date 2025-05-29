@@ -1,7 +1,6 @@
 import EquipamentoRepository from '../repositories/EquipamentoRepository.js';
 import EquipamentoFilterBuilder from '../repositories/filters/EquipamentoFilterBuilder.js';
 import { CustomError, HttpStatusCodes, messages } from '../utils/helpers/index.js';
-import Avaliacao from '../models/Avaliacao.js';
 
 class EquipamentoService {
   constructor() {
@@ -56,7 +55,7 @@ class EquipamentoService {
   }
 
   async deletar(id) {
-    const equipamento = await this._buscarEquipamentoExistente(id);
+    const equipamento = await this._buscarEquipamentoExistente(id); 
 
     const temLocacoesAtivas = false;
 
