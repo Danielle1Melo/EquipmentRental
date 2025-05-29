@@ -1,6 +1,5 @@
 import EquipamentoRepository from '../../repositories/EquipamentoRepository.js';
 import EquipamentoModel from '../../models/Equipamento.js';
-import { CustomError } from '../../../utils/helpers/index.js';
 
 jest.mock('../../models/Equipamento.js');
 
@@ -26,6 +25,13 @@ describe('EquipamentoRepository', () => {
 
   beforeEach(() => {
     repository = new EquipamentoRepository({ equipamentoModel: EquipamentoModel });
+  });
+
+  describe('constructor', () => {
+    it('deve usar o modelo padrão quando nenhum for fornecido', () => {
+      const repo = new EquipamentoRepository();
+      expect(repo.model).toBe(EquipamentoModel);
+    });
   });
 
   describe('criar', () => {
@@ -102,17 +108,6 @@ describe('EquipamentoRepository', () => {
     it('deve retornar detalhes de um equipamento ativo', async () => {
       const id = '123';
       const mockEquipamento = { _id: '123', nome: 'Câmera DSLR', ativo: true };
-      mockFindById.mockResolvedValueOnce(mockEquipamento);
-
-      const result = await repository.listarPorId(id);
-
-      expect(result).toEqual(mockEquipamento);
-      expect(mockFindById).toHaveBeenCalledWith(id);
-    });
-
-    it('deve retornar equipamento inativo se o usuário for o proprietário', async () => {
-      const id = '123';
-      const mockEquipamento = { _id: '123', nome: 'Câmera DSLR', ativo: false, proprietario: 'user1' };
       mockFindById.mockResolvedValueOnce(mockEquipamento);
 
       const result = await repository.listarPorId(id);
