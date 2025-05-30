@@ -25,7 +25,13 @@ describe('equipamentoSchema', () => {
             equiCategoria: 'Furadeira',
             equiFoto: ['https://example.com/foto1.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dados)).toThrow('Nome obrigatório');
+        let erroCapturado;
+        try {
+            equipamentoSchema.parse(dados);
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Nome obrigatório');
     });
 
     it('erro quando "equiNome" é muito curto', () => {
@@ -37,7 +43,13 @@ describe('equipamentoSchema', () => {
             equiCategoria: 'Furadeira',
             equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dados)).toThrow('Nome deve ter pelo menos 2 caracteres');
+        let erroCapturado;
+        try {
+            equipamentoSchema.parse(dados);
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Nome deve ter pelo menos 2 caracteres');
     });
 
     it('erro quando "equiDescricao" está ausente', () => {
@@ -48,7 +60,13 @@ describe('equipamentoSchema', () => {
             equiCategoria: 'Furadeira',
             equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dados)).toThrow('Descrição obrigatória');
+        let erroCapturado;
+        try {
+            equipamentoSchema.parse(dados);
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Descrição obrigatória');
     });
 
     it('erro se "equiValorDiaria" não for número', () => {
@@ -60,7 +78,13 @@ describe('equipamentoSchema', () => {
             equiCategoria: 'Furadeira',
             equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dados)).toThrow('Valor da diária deve ser um número');
+        let erroCapturado;
+        try {
+            equipamentoSchema.parse(dados);
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Valor da diária deve ser um número');
     });
 
     it('erro se "equiQuantidadeDisponivel" não for número', () => {
@@ -72,7 +96,13 @@ describe('equipamentoSchema', () => {
             equiCategoria: 'Furadeira',
             equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dados)).toThrow('Quantidade deve ser um número');
+        let erroCapturado;
+        try {
+            equipamentoSchema.parse(dados);
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Quantidade deve ser um número');
     });
 
     it('erro se "equiCategoria" for inválida', () => {
@@ -84,7 +114,13 @@ describe('equipamentoSchema', () => {
             equiCategoria: 'Invalida',
             equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dados)).toThrow('Categoria inválida');
+        let erroCapturado;
+        try {
+            equipamentoSchema.parse(dados);
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Categoria inválida');
     });
 
     it('erro se "equiFoto" for vazio', () => {
@@ -96,7 +132,13 @@ describe('equipamentoSchema', () => {
             equiCategoria: 'Furadeira',
             equiFoto: [],
         };
-        expect(() => equipamentoSchema.parse(dados)).toThrow('Pelo menos uma foto é obrigatória');
+        let erroCapturado;
+        try {
+            equipamentoSchema.parse(dados);
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Pelo menos uma foto é obrigatória');
     });
 
     it('erro se "equiFoto" tiver URL inválida', () => {
@@ -108,7 +150,13 @@ describe('equipamentoSchema', () => {
             equiCategoria: 'Furadeira',
             equiFoto: ['não-é-url'],
         };
-        expect(() => equipamentoSchema.parse(dados)).toThrow('Cada item deve ser uma URL válida');
+        let erroCapturado;
+        try {
+            equipamentoSchema.parse(dados);
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Cada item deve ser uma URL válida');
     });
 });
 
@@ -127,22 +175,42 @@ describe('equipamentoUpdateSchema', () => {
     });
 
     it('erro se "equiValorDiaria" for negativa', () => {
-        expect(() => equipamentoUpdateSchema.parse({ equiValorDiaria: -1 }))
-            .toThrow('Number must be greater than 0');
+        let erroCapturado;
+        try {
+            equipamentoUpdateSchema.parse({ equiValorDiaria: -1 });
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Valor da diária deve ser maior que 0');
     });
 
     it('erro se "equiQuantidadeDisponivel" for negativa', () => {
-        expect(() => equipamentoUpdateSchema.parse({ equiQuantidadeDisponivel: -1 }))
-            .toThrow('Number must be greater than or equal to 0');
+        let erroCapturado;
+        try {
+            equipamentoUpdateSchema.parse({ equiQuantidadeDisponivel: -1 });
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Quantidade disponível deve ser maior ou igual a 0');
     });
 
     it('erro se "equiStatus" não for booleano', () => {
-        expect(() => equipamentoUpdateSchema.parse({ equiStatus: 'true' }))
-            .toThrow('Expected boolean');
+        let erroCapturado;
+        try {
+            equipamentoUpdateSchema.parse({ equiStatus: 'true' });
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe('Status deve ser um valor booleano');
     });
 
     it('erro se enviar campo não permitido', () => {
-        expect(() => equipamentoUpdateSchema.parse({ equiNome: 'Algo' }))
-            .toThrow("Unrecognized key(s) in object: 'equiNome'");
+        let erroCapturado;
+        try {
+            equipamentoUpdateSchema.parse({ equiNome: 'Algo' });
+        } catch (erro) {
+            erroCapturado = erro;
+        }
+        expect(erroCapturado.errors[0].message).toBe("Campos não permitidos no objeto");
     });
 });

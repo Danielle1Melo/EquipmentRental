@@ -9,7 +9,7 @@ const categoriasValidas = [
   "Compressor de Ar",
   "Soldador",
   "Betoneira"
-] 
+];
 
 export const equipamentoSchema = z.object({
   equiNome: z.string({ required_error: 'Nome obrigatório' }).min(2, 'Nome deve ter pelo menos 2 caracteres'),
@@ -17,11 +17,11 @@ export const equipamentoSchema = z.object({
   equiValorDiaria: z.number({
     required_error: "Valor da diária é obrigatório",
     invalid_type_error: "Valor da diária deve ser um número",
-  }),
+  }).positive({ message: "Valor da diária deve ser maior que 0" }),
   equiQuantidadeDisponivel: z.number({
     required_error: "Quantidade é obrigatória",
     invalid_type_error: "Quantidade deve ser um número",
-  }),
+  }).int({ message: "Quantidade deve ser um número inteiro" }).nonnegative({ message: "Quantidade deve ser maior ou igual a 0" }),
   equiCategoria: z.enum(categoriasValidas, {
     errorMap: () => ({ message: 'Categoria inválida' }),
   }),
@@ -31,7 +31,13 @@ export const equipamentoSchema = z.object({
 });
 
 export const equipamentoUpdateSchema = z.object({
-  equiValorDiaria: z.number().positive().optional(),
-  equiQuantidadeDisponivel: z.number().int().nonnegative().optional(),
-  equiStatus: z.boolean().optional()
-}).strict();
+  equiValorDiaria: z.number({
+    invalid_type_error: "Valor da diária deve ser um número"
+  }).positive({ message: "Valor da diária deve ser maior que 0" }).optional(),
+  equiQuantidadeDisponivel: z.number({
+    invalid_type_error: "Quantidade disponível deve ser um número"
+  }).int({ message: "Quantidade disponível deve ser um número inteiro" }).nonnegative({ message: "Quantidade disponível deve ser maior ou igual a 0" }).optional(),
+  equiStatus: z.boolean({
+    invalid_type_error: "Status deve ser um valor booleano"
+  }).optional()
+}).strict({ message: "Campos não permitidos no objeto" });
