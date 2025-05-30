@@ -37,11 +37,11 @@ async function SeedReserva(usuarios, equipamentos) {
         valorEquipamento: globalFakeMapping.valorEquipamento(),
         enderecoEquipamento: globalFakeMapping.enderecoEquipamento(),
         statusReserva: globalFakeMapping.statusReserva(),
-        equipamento: equipamento._id, // Usa o _id do equipamento selecionado
-        usuario: usuario._id // Usa o _id do usuário selecionado
+        equipamentos: equipamento._id, 
+        usuarios: usuario._id 
       };
 
-      console.log(`Reserva ${i + 1} gerada:`, reserva);
+      //console.log(`Reserva ${i + 1} gerada:`, reserva);
       reservas.push(reserva);
     }
 

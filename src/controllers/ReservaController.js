@@ -18,12 +18,6 @@ class ReservaController {
     }
 
     async listar(req, res) {
-        console.log('Estou no listar em ReservaController');
-        console.log('req.query:', req.query);
-        console.log('req.params:', req.params);
-        console.log('typeof req.query:', typeof req.query);
-        console.log('Object.keys(req.query):', Object.keys(req.query || {}));
-
         const { id } = req.params || {};
         if (id) {
             ReservaIdSchema.parse(id);
@@ -39,7 +33,6 @@ class ReservaController {
     }
 
     async criar(req, res) {
-        console.log('Estou no criar em ReservaController');
 
         let data = await this.service.criar(req.body);
 
@@ -49,7 +42,6 @@ class ReservaController {
     }
 
     async atualizar(req, res) {
-        console.log('Estou no atualizar em ReservaController');
 
         const { id } = req.params;
         ReservaIdSchema.parse(id);
@@ -58,7 +50,6 @@ class ReservaController {
         const parsedData = req.body;
 
         const data = await this.service.atualizar(id, parsedData);
-
 
         return CommonResponse.success(res, data, 200, 'Reserva atualizada com sucesso.');
     }

@@ -9,19 +9,12 @@ class ReservaService {
     constructor() {
         this.repository = new ReservaRepository();
     }
-
-
     async listar(req) {
-        console.log("Estou no ReservaService");
         const data = await this.repository.listar(req);
-        console.log('Estou retornando os dados em ReservaService para o controller');
         return data;
     }
 
     async criar(parsedData) {
-        console.log("Estou em criar no ReservaService")
-
-        //chama o repositório
         const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, equipamentos } = parsedData;
 
         if (dataInicial >= dataFinal) {
@@ -75,7 +68,7 @@ class ReservaService {
             });
         }
 
-        const equipamentoId = equipamentos; //Assumindo equipamento único para simplificar
+        const equipamentoId = equipamentos;
 
         if (!mongoose.Types.ObjectId.isValid(equipamentoId)) {
             throw new CustomError({
@@ -131,11 +124,6 @@ class ReservaService {
     }
 
     async atualizar(id, parsedData) {
-        console.log('Estou no atualizar em ReservaService');
-
-        // Garante que a reserva existe
-        //await this.ensureReservaExists(id);
-
         const data = await this.repository.atualizar(id, parsedData);
         return data;
     }

@@ -19,36 +19,16 @@ class ReservaRepository {
         this.usuarioModel = usuarioModel;
     }
 
-
-    // async buscarPorID(id, includeTokens = false) {
-    //     let query = this.reservaModel.findOne(id);
-
-    //     if (includeTokens) {
-    //         query = query.select('+refreshtoken +accesstoken');
-    //     }
-
-    //     const user = await query;
-
-
-    //     if (!user) {
-    //         throw new CustomError({
-    //             statusCode: 404,
-    //             errorType: 'resourceNotFound',
-    //             field: 'Reserva',
-    //             details: [],
-    //             customMessage: messages.error.resourceNotFound('Reserva')
-    //         });
-    //     }
-    // } 
-
     async listar(req) {
         const { id } = req.params;
-
 
         if (id) {
             const data = await this.reservaModel
                 .findById(id)
-                .populate('usuarios');
+                .populate([
+                    { path: 'equipamentos', select: 'equiNome' },
+                    { path: 'usuarios', select: 'nome' }
+                ])
 
             if (!data) {
                 throw new CustomError({
@@ -59,12 +39,10 @@ class ReservaRepository {
                     customMessage: messages.error.resourceNotFound('Reserva')
                 });
             }
-
-
             return data;
         }
 
-        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, valorEquipamento, enderecoEquipamento, statusReserva} = req.query
+        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, valorEquipamento, enderecoEquipamento, statusReserva, equipamentos, usuarios} = req.query
         const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
         const page = parseInt(req.query.page, 10) || 1;
 
@@ -75,25 +53,54 @@ class ReservaRepository {
             .comQuantidadeEquipamento(quantidadeEquipamento || '')
             .comValorEquipamento(valorEquipamento || '')
             .comEnderecoEquipamento(enderecoEquipamento || '')
-            .comStatus(statusReserva || '')
+            .comStatus(statusReserva || '');
 
-        if(typeof filterBuild.build !== 'function') {
+        if (typeof filterBuild.build !== 'function') {
             throw new CustomError({
                 statusCode: 500,
                 errorType: 'internalServerError',
                 field: 'Reserva',
                 details: [],
-                customMessage: messages.error.internalServerError("Reserva")
+                customMessage: messages.error.internalServerError('Reserva')
             });
-        }
+        }          
 
         const filtros = filterBuild.build();
+
+        if (usuarios) {
+        const usuariosEncontrados = await this.usuarioModel.find(
+            { nome: { $regex: usuarios, $options: 'i' } },
+            '_id'
+        );
+        const usuarioIds = usuariosEncontrados.map(u => u._id);
+        if (usuarioIds.length > 0) {
+            filtros.usuarios = { $in: usuarioIds };
+        } else {
+            return { docs: [], totalDocs: 0, limit: limite, page: page, totalPages: 0 };
+        }
+    }
+        if (equipamentos) {
+            const equipamentosEncontrados = await this.equipamentoModel.find(
+                { equiNome: { $regex: equipamentos, $options: 'i' } },
+                '_id'
+            );
+            const equipamentoIds = equipamentosEncontrados.map(e => e._id);
+            if (equipamentoIds.length > 0) {
+                filtros.equipamentos = { $in: equipamentoIds };
+            } else {
+                // Se não encontrar nenhum, retorna resultado vazio
+                return { docs: [], totalDocs: 0, limit: limite, page: page, totalPages: 0 };
+            }
+        }
 
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limite, 10),
-            populate: { path: 'usuarios'},
-            sort: { nome: 1 },
+            populate: [
+                { path: 'equipamentos', select: 'equiNome'},
+                { path: 'usuarios', select: 'nome'}
+         ],
+            sort: { createdAt: 1 },
         };
 
         const resultado = await this.reservaModel.paginate(filtros, options);
@@ -104,13 +111,6 @@ class ReservaRepository {
         });
 
         return resultado;
-
-        // return this.reservaModel
-        //     .find()
-        //     .populate([
-        //         { path: 'equipamentos', select: 'nome' },
-        //         { path: 'usuarios', select: 'nome' },
-        //     ]);
     }
 
     async criar(dadosReserva) {
@@ -140,7 +140,7 @@ class ReservaRepository {
         try {
             const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentoId);
             return await this.reservaModel.find({
-                equipamentos: equipamentoObjectId, // Changed from 'equipamento' to 'equipamentos'
+                equipamentos: equipamentoObjectId,
                 dataInicial: { $lte: dataFinal },
                 dataFinal: { $gte: dataInicial },
             });
