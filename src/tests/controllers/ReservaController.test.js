@@ -55,7 +55,7 @@ describe('ReservaController', () => {
         quantidadeEquipamento: 2,
         valorEquipamento: 200,
         enderecoEquipamento: 'Rua Exemplo, 123',
-        status: 'confirmada',
+        statusReserva: 'confirmada',
       };
       req.params = { id: '67959501ea0999e0a0fa9f58' };
       req.query = {};
@@ -75,14 +75,14 @@ describe('ReservaController', () => {
       const mockData = [
         {
           id: '67959501ea0999e0a0fa9f58',
-          usuario: new mongoose.Types.ObjectId(),
-          equipamento: new mongoose.Types.ObjectId(),
+          usuarios: new mongoose.Types.ObjectId(),
+          equipamentos: new mongoose.Types.ObjectId(),
           dataInicial: '2025-06-01T00:00:00.000Z',
           dataFinal: '2025-06-05T00:00:00.000Z',
           quantidadeEquipamento: 2,
           valorEquipamento: 200,
           enderecoEquipamento: 'Rua Exemplo, 123',
-          status: 'confirmada',
+          statusReserva: 'confirmada',
         },
       ];
       req.query = { dataInicial: '2025-06-01' };
@@ -103,24 +103,24 @@ describe('ReservaController', () => {
     it('deve criar uma reserva pelo body', async () => {
       const mockReserva = {
         id: '67959501ea0999e0a0fa9f58',
-        usuario: new mongoose.Types.ObjectId(),
-        equipamento: new mongoose.Types.ObjectId(),
+        usuarios: new mongoose.Types.ObjectId(),
+        equipamentos: new mongoose.Types.ObjectId(),
         dataInicial: '2025-06-01T00:00:00.000Z',
         dataFinal: '2025-06-05T00:00:00.000Z',
         quantidadeEquipamento: 2,
         valorEquipamento: 200,
         enderecoEquipamento: 'Rua Exemplo, 123',
-        status: 'confirmada',
+        statusReserva: 'confirmada',
       };
       req.body = {
-        usuario: mockReserva.usuario,
-        equipamento: mockReserva.equipamento,
+        usuarios: mockReserva.usuario,
+        equipamentos: mockReserva.equipamento,
         dataInicial: '2025-06-01',
         dataFinal: '2025-06-05',
         quantidadeEquipamento: 2,
         valorEquipamento: 200,
         enderecoEquipamento: 'Rua Exemplo, 123',
-        status: 'confirmada',
+        statusReserva: 'confirmada',
       };
       reservaController.service.criar.mockResolvedValue({
         toObject: () => mockReserva,
@@ -141,18 +141,18 @@ describe('ReservaController', () => {
     it('deve atualizar uma reserva pelo id recebido no req.params', async () => {
       const mockReserva = {
         id: '67959501ea0999e0a0fa9f58',
-        usuario: new mongoose.Types.ObjectId(),
-        equipamento: new mongoose.Types.ObjectId(),
+        usuarios: new mongoose.Types.ObjectId(),
+        equipamentos: new mongoose.Types.ObjectId(),
         dataInicial: '2025-06-01T00:00:00.000Z',
         dataFinal: '2025-06-05T00:00:00.000Z',
         quantidadeEquipamento: 2,
         valorEquipamento: 200,
         enderecoEquipamento: 'Rua Exemplo, 123',
-        status: 'confirmada',
+        statusReserva: 'confirmada',
       };
       req.params = { id: '67959501ea0999e0a0fa9f58' };
       req.body = {
-        status: 'cancelada',
+        statusReserva: 'cancelada',
         quantidadeEquipamento: 3,
         valorEquipamento: 300,
       };
