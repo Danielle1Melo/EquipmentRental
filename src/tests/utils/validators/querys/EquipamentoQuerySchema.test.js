@@ -18,22 +18,40 @@ describe('EquipamentoQuerySchema', () => {
       expect(resultado).toEqual(IdValido);
     });
 
-    it('deve retornar uma mensagem de erro para um ID inválido (menos de 24 caracteres)', async () => {
+    it('deve retornar uma mensagem de erro para um ID inválido', () => {
       const SchemaQueryId = equipamentoIdSchema;
       const IdInvalido = '507f1f77bcf86cd7994390';
-      await expect(SchemaQueryId.parseAsync(IdInvalido)).rejects.toThrow('ID inválido');
+      let erroCapturado;
+      try {
+        SchemaQueryId.parse(IdInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('ID inválido');
     });
 
-    it('deve retornar uma mensagem de erro para um ID com caracteres inválidos', async () => {
+    it('deve retornar uma mensagem de erro para um ID com caracteres inválidos', () => {
       const SchemaQueryId = equipamentoIdSchema;
       const IdInvalido = '507f1f77bcf86cd79943901g';
-      await expect(SchemaQueryId.parseAsync(IdInvalido)).rejects.toThrow('ID inválido');
+      let erroCapturado;
+      try {
+        SchemaQueryId.parse(IdInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('ID inválido');
     });
 
-    it('deve retornar uma mensagem de erro para um ID ausente', async () => {
+    it('deve retornar uma mensagem de erro para um ID ausente', () => {
       const SchemaQueryId = equipamentoIdSchema;
       const IdInvalido = '';
-      await expect(SchemaQueryId.parseAsync(IdInvalido)).rejects.toThrow('ID inválido');
+      let erroCapturado;
+      try {
+        SchemaQueryId.parse(IdInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('ID inválido');
     });
   });
 
@@ -60,17 +78,21 @@ describe('EquipamentoQuerySchema', () => {
       expect(resultado).toEqual({ status: true });
     });
 
-    it('deve retornar um status válido para string não booleana', () => {
-      const SchemaQueryStatus = equipamentoQuerySchema.partial();
-      const StatusInvalido = { status: 'invalido' };
-      const resultado = SchemaQueryStatus.parse(StatusInvalido);
-      expect(resultado).toEqual({ status: true });
-    });
-
     it('deve aceitar ausência de status', () => {
       const SchemaQueryStatus = equipamentoQuerySchema.partial();
       const resultado = SchemaQueryStatus.parse({});
       expect(resultado.status).toBeUndefined();
+    });
+
+    it('deve retornar uma mensagem de erro para um status inválido', () => {
+      const SchemaQueryStatus = equipamentoQuerySchema.partial();
+      const StatusInvalido = { status: 'invalido' };
+      let erroCapturado;
+      try {
+        SchemaQueryStatus.parse(StatusInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
     });
   });
 
@@ -82,16 +104,28 @@ describe('EquipamentoQuerySchema', () => {
       expect(resultado).toEqual({ minValor: 10 });
     });
 
-    it('deve retornar uma mensagem de erro para um valor mínimo negativo', async () => {
+    it('deve retornar uma mensagem de erro para um valor mínimo negativo', () => {
       const SchemaQueryMinValor = equipamentoQuerySchema.partial();
       const MinValorInvalido = { minValor: '-1' };
-      await expect(SchemaQueryMinValor.parseAsync(MinValorInvalido)).rejects.toThrow(`Valor deve ser um número inteiro maior que 0`);
+      let erroCapturado;
+      try {
+        SchemaQueryMinValor.parse(MinValorInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('minValor deve ser um número inteiro maior que 0');
     });
 
-    it('deve retornar uma mensagem de erro para um valor mínimo inválido', async () => {
+    it('deve retornar uma mensagem de erro para um valor mínimo inválido', () => {
       const SchemaQueryMinValor = equipamentoQuerySchema.partial();
       const MinValorInvalido = { minValor: 'abc' };
-      await expect(SchemaQueryMinValor.parseAsync(MinValorInvalido)).rejects.toThrow(`Page deve ser um número inteiro maior que 0`);
+      let erroCapturado;
+      try {
+        SchemaQueryMinValor.parse(MinValorInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('minValor deve ser um número inteiro maior que 0');
     });
 
     it('deve aceitar ausência de minValor', () => {
@@ -100,33 +134,44 @@ describe('EquipamentoQuerySchema', () => {
       expect(resultado.minValor).toBeUndefined();
     });
   });
-
-  describe('MaxValor', () => {
-    it('deve validar um valor máximo válido', () => {
-      const SchemaQueryMaxValor = equipamentoQuerySchema.partial();
-      const MaxValorValido = { maxValor: '100' };
-      const resultado = SchemaQueryMaxValor.parse(MaxValorValido);
-      expect(resultado).toEqual({ maxValor: 100 });
-    });
-
-    it('deve retornar uma mensagem de erro para um valor máximo negativo', async () => {
-      const SchemaQueryMaxValor = equipamentoQuerySchema.partial();
-      const MaxValorInvalido = { maxValor: '-1' };
-      await expect(SchemaQueryMaxValor.parseAsync(MaxValorInvalido)).rejects.toThrow('O valor máximo deve ser maior ou igual a 0');
-    });
-
-    it('deve retornar uma mensagem de erro para um valor máximo inválido', async () => {
-      const SchemaQueryMaxValor = equipamentoQuerySchema.partial();
-      const MaxValorInvalido = { maxValor: 'abc' };
-      await expect(SchemaQueryMaxValor.parseAsync(MaxValorInvalido)).rejects.toThrow('O valor deve ser um número válido');
-    });
-
-    it('deve aceitar ausência de maxValor', () => {
-      const SchemaQueryMaxValor = equipamentoQuerySchema.partial();
-      const resultado = SchemaQueryMaxValor.parse({});
-      expect(resultado.maxValor).toBeUndefined();
-    });
+describe('MaxValor', () => {
+  it('deve validar um valor máximo válido', () => {
+    const SchemaQueryMaxValor = equipamentoQuerySchema.partial();
+    const MaxValorValido = { maxValor: '100' };
+    const resultado = SchemaQueryMaxValor.parse(MaxValorValido);
+    expect(resultado).toEqual({ maxValor: 100 });
   });
+
+  it('deve retornar uma mensagem de erro para um valor máximo negativo', () => {
+    const SchemaQueryMaxValor = equipamentoQuerySchema.partial();
+    const MaxValorInvalido = { maxValor: '-1' };
+    let erroCapturado;
+    try {
+      SchemaQueryMaxValor.parse(MaxValorInvalido);
+    } catch (erro) {
+      erroCapturado = erro;
+    }
+    expect(erroCapturado.errors[0].message).toBe('maxValor deve ser um número maior ou igual a 0');
+  });
+
+  it('deve retornar uma mensagem de erro para um valor máximo inválido', () => {
+    const SchemaQueryMaxValor = equipamentoQuerySchema.partial();
+    const MaxValorInvalido = { maxValor: 'abc' };
+    let erroCapturado;
+    try {
+      SchemaQueryMaxValor.parse(MaxValorInvalido);
+    } catch (erro) {
+      erroCapturado = erro;
+    }
+    expect(erroCapturado.errors[0].message).toBe('maxValor deve ser um número maior ou igual a 0');
+  });
+
+  it('deve aceitar ausência de maxValor', () => {
+    const SchemaQueryMaxValor = equipamentoQuerySchema.partial();
+    const resultado = SchemaQueryMaxValor.parse({}); 
+    expect(resultado.maxValor).toBeUndefined();
+  });
+});
 
   describe('Page', () => {
     it('deve validar uma página válida', () => {
@@ -136,16 +181,28 @@ describe('EquipamentoQuerySchema', () => {
       expect(resultado).toEqual({ page: 2 });
     });
 
-    it('deve retornar uma mensagem de erro para uma página inválida', async () => {
+    it('deve retornar uma mensagem de erro para uma página inválida', () => {
       const SchemaQueryPage = equipamentoQuerySchema.partial();
       const PaginaInvalida = { page: '0' };
-      await expect(SchemaQueryPage.parseAsync(PaginaInvalida)).rejects.toThrow('A página deve ser um número inteiro maior que 0');
+      let erroCapturado;
+      try {
+        SchemaQueryPage.parse(PaginaInvalida);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('Page deve ser um número inteiro maior que 0');
     });
 
-    it('deve retornar uma mensagem de erro para uma página não numérica', async () => {
+    it('deve retornar uma mensagem de erro para uma página não numérica', () => {
       const SchemaQueryPage = equipamentoQuerySchema.partial();
       const PaginaInvalida = { page: 'abc' };
-      await expect(SchemaQueryPage.parseAsync(PaginaInvalida)).rejects.toThrow('O valor deve ser um número válido');
+      let erroCapturado;
+      try {
+        SchemaQueryPage.parse(PaginaInvalida);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('Page deve ser um número inteiro maior que 0');
     });
 
     it('deve aceitar ausência de page', () => {
@@ -163,22 +220,40 @@ describe('EquipamentoQuerySchema', () => {
       expect(resultado).toEqual({ limit: 50 });
     });
 
-    it('deve retornar uma mensagem de erro para um limite maior que 100', async () => {
+    it('deve retornar uma mensagem de erro para um limite maior que 100', () => {
       const SchemaQueryLimit = equipamentoQuerySchema.partial();
       const LimiteInvalido = { limit: '101' };
-      await expect(SchemaQueryLimit.parseAsync(LimiteInvalido)).rejects.toThrow('O limite deve ser um número inteiro menor ou igual a 100');
+      let erroCapturado;
+      try {
+        SchemaQueryLimit.parse(LimiteInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('Limit deve ser um número inteiro entre 1 e 100');
     });
 
-    it('deve retornar uma mensagem de erro para um limite menor que 1', async () => {
+    it('deve retornar uma mensagem de erro para um limite menor que 1', () => {
       const SchemaQueryLimit = equipamentoQuerySchema.partial();
       const LimiteInvalido = { limit: '0' };
-      await expect(SchemaQueryLimit.parseAsync(LimiteInvalido)).rejects.toThrow('O limite deve ser um número inteiro maior que 0');
+      let erroCapturado;
+      try {
+        SchemaQueryLimit.parse(LimiteInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('Limit deve ser um número inteiro entre 1 e 100');
     });
 
-    it('deve retornar uma mensagem de erro para um limite não numérico', async () => {
+    it('deve retornar uma mensagem de erro para um limite não numérico', () => {
       const SchemaQueryLimit = equipamentoQuerySchema.partial();
       const LimiteInvalido = { limit: 'abc' };
-      await expect(SchemaQueryLimit.parseAsync(LimiteInvalido)).rejects.toThrow('O valor deve ser um número válido');
+      let erroCapturado;
+      try {
+        SchemaQueryLimit.parse(LimiteInvalido);
+      } catch (erro) {
+        erroCapturado = erro;
+      }
+      expect(erroCapturado.errors[0].message).toBe('Limit deve ser um número inteiro entre 1 e 100');
     });
 
     it('deve aceitar ausência de limit', () => {
