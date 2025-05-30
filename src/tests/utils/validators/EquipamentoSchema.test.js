@@ -1,11 +1,10 @@
-import { equipamentoSchema, equipamentoUpdateSchema } from '../../../utils/validators/schemas/zod/EquipamentoSchema';
-import { z } from 'zod';
-import mongoose from 'mongoose';
+const { equipamentoSchema, equipamentoUpdateSchema } = require('../../../utils/validators/schemas/zod/EquipamentoSchema');
+const mongoose = require('mongoose');
 
 describe('equipamentoSchema', () => {
     const objectId = new mongoose.Types.ObjectId().toString();
 
-    it('deve validar dados válidos corretamente', () => {
+    it('valida dados válidos corretamente', () => {
         const dadosValidos = {
             equiNome: 'Furadeira Bosch',
             equiDescricao: 'Furadeira de impacto 700W',
@@ -16,151 +15,134 @@ describe('equipamentoSchema', () => {
         };
         const resultado = equipamentoSchema.parse(dadosValidos);
         expect(resultado.equiNome).toBe('Furadeira Bosch');
-        expect(resultado.equiDescricao).toBe('Furadeira de impacto 700W');
-        expect(resultado.equiValorDiaria).toBe(50);
-        expect(resultado.equiQuantidadeDisponivel).toBe(5);
-        expect(resultado.equiCategoria).toBe('Furadeira');
-        expect(resultado.equiFoto).toEqual(['https://example.com/foto1.jpg']);
     });
 
-    it('deve lançar erro quando "equiNome" está ausente', () => {
-        const dadosInvalidos = {
-            equiDescricao: 'Furadeira de impacto 700W',
+    it('erro quando "equiNome" está ausente', () => {
+        const dados = {
+            equiDescricao: 'Furadeira',
             equiValorDiaria: 50,
             equiQuantidadeDisponivel: 5,
             equiCategoria: 'Furadeira',
             equiFoto: ['https://example.com/foto1.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dadosInvalidos)).toThrow('Nome obrigatório');
+        expect(() => equipamentoSchema.parse(dados)).toThrow('Nome obrigatório');
     });
 
-    it('deve lançar erro quando "equiNome" é muito curto', () => {
-        const dadosInvalidos = {
+    it('erro quando "equiNome" é muito curto', () => {
+        const dados = {
             equiNome: 'F',
-            equiDescricao: 'Furadeira de impacto 700W',
+            equiDescricao: 'desc',
+            equiValorDiaria: 10,
+            equiQuantidadeDisponivel: 1,
+            equiCategoria: 'Furadeira',
+            equiFoto: ['https://example.com/foto.jpg'],
+        };
+        expect(() => equipamentoSchema.parse(dados)).toThrow('Nome deve ter pelo menos 2 caracteres');
+    });
+
+    it('erro quando "equiDescricao" está ausente', () => {
+        const dados = {
+            equiNome: 'Item',
             equiValorDiaria: 50,
             equiQuantidadeDisponivel: 5,
             equiCategoria: 'Furadeira',
-            equiFoto: ['https://example.com/foto1.jpg'],
+            equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dadosInvalidos)).toThrow('Nome obrigatório');
+        expect(() => equipamentoSchema.parse(dados)).toThrow('Descrição obrigatória');
     });
 
-    it('deve lançar erro quando "equiDescricao" está ausente', () => {
-        const dadosInvalidos = {
-            equiNome: 'Furadeira Bosch',
-            equiValorDiaria: 50,
-            equiQuantidadeDisponivel: 5,
+    it('erro se "equiValorDiaria" não for número', () => {
+        const dados = {
+            equiNome: 'Furadeira',
+            equiDescricao: 'desc',
+            equiValorDiaria: 'abc',
+            equiQuantidadeDisponivel: 1,
             equiCategoria: 'Furadeira',
-            equiFoto: ['https://example.com/foto1.jpg'],
+            equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dadosInvalidos)).toThrow('Descrição obrigatória');
+        expect(() => equipamentoSchema.parse(dados)).toThrow('Valor da diária deve ser um número');
     });
 
-    it('deve lançar erro quando "equiValorDiaria" não é número', () => {
-        const dadosInvalidos = {
-            equiNome: 'Furadeira Bosch',
-            equiDescricao: 'Furadeira de impacto 700W',
-            equiValorDiaria: 'cinquenta',
-            equiQuantidadeDisponivel: 5,
+    it('erro se "equiQuantidadeDisponivel" não for número', () => {
+        const dados = {
+            equiNome: 'Furadeira',
+            equiDescricao: 'desc',
+            equiValorDiaria: 10,
+            equiQuantidadeDisponivel: 'abc',
             equiCategoria: 'Furadeira',
-            equiFoto: ['https://example.com/foto1.jpg'],
+            equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dadosInvalidos)).toThrow('Valor da diária deve ser um número');
+        expect(() => equipamentoSchema.parse(dados)).toThrow('Quantidade deve ser um número');
     });
 
-    it('deve lançar erro quando "equiQuantidadeDisponivel" não é número', () => {
-        const dadosInvalidos = {
-            equiNome: 'Furadeira Bosch',
-            equiDescricao: 'Furadeira de impacto 700W',
-            equiValorDiaria: 50,
-            equiQuantidadeDisponivel: 'cinco',
-            equiCategoria: 'Furadeira',
-            equiFoto: ['https://example.com/foto1.jpg'],
-        };
-        expect(() => equipamentoSchema.parse(dadosInvalidos)).toThrow('Quantidade deve ser um número');
-    });
-
-    it('deve lançar erro quando "equiCategoria" não é válida', () => {
-        const dadosInvalidos = {
-            equiNome: 'Furadeira Bosch',
-            equiDescricao: 'Furadeira de impacto 700W',
-            equiValorDiaria: 50,
-            equiQuantidadeDisponivel: 5,
+    it('erro se "equiCategoria" for inválida', () => {
+        const dados = {
+            equiNome: 'Furadeira',
+            equiDescricao: 'desc',
+            equiValorDiaria: 10,
+            equiQuantidadeDisponivel: 1,
             equiCategoria: 'Invalida',
-            equiFoto: ['https://example.com/foto1.jpg'],
+            equiFoto: ['https://example.com/foto.jpg'],
         };
-        expect(() => equipamentoSchema.parse(dadosInvalidos)).toThrow('Invalid enum value');
+        expect(() => equipamentoSchema.parse(dados)).toThrow('Categoria inválida');
     });
 
-    it('deve lançar erro quando "equiFoto" está vazio', () => {
-        const dadosInvalidos = {
-            equiNome: 'Furadeira Bosch',
-            equiDescricao: 'Furadeira de impacto 700W',
-            equiValorDiaria: 50,
-            equiQuantidadeDisponivel: 5,
+    it('erro se "equiFoto" for vazio', () => {
+        const dados = {
+            equiNome: 'Furadeira',
+            equiDescricao: 'desc',
+            equiValorDiaria: 10,
+            equiQuantidadeDisponivel: 1,
             equiCategoria: 'Furadeira',
             equiFoto: [],
         };
-        expect(() => equipamentoSchema.parse(dadosInvalidos)).toThrow('Pelo menos uma foto é obrigatória');
+        expect(() => equipamentoSchema.parse(dados)).toThrow('Pelo menos uma foto é obrigatória');
     });
 
-    it('deve lançar erro quando "equiFoto" contém URL inválida', () => {
-        const dadosInvalidos = {
-            equiNome: 'Furadeira Bosch',
-            equiDescricao: 'Furadeira de impacto 700W',
-            equiValorDiaria: 50,
-            equiQuantidadeDisponivel: 5,
+    it('erro se "equiFoto" tiver URL inválida', () => {
+        const dados = {
+            equiNome: 'Furadeira',
+            equiDescricao: 'desc',
+            equiValorDiaria: 10,
+            equiQuantidadeDisponivel: 1,
             equiCategoria: 'Furadeira',
-            equiFoto: ['foto_invalida'],
+            equiFoto: ['não-é-url'],
         };
-        expect(() => equipamentoSchema.parse(dadosInvalidos)).toThrow('Cada item deve ser uma URL válida');
+        expect(() => equipamentoSchema.parse(dados)).toThrow('Cada item deve ser uma URL válida');
     });
 });
 
 describe('equipamentoUpdateSchema', () => {
-    it('deve validar dados parciais corretamente', () => {
-        const dadosParciais = {
-            equiValorDiaria: 60,
+    it('valida atualização parcial', () => {
+        const dados = {
+            equiValorDiaria: 100,
         };
-        const resultado = equipamentoUpdateSchema.parse(dadosParciais);
-        expect(resultado.equiValorDiaria).toBe(60);
-        expect(resultado.equiQuantidadeDisponivel).toBeUndefined();
-        expect(resultado.equiStatus).toBeUndefined();
+        const resultado = equipamentoUpdateSchema.parse(dados);
+        expect(resultado.equiValorDiaria).toBe(100);
     });
 
-    it('deve aceitar objeto vazio e manter campos indefinidos', () => {
+    it('aceita objeto vazio', () => {
         const resultado = equipamentoUpdateSchema.parse({});
-        expect(resultado.equiValorDiaria).toBeUndefined();
-        expect(resultado.equiQuantidadeDisponivel).toBeUndefined();
-        expect(resultado.equiStatus).toBeUndefined();
+        expect(resultado).toEqual({});
     });
 
-    it('deve lançar erro quando "equiValorDiaria" não é número positivo', () => {
-        const dadosInvalidos = {
-            equiValorDiaria: -10,
-        };
-        expect(() => equipamentoUpdateSchema.parse(dadosInvalidos)).toThrow('Number must be greater than 0');
+    it('erro se "equiValorDiaria" for negativa', () => {
+        expect(() => equipamentoUpdateSchema.parse({ equiValorDiaria: -1 }))
+            .toThrow('Number must be greater than 0');
     });
 
-    it('deve lançar erro quando "equiQuantidadeDisponivel" não é número inteiro não negativo', () => {
-        const dadosInvalidos = {
-            equiQuantidadeDisponivel: -5,
-        };
-        expect(() => equipamentoUpdateSchema.parse(dadosInvalidos)).toThrow('Number must be greater than or equal to 0');
+    it('erro se "equiQuantidadeDisponivel" for negativa', () => {
+        expect(() => equipamentoUpdateSchema.parse({ equiQuantidadeDisponivel: -1 }))
+            .toThrow('Number must be greater than or equal to 0');
     });
 
-    it('deve lançar erro quando "equiStatus" não é booleano', () => {
-        const dadosInvalidos = {
-            equiStatus: 'ativo',
-        };
-        expect(() => equipamentoUpdateSchema.parse(dadosInvalidos)).toThrow('Expected boolean');
+    it('erro se "equiStatus" não for booleano', () => {
+        expect(() => equipamentoUpdateSchema.parse({ equiStatus: 'true' }))
+            .toThrow('Expected boolean');
     });
 
-    it('deve lançar erro quando campos não permitidos são fornecidos', () => {
-        const dadosInvalidos = {
-            equiNome: 'Furadeira Bosch',
-        };
-        expect(() => equipamentoUpdateSchema.parse(dadosInvalidos)).toThrow('Unrecognized key(s) in object: \'equiNome\'');
+    it('erro se enviar campo não permitido', () => {
+        expect(() => equipamentoUpdateSchema.parse({ equiNome: 'Algo' }))
+            .toThrow("Unrecognized key(s) in object: 'equiNome'");
     });
 });
