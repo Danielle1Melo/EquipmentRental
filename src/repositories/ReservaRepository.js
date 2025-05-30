@@ -2,6 +2,7 @@ import Reserva from '../models/Reserva.js';
 import Equipamento from "../models/Equipamento.js"
 import Usuario from "../models/Usuario.js"
 import mongoose from 'mongoose';
+import { populate } from 'dotenv';
 import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
 
 import ReservaFilterBuilder from './filters/ReservaFilterBuilder.js';
@@ -47,10 +48,7 @@ class ReservaRepository {
         if (id) {
             const data = await this.reservaModel
                 .findById(id)
-                .populate([
-                    { path: 'equipamentos', select: 'nome' },
-                    { path: 'usuarios', select: 'nome' }
-                ]);
+                .populate('usuarios');
 
             if (!data) {
                 throw new CustomError({
@@ -94,6 +92,7 @@ class ReservaRepository {
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limite, 10),
+            populate: { path: 'usuarios'},
             sort: { nome: 1 },
         };
 
