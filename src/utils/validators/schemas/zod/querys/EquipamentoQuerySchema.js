@@ -1,52 +1,41 @@
 import { z } from "zod";
 import mongoose from "mongoose";
 
-export const ComponenteIdSchema = z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+export const EquipamentoIdSchema = z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
   message: "ID inválido",
 });
 
-export const ComponenteQuerySchema = z.object({
-  nome: z
-    .string()
-    .optional()
-    .refine((val) => !val || val.trim().length > 0, {
-      message: "Nome não pode ser vazio",
-    })
-    .transform((val) => val?.trim()),
-
-  quantidade: z
-    .string()
-    .optional()
-    .transform((val) => (val ? parseInt(val, 10) : undefined))
-    .refine((val) => val === undefined || Number.isInteger(val), {
-      message: "Quantidade deve ser um número inteiro",
-    }),
-
-  estoque_minimo: z
-    .string()
-    .optional()
-    .refine((val) => !val || val === "true" || val === "false", {
-      message: "Estoque mínimo deve ser 'true' ou 'false'",
-    })
-    .transform((val) => (val === "true" ? true : val === "false" ? false : undefined)),
-
-  localizacao: z
-    .string()
-    .optional()
-    .transform((val) => val?.trim()),
-
+export const EquipamentoQuerySchema = z.object({
   categoria: z
     .string()
     .optional()
+    .refine((val) => !val || val.trim().length > 0, {
+      message: "Categoria não pode ser vazia",
+    })
     .transform((val) => val?.trim()),
 
-  ativo: z
+  status: z
     .string()
     .optional()
     .refine((val) => !val || val === "true" || val === "false", {
-      message: "Ativo deve ser 'true' ou 'false'",
-    })
-    .transform((val) => (val === "true" ? true : val === "false" ? false : undefined)),
+      message: "Status deve ser 'true' ou 'false'",
+    }),
+
+  minValor: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined))
+    .refine((val) => val === undefined || (Number.isInteger(val) && val > 0), {
+      message: "minValor deve ser um número inteiro maior que 0",
+    }),
+
+  maxValor: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseFloat(val) : undefined))
+    .refine((val) => val === undefined || !isNaN(val) && val >= 0, {
+      message: "maxValor deve ser um número maior ou igual a 0",
+    }),
 
   page: z
     .string()
@@ -56,11 +45,11 @@ export const ComponenteQuerySchema = z.object({
       message: "Page deve ser um número inteiro maior que 0",
     }),
 
-  limite: z
+  limit: z
     .string()
     .optional()
     .transform((val) => (val ? parseInt(val, 10) : 10))
     .refine((val) => Number.isInteger(val) && val > 0 && val <= 100, {
-      message: "Limite deve ser um número inteiro entre 1 e 100",
+      message: "Limit deve ser um número inteiro entre 1 e 100",
     }),
 });

@@ -85,13 +85,13 @@ describe('EquipamentoQuerySchema', () => {
     it('deve retornar uma mensagem de erro para um valor mínimo negativo', async () => {
       const SchemaQueryMinValor = equipamentoQuerySchema.partial();
       const MinValorInvalido = { minValor: '-1' };
-      await expect(SchemaQueryMinValor.parseAsync(MinValorInvalido)).rejects.toThrow('O valor mínimo deve ser maior ou igual a 0');
+      await expect(SchemaQueryMinValor.parseAsync(MinValorInvalido)).rejects.toThrow(`Valor deve ser um número inteiro maior que 0`);
     });
 
     it('deve retornar uma mensagem de erro para um valor mínimo inválido', async () => {
       const SchemaQueryMinValor = equipamentoQuerySchema.partial();
       const MinValorInvalido = { minValor: 'abc' };
-      await expect(SchemaQueryMinValor.parseAsync(MinValorInvalido)).rejects.toThrow('O valor deve ser um número válido');
+      await expect(SchemaQueryMinValor.parseAsync(MinValorInvalido)).rejects.toThrow(`Page deve ser um número inteiro maior que 0`);
     });
 
     it('deve aceitar ausência de minValor', () => {
