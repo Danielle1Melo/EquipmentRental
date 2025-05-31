@@ -1,4 +1,4 @@
-import ReservaFilterBuilder from "../../repositories/filters/ReservaFilterBuilder";
+import ReservaFilterBuilder from "pul";
 import Reserva from "../../models/Reserva";
 jest.mock("../../models/Reserva");
 
