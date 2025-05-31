@@ -38,3 +38,19 @@
 | Atualização de Equipamento Inexistente | Deve lançar erro 404 se o equipamento não existir                                            | Tentar atualizar com ID inexistente                                                          | Erro 404 lançado com mensagem de equipamento não encontrado                                                    |
 | Remoção de Equipamento          | Deve permitir remoção apenas se não houver locações ativas                                            | Deletar equipamento sem locações ativas; lançar erro se locações ativas                       | Equipamento removido com sucesso; erro 409 lançado se houver locações ativas                                    |
 | Remoção de Equipamento Inexistente | Deve lançar erro 404 ao tentar deletar equipamento inexistente                                   | Tentar deletar equipamento com ID inválido ou inexistente                                    | Erro 404 lançado com mensagem clara                                                                             |
+
+# Plano de Testes para Repository (Sprint V)
+
+| Funcionalidade | Comportamento Esperado | Verificações | Critérios de Aceite |
+|----------------|-----------------------|--------------|---------------------|
+| Inicialização do repositório | Usa `EquipamentoModel` como padrão se nenhum modelo for fornecido | Instanciar `EquipamentoRepository` sem modelo e verificar o atributo `model` | Repositório usa `EquipamentoModel` como modelo padrão |
+| Cadastro de equipamento | Cria e salva equipamento com status inativo | Passar dados válidos (`nome`, `descricao`, `categoria`, `valorDiaria`, `disponibilidade`) e verificar se `save` é chamado | Equipamento é salvo com `ativo=false` e retorna com `_id` |
+| Cadastro com atributos obrigatórios ausentes | Lança erro se faltarem campos obrigatórios | Passar dados incompletos (ex.: só `nome`) e verificar se `save` rejeita | Lança erro "Missing required fields"; equipamento não é salvo |
+| Listagem de equipamentos | Lista equipamentos com filtros de categoria, preço e disponibilidade | Passar query com `categoria`, `valorDiariaMin`, `valorDiariaMax`, `disponibilidade`, `page` e `limit`, e verificar chamada de `paginate` | Retorna equipamentos filtrados; `paginate` usa query, `page`, `limit` e `sort: { equiNome: 1 }` |
+| Listagem de equipamentos ativos | Lista apenas equipamentos com `ativo=true` | Passar query com `ativo=true`, `page` e `limit`, e verificar chamada de `paginate` | Retorna equipamentos ativos; `paginate` inclui `ativo=true` |
+| Busca por ID | Retorna equipamento ativo pelo ID | Passar ID válido e verificar se `findById` retorna equipamento | Retorna equipamento; `findById` é chamado com ID |
+| Busca por ID inexistente | Retorna null se equipamento não existe | Passar ID inexistente e verificar se `findById` retorna null | Retorna null; `findById` é chamado com ID |
+| Atualização de equipamento | Atualiza equipamento e marca como inativo | Passar ID válido e dados (`nome`, `valorDiaria`) e verificar se `findByIdAndUpdate` atualiza | Equipamento é atualizado com `ativo=false`; retorna equipamento atualizado; usa `{ new: true }` |
+| Atualização de equipamento inexistente | Retorna null se equipamento não existe | Passar ID inexistente e dados, e verificar se `findByIdAndUpdate` retorna null | Retorna null; `findByIdAndUpdate` é chamado com ID |
+| Remoção de equipamento | Inativa equipamento sem locações ativas | Passar ID válido e verificar se `findByIdAndDelete` é chamado | Equipamento é removido; retorna equipamento removido; `findByIdAndDelete` é chamado |
+| Remoção de equipamento inexistente | Retorna null se equipamento não existe | Passar ID inexistente e verificar se `findByIdAndDelete` retorna null | Retorna null; `findByIdAndDelete` é chamado com ID |
