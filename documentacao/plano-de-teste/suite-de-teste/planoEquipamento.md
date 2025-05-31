@@ -1,6 +1,5 @@
 # Plano de Teste para Model (Sprint V)
 
-## Funcionalidade
 | Funcionalidade                    | Comportamento Esperado                                                                                                                                  | Verificações                                                                                                  | Critérios de Aceite                                                                                             |
 |----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | Cadastro válido de equipamento   | Um equipamento com todos os campos obrigatórios e válidos deve ser salvo com sucesso                                                                   | Inserir um equipamento com todos os campos obrigatórios preenchidos corretamente                             | O equipamento é salvo e retornado com _id, equiStatus como false, equiNotaMediaAvaliacao como 0, e equiAvaliacoes como [] |
@@ -9,3 +8,18 @@
 | Valor padrão para equiNotaMediaAvaliacao | Ao cadastrar um equipamento, a nota média de avaliação deve ser 0 por padrão                                                                 | Cadastrar equipamento e verificar valor de equiNotaMediaAvaliacao                                             | O campo equiNotaMediaAvaliacao deve ser `0`                                                                      |
 | Valor padrão para equiAvaliacoes | O array de avaliações deve ser iniciado como vazio ao criar o equipamento                                                                             | Cadastrar equipamento e verificar valor de equiAvaliacoes                                                     | O campo equiAvaliacoes deve ser um array vazio `[]`                                                              |
 | Leitura de equipamentos          | O sistema deve retornar todos os equipamentos cadastrados                                                                                              | Criar dois equipamentos e fazer uma leitura com `find()`                                                      | A resposta contém um array com os equipamentos cadastrados e os nomes corretos                                  |
+
+# Plano de Teste para Controller (Sprint V)
+
+| Funcionalidade | Comportamento Esperado | Verificações | Critérios de Aceite |
+|----------------|-----------------------|--------------|---------------------|
+| Listagem de equipamentos | Deve listar equipamentos com query válida | Enviar requisição com query de filtro (ex.: `categoria=câmera`) | A resposta contém um array com os equipamentos filtrados corretamente |
+| Listagem sem query | Deve listar todos os equipamentos quando nenhuma query é fornecida | Enviar requisição sem parâmetros de query | A resposta contém um array com todos os equipamentos cadastrados |
+| Busca por ID | Deve retornar um equipamento específico pelo ID | Enviar requisição com um ID válido | A resposta contém os dados do equipamento correspondente ao ID |
+| Cadastro de equipamento | Deve criar um equipamento com dados válidos | Enviar requisição com dados válidos conforme o schema (`equiNome`, `equiValorDiaria`, etc.) | O equipamento é criado e retorna mensagem de sucesso com status "Aguardando aprovação" |
+| Validação de schema no cadastro | Deve retornar erro 400 para dados inválidos no cadastro | Enviar requisição com dados ausentes ou inválidos | Retorna erro 400 com mensagem de dados inválidos |
+| Atualização de equipamento | Deve atualizar um equipamento com dados válidos | Enviar requisição com ID válido e dados válidos conforme o schema de atualização | O equipamento é atualizado e retorna mensagem de sucesso com os dados atualizados |
+| Validação de ID na atualização | Deve retornar erro para ID inválido na atualização | Enviar requisição com ID inválido | Retorna erro de validação (`ZodError`) |
+| Validação de dados na atualização | Deve retornar erro para dados inválidos na atualização | Enviar requisição com dados inválidos conforme o schema de atualização | Retorna erro de validação (`ZodError`) |
+| Equipamento inexistente na atualização | Deve retornar erro 404 ao tentar atualizar equipamento inexistente | Enviar requisição com ID de equipamento não cadastrado | Retorna erro 404 com mensagem "Equipamento não encontrado" |
+| Falha inesperada na atualização | Deve retornar erro 500 para falhas inesperadas na atualização | Simular erro interno no serviço de atualização | Retorna erro 500 com mensagem de erro interno |
