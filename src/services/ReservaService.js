@@ -37,8 +37,12 @@ class ReservaService {
             });
         }
 
-        const dataAtual = new Date();
-        if (dataInicial < dataAtual) {
+        const agora = new Date();
+        const dataZerada = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+
+        console.log(dataZerada);
+        // Exemplo: Sat Jun 01 2025 00:00:00 GMT-0300 (Horário Padrão de Brasília)
+        if (dataInicial < dataZerada) {
             throw new CustomError({
                 statusCode: 400,
                 errorType: 'invalidData',

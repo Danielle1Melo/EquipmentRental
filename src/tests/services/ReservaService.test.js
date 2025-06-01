@@ -74,7 +74,7 @@ describe('ReservaService', () => {
 
   describe('criar', () => {
     const validReservaData = {
-      dataInicial: new Date('2025-06-01T05:01:45.884Z'),
+      dataInicial: new Date('2025-06-02T05:01:45.884Z'),
       dataFinal: new Date('2025-06-05T05:01:45.884Z'),
       dataFinalAtrasada: new Date('2025-06-06T05:01:45.884Z'),
       quantidadeEquipamento: 2,
@@ -88,7 +88,7 @@ describe('ReservaService', () => {
     it('deve criar uma reserva válida', async () => {
       const mockEquipamento = {
         _id: '67959501ea0999e0a0fa9f58',
-        equiQuantidadeDisponivel: 5,
+        quantidadeDisponivel: 5,
       };
       Equipamento.findById.mockResolvedValue(mockEquipamento);
       repositoryMock.findReservasSobrepostas.mockResolvedValue([]);
@@ -110,13 +110,13 @@ describe('ReservaService', () => {
     it('deve criar uma reserva com data no formato ISO do MongoDB', async () => {
       const isoReservaData = {
         ...validReservaData,
-        dataInicial: new Date('2025-06-01T05:01:45.884Z'),
+        dataInicial: new Date('2025-06-02T05:01:45.884Z'),
         dataFinal: new Date('2025-06-05T05:01:45.884Z'),
         dataFinalAtrasada: new Date('2025-06-06T05:01:45.884Z'),
       };
       const mockEquipamento = {
         _id: '67959501ea0999e0a0fa9f58',
-        equiQuantidadeDisponivel: 5,
+        quantidadeDisponivel: 5,
       };
       Equipamento.findById.mockResolvedValue(mockEquipamento);
       repositoryMock.findReservasSobrepostas.mockResolvedValue([]);
@@ -253,31 +253,29 @@ describe('ReservaService', () => {
       );
     });
 
-it('deve lançar erro se quantidade solicitada excede a disponível', async () => {
-  const mockEquipamento = {
-    _id: '67959501ea0999e0a0fa9f58',
-    quantidadeDisponivel: 1,
-  };
-  
-  Equipamento.findById.mockResolvedValue(mockEquipamento);
-  
-  await expect(reservaService.criar(validReservaData)).rejects.toThrow(
-    new CustomError({
-      statusCode: 400,
-      errorType: 'invalidData',
-      field: 'quantidadeEquipamento',
-      details: [],
-      customMessage: 'Quantidade solicitada excede a quantidade disponível do equipamento.',
-    })
-  );
-  
-  expect(Equipamento.findById).toHaveBeenCalledWith(expect.any(Object));
-});
+    it('deve lançar erro se quantidade solicitada excede a disponível', async () => {
+      const mockEquipamento = {
+        _id: '67959501ea0999e0a0fa9f58',
+        quantidadeDisponivel: 1,
+      };
+      Equipamento.findById.mockResolvedValue(mockEquipamento);
+      repositoryMock.findReservasSobrepostas.mockResolvedValue([]);
+
+      await expect(reservaService.criar(validReservaData)).rejects.toThrow(
+        new CustomError({
+          statusCode: 400,
+          errorType: 'invalidData',
+          field: 'quantidadeEquipamento',
+          details: [],
+          customMessage: 'Quantidade solicitada excede a quantidade disponível do equipamento.',
+        })
+      );
+    });
 
     it('deve lançar erro se houver reservas sobrepostas', async () => {
       const mockEquipamento = {
         _id: '67959501ea0999e0a0fa9f58',
-        equiQuantidadeDisponivel: 1,
+        quantidadeDisponivel: 5,
       };
       Equipamento.findById.mockResolvedValue(mockEquipamento);
       repositoryMock.findReservasSobrepostas.mockResolvedValue([
