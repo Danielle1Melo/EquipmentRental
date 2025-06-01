@@ -26,7 +26,7 @@ class ReservaService {
                 customMessage: 'A data inicial deve ser anterior à data final.',
             });
         }
-
+        // console.log(dataFinal, dataFinalAtrasada)
         if (dataFinalAtrasada <= dataFinal) {
             throw new CustomError({
                 statusCode: 400,
