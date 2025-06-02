@@ -74,9 +74,9 @@ describe('ReservaService', () => {
 
   describe('criar', () => {
     const validReservaData = {
-      dataInicial: new Date('2025-06-01T05:01:45.884Z'),
-      dataFinal: new Date('2025-06-05T05:01:45.884Z'),
-      dataFinalAtrasada: new Date('2025-06-06T05:01:45.884Z'),
+      dataInicial: new Date('2025-06-04T05:00:00.000Z'),
+      dataFinal: new Date('2025-06-05T05:00:00.000Z'),
+      dataFinalAtrasada: new Date('2025-06-06T05:00:00.000Z'),
       quantidadeEquipamento: 2,
       valorEquipamento: 200,
       enderecoEquipamento: 'Rua Exemplo, 123',
@@ -156,8 +156,10 @@ describe('ReservaService', () => {
     it('deve lançar erro se dataFinalAtrasada for menor ou igual a dataFinal', async () => {
       const invalidData = {
         ...validReservaData,
-        dataFinalAtrasada: new Date('2025-06-05T05:01:45.884Z'),
+        dataFinalAtrasada: new Date('2025-05-05T05:00:00.000Z'),
       };
+      
+      console.log("ESTES SÃO AS DATAS INVALIDAS:",invalidData)
 
       await expect(reservaService.criar(invalidData)).rejects.toThrow(
         new CustomError({
