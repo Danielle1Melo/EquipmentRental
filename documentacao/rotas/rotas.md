@@ -99,12 +99,17 @@
 ### 3.1 POST /reservas
 
 #### Caso de Uso
-- Realizar uma nova reserva de equipamento.
+- Criar uma nova reserva de equipamento com base nas informações fornecidas pelo usuário.
 
 #### Regras de Negócio
-- Verificar disponibilidade no período.
-- O equipamento deve estar aprovado.
-- Gerar notificação para o locador.
+- O usuário solicitante deve estar cadastrado.
+- Campos obrigatórios: `dataInicial`, `dataFinal`, `quantidadeEquipamento`, `valorEquipamento`, `enderecoEquipamento`, `equipamento`, `usuario`.
+- `quantidadeEquipamento` deve ser um número inteiro positivo.
+- `dataInicial` e `dataFinal` devem ser datas válidas.
+- `dataInicial` não pode ser no passado
+- Verificar se `equipamento` existe.
+- Retornar erro se equipamento não existir
+- Não permitir reservas sobrepostas para o mesmo equipamento no período solicitado.
 
 #### Resultado Esperado
 - Reserva criada com status "pendente" até a aprovação do locador.
@@ -115,10 +120,39 @@
 - Listar reservas do usuário ou dos seus equipamentos.
 
 #### Regras de Negócio
-- Filtro por status, data, locador ou locatário.
+- Filtrar por status.
+- Filtrar por datas.
+- Filtrar por usuário e equipamento.
 
 #### Resultado Esperado
 - Lista dos equipamentos reservados. 
+
+### 3.3 GET /reservas/:id
+
+#### Caso de Uso
+- Obter os detalhes de uma reserva específica com base no identificador único (id) fornecido.
+
+#### Regras de Negócio
+- O parâmetro :id deve ser um valor válido.
+- Caso o :id seja inválido (formato incorreto ou vazio), retornar erro.
+
+#### Resultado Esperado
+- Retorna os dados completos de uma reserva específica em formato JSON.
+- Em caso de erro, retorna o código de status apropriado.
+
+### 3.4 PATCH /reservas/:id
+
+#### Caso de Uso
+- Atualizar parcialmente os dados de uma reserva específica com base no identificador único (id) fornecido
+
+#### Regras de Negócio
+- O parâmetro :id deve ser um valor válido.
+- Caso o :id seja inválido (formato incorreto ou vazio), retornar erro.
+- Verificar se existe uma reserva associada ao :id fornecido.
+
+#### Resultado Esperado
+- Dados completos da reserva atualizada em JSON.    
+- Códigos de erro apropriados com mensagens claras.
 
 ## 4. Usuario
 
