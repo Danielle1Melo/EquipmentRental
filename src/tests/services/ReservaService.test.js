@@ -110,7 +110,7 @@ describe('ReservaService', () => {
     it('deve criar uma reserva com data no formato ISO do MongoDB', async () => {
       const isoReservaData = {
         ...validReservaData,
-        dataInicial: new Date('2025-06-01T05:01:45.884Z'),
+        dataInicial: new Date('2025-06-04T05:01:45.884Z'),
         dataFinal: new Date('2025-06-05T05:01:45.884Z'),
         dataFinalAtrasada: new Date('2025-06-06T05:01:45.884Z'),
       };

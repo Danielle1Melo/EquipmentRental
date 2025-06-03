@@ -29,6 +29,11 @@
             "date": 1748562243809,
             "name": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/combined-2025-05-29.log",
             "hash": "9b1dd847652964e4b5843f0a8aa4148977523110d0f620826bf50d6cc9b4b1e6"
+        },
+        {
+            "date": 1748908123799,
+            "name": "/home/danielle_melo/Documentos/aluguel-de-equipamentos/logs/combined-2025-06-02.log",
+            "hash": "b304b74c8fad42ab604c4c85b7ba3bcfd538400c75ddbb467cfa62b8a586c910"
         }
     ],
     "hashType": "sha256"
