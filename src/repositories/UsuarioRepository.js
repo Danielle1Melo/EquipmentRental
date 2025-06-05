@@ -85,6 +85,11 @@ class UsuarioRepository {
             })
         }
     }
+    async buscarPorEmailCadastrado(email) {
+        const documento = await this.model.findOne({email:email},'+senha')
+        console.log(documento.senha)
+        return documento
+    }
     async buscarPorTelefone(telefone, id = null){
         // console.log("Estou no buscarPorTelefone no UsuarioRepository")
         const documento = await this.model.findOne({telefone:telefone, _id:{$ne: id}}, '+senha')
@@ -115,7 +120,7 @@ class UsuarioRepository {
         }
     }
     async cadastrarUsuario(req){
-
+       
         const data = await this.model.create(req.body)
         return data
     }
