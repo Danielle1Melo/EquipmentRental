@@ -29,7 +29,7 @@ const ReservaSchema = z.object({
     .string()
     .min(1, { message: 'Endereço do equipamento é obrigatório' }),
   statusReserva: z
-    .enum(['pendente', 'confirmada', 'cancelada'])
+    .enum(['pendente', 'confirmada', 'cancelada', 'finalizada'])
     .default('pendente'),
   equipamento: objectIdSchema,
   usuario: objectIdSchema,

@@ -42,7 +42,7 @@ Endereco: {
       quantidadeEquipamento: () => fakebr.random.number({ min: 1, max: 10 }),
       valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
       enderecoEquipamento: () => fakebr.address.streetAddress(),
-      statusReserva: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada']),
+      statusReserva: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada', 'finalizada']),
       equipamentos: [{_id: new mongoose.Types.ObjectId().toString}],
       usuarios: [{_id: new mongoose.Types.ObjectId().toString}],
     }, 

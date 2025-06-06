@@ -6,11 +6,11 @@ class Reserva {
         const reservaSchema = new mongoose.Schema({
             dataInicial: { type: Date, required: [true, "A data inicial é obrigatória"]},
             dataFinal: { type: Date, required: true },
-            dataFinalAtrasada: { type: Date, required: false },
+            dataFinalAtrasada: { type: Date },
             quantidadeEquipamento: { type: Number, required: true, min: [1, "A quantidade de equipamento deve ser no mínimo 1"] },
             valorEquipamento: { type: Number, required: true },
             enderecoEquipamento: { type: String, required: true },
-            statusReserva: { type: String, enum: ['pendente', 'confirmada', 'cancelada'], default: 'pendente' },
+            statusReserva: { type: String, enum: ['pendente', 'confirmada', 'cancelada', 'finalizada'], default: 'pendente' },
             equipamentos: { type: mongoose.Schema.Types.ObjectId, ref: 'equipamentos', required: true },
             usuarios: { type: mongoose.Schema.Types.ObjectId, ref: 'usuarios', required: true },
         },
@@ -19,14 +19,6 @@ class Reserva {
             versionKey: false
         }
     );
-
-    // reservaSchema.pre('save', function (next) {
-    //     if (this.dataFinal <= this.dataInicial) {
-    //       return next(new Error('A data final da reserva deve ser posterior à data inicial.'));
-    //     }
-    //     next();
-    // });
-
 
     reservaSchema.plugin(mongoosePaginate)
     this.model = mongoose.model("reservas", reservaSchema)
