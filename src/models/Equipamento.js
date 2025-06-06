@@ -20,7 +20,7 @@ class Equipamento {
       equiStatus: { type: Boolean, default: false },
       equiUsuario: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'usuario'
+        ref: 'usuarios'
       },
       equiNotaMediaAvaliacao: {
         type: Number,

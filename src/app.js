@@ -9,7 +9,6 @@ import logger from './utils/logger.js';
 import CommonResponse from './utils/helpers/CommonResponse.js';
 import fileUpload from 'express-fileupload';
 
-
 const app = express();
 
 // Configura o middleware express-fileupload

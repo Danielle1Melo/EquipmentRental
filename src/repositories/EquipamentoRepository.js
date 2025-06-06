@@ -10,14 +10,38 @@ class EquipamentoRepository {
       page: pagina,
       limit: limite,
       sort: { equiNome: 1 },
+      populate: [
+        {
+          path: 'equiAvaliacoes',
+          populate: {
+            path: 'usuario',
+            select: 'nome'
+          }
+        },
+        {
+          path: 'equiUsuario',
+          select: 'nome'
+        }
+      ]
     };
 
     return await this.model.paginate(query, options);
   }
 
-
   async listarPorId(id) {
-    return await this.model.findById(id);
+    return await this.model
+      .findById(id)
+      .populate({
+        path: 'equiAvaliacoes',
+        populate: {
+          path: 'usuario',
+          select: 'nome'
+        }
+      })
+      .populate({
+        path: 'equiUsuario',
+        select: 'nome'
+      });
   }
 
   async criar(dadosEquipamentos) {
