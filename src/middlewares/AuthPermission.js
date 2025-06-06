@@ -1,20 +1,17 @@
 // middlewares/AuthPermission.js
-
+import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
-import PermissionService from '../services/PermissionService.js';
-import Rota from '../models/Rota.js';
 import { CustomError, errorHandler, messages } from '../utils/helpers/index.js';
-
+import AuthService from '../services/AuthService.js';
 // Certifique-se de que as variáveis de ambiente estejam carregadas
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET_ACCESS_TOKEN;
 
 class AuthPermission {
   constructor() {
     this.jwt = jwt;
-    this.permissionService = new PermissionService();
-    this.Rota = Rota;
     this.JWT_SECRET = JWT_SECRET;
     this.messages = messages;
+    this.service = new AuthService();
 
 
     // Vincula o método handle ao contexto da instância
@@ -43,13 +40,14 @@ class AuthPermission {
           customMessage: 'Refresh token inválido, autentique novamente!'
         });
       }
-      if(!tokenData?.data?.tipoUsuario == "admin"){
+      console.log(tokenData.data.tipoUsuario)
+      if(tokenData?.data?.tipoUsuario !== "admin"){
         throw new CustomError({
           statusCode: 401,
           errorType: 'unauthorized',
           field: 'Token',
           details: [],
-          customMessage: 'Refresh token inválido, autentique novamente!'
+          customMessage: 'Somente administradores tem acesso'
         });
       }
       // 9. Permite a continuação da requisição

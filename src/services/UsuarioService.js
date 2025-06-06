@@ -26,5 +26,10 @@ class UsuarioService {
         const data = await this.repository.cadastrarUsuario(body)
         return data
     }
+    async alterarStatus(id, parseData){
+        await this.repository.buscarPorId(id)
+        const data = await this.repository.alterarStatus(id, parseData)
+        return data
+    }
 }
 export default UsuarioService
