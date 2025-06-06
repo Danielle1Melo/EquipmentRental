@@ -4,6 +4,7 @@ import ReservaRepository from '../repositories/ReservaRepository.js';
 import CustomError from '../utils/helpers/CustomError.js'
 import { parse } from 'dotenv';
 import Equipamento from '../models/Equipamento.js';
+import Usuario from '../models/Usuario.js';
 
 class ReservaService {
     constructor() {
@@ -15,7 +16,7 @@ class ReservaService {
     }
 
     async criar(parsedData) {
-        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, equipamentos } = parsedData;
+        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, equipamentos, usuarios } = parsedData;
 
         if (dataInicial >= dataFinal) {
             throw new CustomError({
@@ -26,7 +27,6 @@ class ReservaService {
                 customMessage: 'A data inicial deve ser anterior à data final.',
             });
         }
-        // console.log(dataFinal, dataFinalAtrasada)
         if (dataFinalAtrasada <= dataFinal) {
             throw new CustomError({
                 statusCode: 400,
@@ -41,7 +41,6 @@ class ReservaService {
         const dataZerada = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
 
         console.log(dataZerada);
-        // Exemplo: Sat Jun 01 2025 00:00:00 GMT-0300 (Horário Padrão de Brasília)
         if (dataInicial < dataZerada) {
             throw new CustomError({
                 statusCode: 400,
@@ -72,8 +71,19 @@ class ReservaService {
             });
         }
 
-        const equipamentoId = equipamentos;
+        if (!usuarios || !usuarios.length) {
+            throw new CustomError({
+                statusCode: 400,
+                errorType: 'invalidData',
+                field: 'usuarios',
+                details: [],
+                customMessage: 'Pelo menos um usuário deve ser especificado.',
+            });
+        }
 
+        const equipamentoId = equipamentos;
+        const usuariosId = usuarios;
+        
         if (!mongoose.Types.ObjectId.isValid(equipamentoId)) {
             throw new CustomError({
                 statusCode: 400,
@@ -81,6 +91,16 @@ class ReservaService {
                 field: 'equipamentos',
                 details: [],
                 customMessage: `ID de equipamento inválido: ${equipamentoId}`,
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(usuariosId)) {
+            throw new CustomError({
+                statusCode: 400,
+                errorType: 'invalidData',
+                field: 'usuarios',
+                details: [],
+                customMessage: `ID de usuário inválido: ${usuariosId}`,
             });
         }
         const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentoId);
@@ -95,7 +115,19 @@ class ReservaService {
             });
         }
 
-        if (equipamentoDoc.quantidadeDisponivel < quantidadeEquipamento) {
+        const usuarioObjectId = new mongoose.Types.ObjectId(usuariosId);
+        const usuarioDoc = await Usuario.findById(usuarioObjectId);
+        if (!usuarioDoc) {
+            throw new CustomError({
+                statusCode: 404,
+                errorType: 'resourceNotFound',
+                field: 'usuarios',
+                details: [],
+                customMessage: 'Usuário não encontrado.',
+            });
+        }
+
+        if (equipamentoDoc.equiQuantidadeDisponivel < quantidadeEquipamento) {
             throw new CustomError({
                 statusCode: 400,
                 errorType: 'invalidData',
@@ -131,8 +163,6 @@ class ReservaService {
         const data = await this.repository.atualizar(id, parsedData);
         return data;
     }
-
-
 
     async ensureReservaExists(id) {
         const reservaExistente = await this.repository.buscarPorID(id);
