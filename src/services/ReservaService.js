@@ -61,70 +61,63 @@ class ReservaService {
             });
         }
 
-        if (!equipamentos || !equipamentos.length) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'equipamentos',
-                details: [],
-                customMessage: 'Pelo menos um equipamento deve ser especificado.',
-            });
+        let equipamentoDoc = null;
+        if (equipamentos) {
+            if (!mongoose.Types.ObjectId.isValid(equipamentos)) {
+                throw new CustomError({
+                    statusCode: 400,
+                    errorType: 'invalidData',
+                    field: 'equipamentos',
+                    customMessage: `ID de equipamento inválido: ${equipamentos}`,
+                });
+            }
+            const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentos);
+            equipamentoDoc = await Equipamento.findById(equipamentoObjectId);
+            if (!equipamentoDoc) {
+                throw new CustomError({
+                    statusCode: 404,
+                    errorType: 'resourceNotFound',
+                    field: 'equipamentos',
+                    customMessage: 'Equipamento não encontrado.',
+                });
+            }
+            if (!equipamentoDoc.equiStatus) {
+                throw new CustomError({
+                    statusCode: 400,
+                    errorType: 'invalidData',
+                    field: 'equipamentos',
+                    customMessage: 'O equipamento não está disponível para reserva.',
+                });
+            }
+            if (quantidadeEquipamento && equipamentoDoc.equiQuantidadeDisponivel < quantidadeEquipamento) {
+                throw new CustomError({
+                    statusCode: 400,
+                    errorType: 'invalidData',
+                    field: 'quantidadeEquipamento',
+                    customMessage: 'Quantidade solicitada excede a quantidade disponível do equipamento.',
+                });
+            }
         }
 
-        if (!usuarios || !usuarios.length) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'usuarios',
-                details: [],
-                customMessage: 'Pelo menos um usuário deve ser especificado.',
-            });
-        }
-
-        const equipamentoId = equipamentos;
-        const usuariosId = usuarios;
-        
-        if (!mongoose.Types.ObjectId.isValid(equipamentoId)) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'equipamentos',
-                details: [],
-                customMessage: `ID de equipamento inválido: ${equipamentoId}`,
-            });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(usuariosId)) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'usuarios',
-                details: [],
-                customMessage: `ID de usuário inválido: ${usuariosId}`,
-            });
-        }
-        const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentoId);
-        const equipamentoDoc = await Equipamento.findById(equipamentoObjectId);
-        if (!equipamentoDoc) {
-            throw new CustomError({
-                statusCode: 404,
-                errorType: 'resourceNotFound',
-                field: 'equipamentos',
-                details: [],
-                customMessage: 'Equipamento não encontrado.',
-            });
-        }
-
-        const usuarioObjectId = new mongoose.Types.ObjectId(usuariosId);
-        const usuarioDoc = await Usuario.findById(usuarioObjectId);
-        if (!usuarioDoc) {
-            throw new CustomError({
-                statusCode: 404,
-                errorType: 'resourceNotFound',
-                field: 'usuarios',
-                details: [],
-                customMessage: 'Usuário não encontrado.',
-            });
+        if (usuarios) {
+            if (!mongoose.Types.ObjectId.isValid(usuarios)) {
+                throw new CustomError({
+                    statusCode: 400,
+                    errorType: 'invalidData',
+                    field: 'usuarios',
+                    customMessage: `ID de usuário inválido: ${usuarios}`,
+                });
+            }
+            const usuarioObjectId = new mongoose.Types.ObjectId(usuarios);
+            const usuarioDoc = await Usuario.findById(usuarioObjectId);
+            if (!usuarioDoc) {
+                throw new CustomError({
+                    statusCode: 404,
+                    errorType: 'resourceNotFound',
+                    field: 'usuarios',
+                    customMessage: 'Usuário não encontrado.',
+                });
+            }
         }
 
         if (equipamentoDoc.equiQuantidadeDisponivel < quantidadeEquipamento) {
