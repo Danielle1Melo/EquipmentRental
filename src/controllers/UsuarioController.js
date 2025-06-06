@@ -54,12 +54,12 @@ class UsuarioController {
         const data = await this.service.cadastrarUsuario(req.body)
         return CommonResponse.success(res, data, 201, 'Usuário criado com sucesso!')
     }
-    async alterarStatus(req){
+    async alterarStatus(req, res){
         const {id} = req.params || {}
         UsuarioIdSchema.parse(id)
         const parseData = await UsuarioUpdateSchema.parseAsync(req.body)
-        const data = await this.service.alterarStatus(id)
-        return CommonResponse.success(res, data, 200, 'Usuário desativado com sucesso!')
+        const data = await this.service.alterarStatus(id, parseData)
+        return CommonResponse.success(res, data, 200, `Status alterado com sucesso para ${parseData.status}`)
     }
 }
 
