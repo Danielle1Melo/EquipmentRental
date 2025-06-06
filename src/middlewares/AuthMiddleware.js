@@ -33,7 +33,7 @@ class AuthMiddleware {
       }
 
       // Verifica e decodifica o token
-      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_ACCESS_TOKEN);
 
       if (!decoded) { // Se não ocorrer a decodificação do token
         throw new TokenExpiredError("O token JWT está expirado!");
@@ -41,14 +41,14 @@ class AuthMiddleware {
 
       // Verifica se o refreshtoken está presente no banco de dados e se é válido
       const tokenData = await this.service.carregatokens(decoded.id);
-
-      if (!tokenData?.data?.refreshtoken) {
+      // console.log("AQUIIIIIII",tokenData?.data?.refreshToken)
+      if (!tokenData?.data?.refreshToken) {
         throw new CustomError({
           statusCode: 401,
           errorType: 'unauthorized',
-          field: 'Token',
+          field: 'Usuario',
           details: [],
-          customMessage: 'Refresh token inválido, autentique novamente!'
+          customMessage: 'Usuário não é um adminstrador, acesso negado!'
         });
       }
 

@@ -28,7 +28,6 @@ class AuthRepository {
         documento.accessToken = accesstoken;
         documento.refreshToken = refreshtoken;
         const data = await documento.save();
-        console.log("PASssssssOUUuuuuu")
         return data;
     }
 

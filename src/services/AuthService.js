@@ -19,7 +19,7 @@ class AuthService {
     }
 
     async carregatokens(id, token) {
-        const data = await this.usuarioRepository.buscarPorId(id, { includeTokens: true });
+        const data = await this.usuarioRepository.buscarPorId(id,  {includeTokens: true });
         return { data };
     }
 
@@ -68,7 +68,17 @@ class AuthService {
                 customMessage: messages.error.unauthorized('Senha ou Email')
             });
         }
+        if(!userEncontrado.status == "ativo"){
 
+            throw new CustomError({
+                statusCode: 403,
+                errorType:'unauthorized',
+                field:'Aprovado',
+                details:[],
+                customMessage: "Está conta foi desativada por um administrador por violação de contrato."
+            })
+
+        }
         // Gerar novo access token utilizando a instância injetada
         const accesstoken = await this.TokenUtil.generateAccessToken(userEncontrado._id);
 
