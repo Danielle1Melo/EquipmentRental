@@ -130,7 +130,7 @@ class UsuarioRepository {
         return data
     }
     async alterarStatus(id, parseData){
-        console.log(parseData)
+  
         const documento = await this.model.findByIdAndUpdate(id,{$set: parseData})
         return documento
     }
