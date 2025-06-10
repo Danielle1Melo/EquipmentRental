@@ -25,21 +25,10 @@ class AuthPermission {
 
       const [scheme, token] = authHeader.split(' ');
       const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_ACCESS_TOKEN);
-      console.log("Passou por aqui")
-      if (!decoded) { // Se não ocorrer a decodificação do token
-        throw new TokenExpiredError("O token JWT está expirado!");
-      }
+      
       const tokenData = await this.service.carregatokens(decoded.id);
       // console.log("AQUIIIIIII",tokenData?.data?.refreshToken)
-      if (!tokenData?.data?.refreshToken) {
-        throw new CustomError({
-          statusCode: 401,
-          errorType: 'unauthorized',
-          field: 'Token',
-          details: [],
-          customMessage: 'Refresh token inválido, autentique novamente!'
-        });
-      }
+    
       console.log(tokenData.data.tipoUsuario)
       if(tokenData?.data?.tipoUsuario !== "admin"){
         throw new CustomError({
