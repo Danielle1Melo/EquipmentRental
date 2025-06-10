@@ -15,16 +15,15 @@ class EquipamentoRepository {
           path: 'equiAvaliacoes',
           populate: {
             path: 'usuario',
-            select: 'nome'
-          }
+            select: 'nome',
+          },
         },
         {
           path: 'equiUsuario',
-          select: 'nome'
-        }
-      ]
+          select: 'nome',
+        },
+      ],
     };
-
     return await this.model.paginate(query, options);
   }
 
@@ -35,13 +34,23 @@ class EquipamentoRepository {
         path: 'equiAvaliacoes',
         populate: {
           path: 'usuario',
-          select: 'nome'
-        }
+          select: 'nome',
+        },
       })
       .populate({
         path: 'equiUsuario',
-        select: 'nome'
+        select: 'nome',
       });
+  }
+
+  async listarPendentes() {
+    return await this.model
+      .find({ equiStatus: 'pendente' })
+      .populate({
+        path: 'equiUsuario',
+        select: 'nome',
+      })
+      .sort({ createdAt: -1 });
   }
 
   async criar(dadosEquipamentos) {

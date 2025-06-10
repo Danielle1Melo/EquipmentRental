@@ -20,6 +20,14 @@ router
     .patch("/equipamentos/:id", asyncWrapper(equipamentoController.atualizar.bind(equipamentoController)))
     
     //INATIVA o equipamento
-    .delete("/equipamentos/:id", asyncWrapper(equipamentoController.deletar.bind(equipamentoController)));
+    .delete("/equipamentos/:id", asyncWrapper(equipamentoController.deletar.bind(equipamentoController))) 
+
+    // rota adm aprovar um equipamento
+    .patch("/equipamentos/:id/aprovar", asyncWrapper(equipamentoController.aprovar.bind(equipamentoController)))
+
+    //rota adm reprovar um equipamento
+    .patch("/equipamentos/:id/reprovar", asyncWrapper(equipamentoController.reprovar.bind(equipamentoController)));
+
+    
 
 export default router;

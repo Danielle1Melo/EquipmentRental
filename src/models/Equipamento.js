@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import mongoosePaginate from 'mongoose-paginate-v2'
+import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 class Equipamento {
   constructor() {
@@ -17,27 +17,33 @@ class Equipamento {
         },
       },
       equiQuantidadeDisponivel: { type: Number, required: true },
-      equiStatus: { type: Boolean, default: false },
+      equiStatus: { 
+        type: String, 
+        enum: ['pendente', 'aprovado', 'reprovado'], 
+        default: 'pendente' 
+      },
       equiUsuario: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'usuarios'
+        ref: 'usuarios',
       },
       equiNotaMediaAvaliacao: {
         type: Number,
-        default: 0
+        default: 0,
       },
       equiAvaliacoes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'avaliacoes'
-      }]
+        ref: 'avaliacoes',
+      }],
+      equiMotivoReprovacaoPublicacao: { type: String, default: null },
+      equiDataAprovacaoPublicacao: { type: Date, default: null },
     }, {
       timestamps: true,
-      versionKey: false
-    })
+      versionKey: false,
+    });
 
-    equipamentoSchema.plugin(mongoosePaginate)
-    this.model = mongoose.model('equipamentos', equipamentoSchema)
+    equipamentoSchema.plugin(mongoosePaginate);
+    this.model = mongoose.model('equipamentos', equipamentoSchema);
   }
 }
 
-export default new Equipamento().model
+export default new Equipamento().model;
