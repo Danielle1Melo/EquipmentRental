@@ -1,12 +1,9 @@
 import Reserva from '../models/Reserva.js';
-import Equipamento from "../models/Equipamento.js"
-import Usuario from "../models/Usuario.js"
+import Equipamento from '../models/Equipamento.js';
+import Usuario from '../models/Usuario.js';
 import mongoose from 'mongoose';
-import { populate } from 'dotenv';
-import { CommonResponse, CustomError, HttpStatusCodes, errorHandler, messages, StatusService, asyncWrapper } from '../utils/helpers/index.js';
-
+import { CustomError } from '../utils/helpers/index.js';
 import ReservaFilterBuilder from './filters/ReservaFilterBuilder.js';
-
 
 class ReservaRepository {
     constructor({
@@ -20,120 +17,105 @@ class ReservaRepository {
     }
 
     async listar(req) {
-        const { id } = req.params;
+        const query = new ReservaFilterBuilder(req.query).build();
+        const options = {
+            page: parseInt(req.query.page) || 1,
+            limit: parseInt(req.query.limit) || 10,
+            populate: [
+                { path: 'equipamentos', select: 'equiNome' },
+                { path: 'usuarios', select: 'nome' }
+            ]
+        };
+        return await this.reservaModel.paginate(query, options);
+    }
 
-        if (id) {
-            const data = await this.reservaModel
-                .findById(id)
-                .populate([
-                    { path: 'equipamentos', select: 'equiNome' },
-                    { path: 'usuarios', select: 'nome' }
-                ])
+    async criar(dadosReserva) {
+        try {
+            return await this.reservaModel.create(dadosReserva);
+        } catch (error) {
+            throw new CustomError({
+                statusCode: 500,
+                errorType: 'databaseError',
+                field: 'Reserva',
+                details: [error.message],
+                customMessage: 'Erro ao criar reserva.'
+            });
+        }
+    }
 
-            if (!data) {
+    async atualizar(id, dadosReserva) {
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                throw new CustomError({
+                    statusCode: 400,
+                    errorType: 'invalidData',
+                    field: 'id',
+                    customMessage: `ID inválido: ${id}`,
+                });
+            }
+            const reserva = await this.reservaModel.findByIdAndUpdate(id, dadosReserva, { new: true });
+            if (!reserva) {
                 throw new CustomError({
                     statusCode: 404,
                     errorType: 'resourceNotFound',
                     field: 'Reserva',
-                    details: [],
-                    customMessage: messages.error.resourceNotFound('Reserva')
+                    customMessage: 'Reserva não encontrada.',
                 });
             }
-            return data;
+            return reserva;
+        } catch (error) {
+            throw error.statusCode ? error : new CustomError({
+                statusCode: 500,
+                errorType: 'databaseError',
+                field: 'Reserva',
+                details: [error.message],
+                customMessage: 'Erro ao atualizar reserva.'
+            });
         }
+    }
 
-        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, valorEquipamento, enderecoEquipamento, statusReserva, equipamentos, usuarios} = req.query
-        const limite = Math.min(parseInt(req.query.limite, 10) || 10, 100)
-        const page = parseInt(req.query.page, 10) || 1;
+    async buscarPorID(id) {
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                throw new CustomError({
+                    statusCode: 400,
+                    errorType: 'invalidData',
+                    field: 'id',
+                    customMessage: `ID inválido: ${id}`,
+                });
+            }
+            const reserva = await this.reservaModel.findById(id)
+                .populate('equipamentos', 'equiNome')
+                .populate('usuarios', 'nome');
+            return reserva;
+        } catch (error) {
+            throw error.statusCode ? error : new CustomError({
+                statusCode: 500,
+                errorType: 'databaseError',
+                field: 'Reserva',
+                details: [error.message],
+                customMessage: 'Erro ao buscar reserva por ID.'
+            });
+        }
+    }
 
-        const filterBuild = new ReservaFilterBuilder()
-            .comDataInicial(dataInicial || '')
-            .comDataFinal(dataFinal || '')
-            .comDataFinalAtrasada(dataFinalAtrasada || '')
-            .comQuantidadeEquipamento(quantidadeEquipamento || '')
-            .comValorEquipamento(valorEquipamento || '')
-            .comEnderecoEquipamento(enderecoEquipamento || '')
-            .comStatus(statusReserva || '');
-
-        if (typeof filterBuild.build !== 'function') {
+    async findReservasAtrasadas(equipamentoId, currentDate) {
+        try {
+            const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentoId);
+            return await this.reservaModel.find({
+                equipamentos: equipamentoObjectId,
+                statusReserva: { $in: ['pendente', 'confirmada', 'atrasada'] },
+                dataFinalAtrasada: { $lt: currentDate, $ne: null }
+            });
+        } catch (error) {
             throw new CustomError({
                 statusCode: 500,
-                errorType: 'internalServerError',
+                errorType: 'databaseError',
                 field: 'Reserva',
-                details: [],
-                customMessage: messages.error.internalServerError('Reserva')
-            });
-        }          
-
-        const filtros = filterBuild.build();
-
-        if (usuarios) {
-        const usuariosEncontrados = await this.usuarioModel.find(
-            { nome: { $regex: usuarios, $options: 'i' } },
-            '_id'
-        );
-        const usuarioIds = usuariosEncontrados.map(u => u._id);
-        if (usuarioIds.length > 0) {
-            filtros.usuarios = { $in: usuarioIds };
-        } else {
-            return { docs: [], totalDocs: 0, limit: limite, page: page, totalPages: 0 };
-        }
-    }
-        if (equipamentos) {
-            const equipamentosEncontrados = await this.equipamentoModel.find(
-                { equiNome: { $regex: equipamentos, $options: 'i' } },
-                '_id'
-            );
-            const equipamentoIds = equipamentosEncontrados.map(e => e._id);
-            if (equipamentoIds.length > 0) {
-                filtros.equipamentos = { $in: equipamentoIds };
-            } else {
-                // Se não encontrar nenhum, retorna resultado vazio
-                return { docs: [], totalDocs: 0, limit: limite, page: page, totalPages: 0 };
-            }
-        }
-
-        const options = {
-            page: parseInt(page, 10),
-            limit: parseInt(limite, 10),
-            populate: [
-                { path: 'equipamentos', select: 'equiNome'},
-                { path: 'usuarios', select: 'nome'}
-         ],
-            sort: { createdAt: 1 },
-        };
-
-        const resultado = await this.reservaModel.paginate(filtros, options);
-
-        resultado.docs = resultado.docs.map(doc => {
-            const reservaObj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
-            return reservaObj;
-        });
-
-        return resultado;
-    }
-
-    async criar(dadosReserva) {
-        const reserva = new this.reservaModel(dadosReserva);
-        return await reserva.save()
-    }
-
-    async atualizar(id, parsedData) {
-
-        const reserva = await this.reservaModel
-            .findByIdAndUpdate(id, parsedData, { new: true })
-
-        if (!reserva) {
-            throw new CustomError({
-                statusCode: 404,
-                errorType: 'resourceNotFound',
-                field: 'Reserva',
-                details: [],
-                customMessage: messages.error.resourceNotFound('Reserva')
+                details: [error.message],
+                customMessage: 'Erro ao buscar reservas atrasadas.'
             });
         }
-
-        return reserva;
     }
 
     async findReservasSobrepostas(equipamentoId, dataInicial, dataFinal) {
@@ -141,8 +123,12 @@ class ReservaRepository {
             const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentoId);
             return await this.reservaModel.find({
                 equipamentos: equipamentoObjectId,
-                dataInicial: { $lte: dataFinal },
-                dataFinal: { $gte: dataInicial },
+                statusReserva: { $in: ['pendente', 'confirmada'] },
+                $or: [
+                    { dataInicial: { $lte: dataFinal }, dataFinal: { $gte: dataInicial } },
+                    { dataInicial: { $lte: dataFinal }, dataFinalAtrasada: { $gte: dataInicial } },
+                    { dataFinalAtrasada: { $gte: dataInicial, $lte: dataFinal } }
+                ]
             });
         } catch (error) {
             throw new CustomError({
@@ -155,7 +141,40 @@ class ReservaRepository {
         }
     }
 
+    async findReservasParaMarcarAtrasada(currentDate) {
+        try {
+            return await this.reservaModel.find({
+                statusReserva: { $in: ['pendente', 'confirmada'] },
+                dataFinal: { $lt: currentDate },
+                dataFinalAtrasada: { $exists: false }
+            });
+        } catch (error) {
+            throw new CustomError({
+                statusCode: 500,
+                errorType: 'databaseError',
+                field: 'Reserva',
+                details: [error.message],
+                customMessage: 'Erro ao buscar reservas para marcar como atrasadas.'
+            });
+        }
+    }
 
+    async marcarReservasComoAtrasadas(reservaIds) {
+        try {
+            return await this.reservaModel.updateMany(
+                { _id: { $in: reservaIds } },
+                { $set: { statusReserva: 'atrasada' } }
+            );
+        } catch (error) {
+            throw new CustomError({
+                statusCode: 500,
+                errorType: 'databaseError',
+                field: 'Reserva',
+                details: [error.message],
+                customMessage: 'Erro ao marcar reservas como atrasadas.'
+            });
+        }
+    }
 }
 
 export default ReservaRepository;
