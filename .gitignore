@@ -9,15 +9,13 @@ node_modules/
 *.tsbuildinfo
 
 # Logs
-<<<<<<< HEAD
-logs/
-=======
 logs
-*.logs
->>>>>>> d3b7cc0c1c8a3b33a2ddd82a82b3e9585740327c
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
 
 # Environment files
 .env

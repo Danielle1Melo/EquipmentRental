@@ -5,4 +5,5 @@
     * Controller;
     * Repository;
     * Zod;
+    * Routes
 3. Ajustes nos testes de equipamento; (Taline Rodrigues)
