@@ -29,7 +29,8 @@ class UsuarioController {
     async updateUsuario(req, res){
         // console.log("Estou no updateUsuario Controller")
 
-        const {id} = req.params || {}
+        // const {id} = req.params || {}
+        const id = req.user_id
         const camposPermitidos = ['nome', 'email','telefone']; // Defina os campos que podem ser alterados
         const dadosRecebidos = req.body;
     
@@ -52,6 +53,13 @@ class UsuarioController {
         await UsuarioSchema.parseAsync(req.body)
         const data = await this.service.cadastrarUsuario(req.body)
         return CommonResponse.success(res, data, 201, 'Usuário criado com sucesso!')
+    }
+    async alterarStatus(req, res){
+        const {id} = req.params || {}
+        UsuarioIdSchema.parse(id)
+        const parseData = await UsuarioUpdateSchema.parseAsync(req.body)
+        const data = await this.service.alterarStatus(id, parseData)
+        return CommonResponse.success(res, data, 200, `Status alterado com sucesso para ${parseData.status}`)
     }
 }
 

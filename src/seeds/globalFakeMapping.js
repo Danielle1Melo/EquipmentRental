@@ -21,6 +21,8 @@ const fakeMappings = {
         status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
         tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
         fotoUsuario: () => fakebr.internet.avatar(),
+        accessToken: () => "",
+        refreshToken:() => ""
         
     }, 
 Endereco: {

@@ -1,0 +1,15 @@
+{"level":"warn","message":"A data inicial deve ser anterior à data final.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:12:37.212Z"}
+{"level":"warn","message":"A data inicial deve ser anterior à data final.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:13:51.937Z"}
+{"level":"warn","message":"A data final atrasada deve ser posterior à data final.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:14:23.721Z"}
+{"level":"warn","message":"A data final atrasada deve ser posterior à data final.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:14:31.468Z"}
+{"level":"warn","message":"ID de equipamento inválido: ID_DO_EQUIPAMENTO","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:14:43.487Z"}
+{"level":"warn","message":"Equipamento não encontrado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:15:00.561Z"}
+{"details":[{"message":"Path `usuarios` is required.","path":"usuarios"},{"message":"Path `equipamentos` is required.","path":"equipamentos"},{"message":"Path `enderecoEquipamento` is required.","path":"enderecoEquipamento"},{"message":"Path `valorEquipamento` is required.","path":"valorEquipamento"}],"level":"warn","message":"Erro de validação do Mongoose","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:15:20.381Z"}
+{"level":"warn","message":"Pelo menos um equipamento deve ser especificado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:23:36.743Z"}
+{"level":"warn","message":"Pelo menos um equipamento deve ser especificado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:24:38.114Z"}
+{"level":"warn","message":"Pelo menos um equipamento deve ser especificado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:44:49.317Z"}
+{"level":"warn","message":"Pelo menos um equipamento deve ser especificado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:45:08.832Z"}
+{"level":"warn","message":"Pelo menos um equipamento deve ser especificado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:45:44.322Z"}
+{"level":"warn","message":"Equipamento não encontrado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T00:50:39.958Z"}
+{"level":"warn","message":"Já existe uma reserva para este equipamento no período solicitado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T01:00:05.235Z"}
+{"level":"warn","message":"Já existe uma reserva para este equipamento no período solicitado.","path":"/reservas","requestId":"N/A","service":"usuario-service","timestamp":"2025-05-28T01:01:17.721Z"}
