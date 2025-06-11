@@ -77,7 +77,7 @@ const fakeMappings = {
       "Soldador",
       "Betoneira",
     ]),
-    equiStatus: () => fakebr.random.arrayElement(['pendente', 'aprovado', 'reprovado']),
+    equiStatus: () => fakebr.random.arrayElement(['pendente', 'ativo', 'inativo']),
     equiUsuario: () => new mongoose.Types.ObjectId().toString(),
     equiFoto: () => [
       fakebr.image.imageUrl(),
@@ -86,9 +86,6 @@ const fakeMappings = {
     ],
     equiNotaMediaAvaliacao: () => 0,
     equiAvaliacoes: () => [],
-    equiMotivoReprovacaoPublicacao: (status) => 
-      status === 'reprovado' ? fakebr.random.arrayElement(fakeMappings.Equipamento.motivosReprovacao) : null,
-    equiDataAprovacaoPublicacao: () => null,
   },
 };
 

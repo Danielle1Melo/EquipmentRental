@@ -19,7 +19,7 @@ class Equipamento {
       equiQuantidadeDisponivel: { type: Number, required: true },
       equiStatus: { 
         type: String, 
-        enum: ['pendente', 'aprovado', 'reprovado'], 
+        enum: ['pendente', 'ativo', 'inativo'], 
         default: 'pendente' 
       },
       equiUsuario: {
@@ -34,8 +34,6 @@ class Equipamento {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'avaliacoes',
       }],
-      equiMotivoReprovacaoPublicacao: { type: String, default: null },
-      equiDataAprovacaoPublicacao: { type: Date, default: null },
     }, {
       timestamps: true,
       versionKey: false,

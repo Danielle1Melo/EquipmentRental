@@ -14,7 +14,7 @@ class EquipamentoService {
 
   async listarPorId(id, usuarioId) {
     const equipamento = await this._buscarEquipamentoExistente(id);
-    if (equipamento.equiStatus !== 'aprovado' && equipamento.equiUsuario.toString() !== usuarioId) {
+    if (equipamento.equiStatus !== 'ativo' && equipamento.equiUsuario.toString() !== usuarioId) {
       throw new CustomError({
         statusCode: HttpStatusCodes.FORBIDDEN.code,
         customMessage: 'Equipamento não disponível para visualização.',
@@ -54,7 +54,7 @@ class EquipamentoService {
 
   async aprovar(id) {
     const equipamento = await this._buscarEquipamentoExistente(id);
-    if (equipamento.equiStatus === 'aprovado') {
+    if (equipamento.equiStatus === 'ativo') {
       throw new CustomError({
         statusCode: HttpStatusCodes.BAD_REQUEST.code,
         customMessage: 'Equipamento já está aprovado.',
@@ -69,13 +69,13 @@ class EquipamentoService {
 
   async reprovar(id, motivoReprovacao) {
     const equipamento = await this._buscarEquipamentoExistente(id);
-    if (equipamento.equiStatus === 'reprovado') {
+    if (equipamento.equiStatus === 'inativo') {
       throw new CustomError({
         statusCode: HttpStatusCodes.BAD_REQUEST.code,
         customMessage: 'Equipamento já está reprovado.',
       });
     }
-    equipamento.equiStatus = 'reprovado';
+    equipamento.equiStatus = 'inativo';
     equipamento.equiMotivoReprovacaoPublicacao = motivoReprovacao;
     equipamento.dataAprovacaoPublicacao = null;
     await equipamento.save();
@@ -84,7 +84,7 @@ class EquipamentoService {
 
   async deletar(id) {
     const equipamento = await this._buscarEquipamentoExistente(id);
-    const temLocacoesAtivas = false; // Substituir por lógica real de verificação de locações
+    const temLocacoesAtivas = false; 
     if (temLocacoesAtivas) {
       throw new CustomError({
         statusCode: HttpStatusCodes.CONFLICT.code,
@@ -101,11 +101,11 @@ class EquipamentoService {
 
     const status = filtros.status
       ? filtros.status === 'true'
-        ? 'aprovado'
+        ? 'ativo'
         : filtros.status === 'false'
         ? 'pendente'
         : filtros.status
-      : 'aprovado';
+      : 'ativo';
 
     builder
       .comCategoria(filtros.categoria)
@@ -131,11 +131,11 @@ class EquipamentoService {
     const camposPermitidos = ['equiValorDiaria', 'equiQuantidadeDisponivel', 'equiStatus'];
     const camposAtualizados = Object.keys(dadosAtualizados);
 
-    if (equipamento.equiStatus !== 'aprovado') {
+    if (equipamento.equiStatus !== 'ativo') {
       if (
         camposAtualizados.length === 1 &&
         'equiStatus' in dadosAtualizados &&
-        dadosAtualizados.equiStatus === 'aprovado'
+        dadosAtualizados.equiStatus === 'ativo'
       ) {
         return;
       } else {

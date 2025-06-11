@@ -16,8 +16,8 @@ export const EquipamentoQuerySchema = z.object({
   status: z
     .string()
     .optional()
-    .refine((val) => !val || ['pendente', 'aprovado', 'reprovado'].includes(val), {
-      message: "Status deve ser 'pendente', 'aprovado' ou 'reprovado'",
+    .refine((val) => !val || ['ativo', 'inativo'].includes(val), {
+      message: "Status deve ser 'ativo' ou 'iantivo'",
     }),
   minValor: z
     .string()

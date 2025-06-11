@@ -21,8 +21,6 @@ async function SeedEquipamentos(usuarios, enderecos) {
 
   for (let i = 0; i < usuarios.length; i++) {
     const status = fake.equiStatus();
-    // Depuração opcional: verificar o status gerado
-    // console.log(`Equipamento ${i + 1} - Status: ${status}`);
     equipamentos.push({
       equiNome: fake.equiNome(),
       equiDescricao: fake.equiDescricao(),
@@ -34,8 +32,6 @@ async function SeedEquipamentos(usuarios, enderecos) {
       equiFoto: fake.equiFoto(),
       equiNotaMediaAvaliacao: 0,
       equiAvaliacoes: [],
-      equiMotivoReprovacaoPublicacao: fake.equiMotivoReprovacaoPublicacao(status),
-      equiDataAprovacaoPublicacao: status === 'aprovado' ? new Date() : null,
     });
   }
 

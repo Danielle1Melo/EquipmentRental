@@ -37,8 +37,8 @@ export const equipamentoUpdateSchema = z.object({
   equiQuantidadeDisponivel: z.number({
     invalid_type_error: "Quantidade disponível deve ser um número",
   }).int({ message: "Quantidade disponível deve ser um número inteiro" }).nonnegative({ message: "Quantidade disponível deve ser maior ou igual a 0" }).optional(),
-  equiStatus: z.enum(['pendente', 'aprovado', 'reprovado'], {
-    invalid_type_error: "Status deve ser 'pendente', 'aprovado' ou 'reprovado'",
+  equiStatus: z.enum(['ativo', 'inativo'], {
+    invalid_type_error: "Status deve ser 'ativo' ou 'inativo'",
   }).optional(),
 }).strict({ message: "Campos não permitidos no objeto" });
 
