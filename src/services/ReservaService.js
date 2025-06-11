@@ -4,6 +4,7 @@ import ReservaRepository from '../repositories/ReservaRepository.js';
 import CustomError from '../utils/helpers/CustomError.js'
 import { parse } from 'dotenv';
 import Equipamento from '../models/Equipamento.js';
+import Usuario from '../models/Usuario.js';
 
 class ReservaService {
     constructor() {
@@ -14,125 +15,170 @@ class ReservaService {
         return data;
     }
 
-    async criar(parsedData) {
-        const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, equipamentos } = parsedData;
+async criar(parsedData) {
+    const { dataInicial, dataFinal, dataFinalAtrasada, quantidadeEquipamento, equipamentos, usuarios } = parsedData;
 
-        if (dataInicial >= dataFinal) {
+    const dataInicialDate = new Date(dataInicial);
+    const dataFinalDate = new Date(dataFinal);
+    const dataFinalAtrasadaDate = dataFinalAtrasada ? new Date(dataFinalAtrasada) : null;
+
+    if (isNaN(dataInicialDate.getTime()) || isNaN(dataFinalDate.getTime()) || (dataFinalAtrasada && isNaN(dataFinalAtrasadaDate.getTime()))) {
+        throw new CustomError({
+            statusCode: 400,
+            errorType: 'invalidData',
+            field: 'datas',
+            customMessage: 'As datas fornecidas são inválidas.',
+        });
+    }
+
+    if (!equipamentos) {
+        throw new CustomError({
+            statusCode: 400,
+            errorType: 'invalidData',
+            field: 'equipamentos',
+            customMessage: 'O campo equipamentos é obrigatório.',
+        });
+    }
+
+    if (dataInicialDate >= dataFinalDate) {
+        throw new CustomError({
+            statusCode: 400,
+            errorType: 'invalidData',
+            field: 'dataInicial',
+            details: [],
+            customMessage: 'A data inicial deve ser anterior à data final.',
+        });
+    }
+
+    if (dataFinalAtrasadaDate && dataFinalAtrasadaDate <= dataFinalDate) {
+        throw new CustomError({
+            statusCode: 400,
+            errorType: 'invalidData',
+            field: 'dataFinalAtrasada',
+            details: [],
+            customMessage: 'A data final atrasada deve ser posterior à data final.',
+        });
+    }
+
+    const agora = new Date();
+    const dataZerada = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+
+    if (dataInicialDate < dataZerada) {
+        throw new CustomError({
+        statusCode: 400,
+        errorType: 'invalidData',
+        field: 'dataInicial',
+        details: [],
+        customMessage: 'A data inicial não pode ser no passado.',
+        });
+    }
+
+    if (quantidadeEquipamento <= 0) {
+        throw new CustomError({
+            statusCode: 400,
+            errorType: 'invalidData',
+            field: 'quantidadeEquipamento',
+            details: [],
+            customMessage: 'A quantidade de equipamento deve ser um número inteiro positivo.',
+        });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(equipamentos)) {
+        throw new CustomError({
+            statusCode: 400,
+            errorType: 'invalidData',
+            field: 'equipamentos',
+            customMessage: `ID de equipamento inválido: ${equipamentos}`,
+        });
+    }
+    const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentos);
+    const equipamentoDoc = await Equipamento.findById(equipamentoObjectId);
+    if (!equipamentoDoc) {
+        throw new CustomError({
+            statusCode: 404,
+            errorType: 'resourceNotFound',
+            field: 'equipamentos',
+            customMessage: 'Equipamento não encontrado.',
+        });
+    }
+    if (!equipamentoDoc.equiStatus) {
+        throw new CustomError({
+            statusCode: 400,
+            errorType: 'invalidData',
+            field: 'equipamentos',
+            customMessage: 'O equipamento não está disponível para reserva.',
+        });
+    }
+    if (equipamentoDoc.equiQuantidadeDisponivel < quantidadeEquipamento) {
+        throw new CustomError({
+            statusCode: 400,
+            errorType: 'invalidData',
+            field: 'quantidadeEquipamento',
+            customMessage: 'Quantidade solicitada excede a quantidade disponível do equipamento.',
+        });
+    }
+
+    if (usuarios) {
+        if (!mongoose.Types.ObjectId.isValid(usuarios)) {
             throw new CustomError({
                 statusCode: 400,
                 errorType: 'invalidData',
-                field: 'dataInicial',
-                details: [],
-                customMessage: 'A data inicial deve ser anterior à data final.',
+                field: 'usuarios',
+                customMessage: `ID de usuário inválido: ${usuarios}`,
             });
         }
-        // console.log(dataFinal, dataFinalAtrasada)
-        if (dataFinalAtrasada <= dataFinal) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'dataFinalAtrasada',
-                details: [],
-                customMessage: 'A data final atrasada deve ser posterior à data final.',
-            });
-        }
-
-        const agora = new Date();
-        const dataZerada = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
-
-        console.log(dataZerada);
-        // Exemplo: Sat Jun 01 2025 00:00:00 GMT-0300 (Horário Padrão de Brasília)
-        if (dataInicial < dataZerada) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'dataInicial',
-                details: [],
-                customMessage: 'A data inicial não pode ser no passado.',
-            });
-        }
-
-        if (quantidadeEquipamento <= 0) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'quantidadeEquipamento',
-                details: [],
-                customMessage: 'A quantidade de equipamento deve ser um número inteiro positivo.',
-            });
-        }
-
-        if (!equipamentos || !equipamentos.length) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'equipamentos',
-                details: [],
-                customMessage: 'Pelo menos um equipamento deve ser especificado.',
-            });
-        }
-
-        const equipamentoId = equipamentos;
-
-        if (!mongoose.Types.ObjectId.isValid(equipamentoId)) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'equipamentos',
-                details: [],
-                customMessage: `ID de equipamento inválido: ${equipamentoId}`,
-            });
-        }
-        const equipamentoObjectId = new mongoose.Types.ObjectId(equipamentoId);
-        const equipamentoDoc = await Equipamento.findById(equipamentoObjectId);
-        if (!equipamentoDoc) {
+        const usuarioObjectId = new mongoose.Types.ObjectId(usuarios);
+        const usuarioDoc = await Usuario.findById(usuarioObjectId);
+        if (!usuarioDoc) {
             throw new CustomError({
                 statusCode: 404,
                 errorType: 'resourceNotFound',
-                field: 'equipamentos',
-                details: [],
-                customMessage: 'Equipamento não encontrado.',
+                field: 'usuarios',
+                customMessage: 'Usuário não encontrado.',
             });
         }
+    }
 
-        if (equipamentoDoc.quantidadeDisponivel < quantidadeEquipamento) {
-            throw new CustomError({
-                statusCode: 400,
-                errorType: 'invalidData',
-                field: 'quantidadeEquipamento',
-                details: [],
-                customMessage: 'Quantidade solicitada excede a quantidade disponível do equipamento.',
-            });
-        }
-
-        const reservasSobrepostas = await this.repository.findReservasSobrepostas(
-            equipamentoId,
-            dataInicial,
-            dataFinal
+    const reservasAtrasadas = await this.repository.findReservasAtrasadas(
+            equipamentoObjectId,
+            new Date()
         );
-
-        if (reservasSobrepostas.length > 0) {
+        if (reservasAtrasadas.length > 0) {
             throw new CustomError({
                 statusCode: 409,
                 errorType: 'conflict',
                 field: 'equipamento',
-                details: [],
-                customMessage: 'Já existe uma reserva para este equipamento no período solicitado.',
+                customMessage: 'Equipamento ainda não devolvido de reserva anterior.',
             });
-        }
-
-
-        const data = await this.repository.criar(parsedData);
-
-        return data;
     }
+
+    const reservasSobrepostas = await this.repository.findReservasSobrepostas(
+            equipamentoObjectId,
+            dataInicial,
+            dataFinalAtrasada || dataFinal
+    )
+    ;
+    if (reservasSobrepostas.length > 0) {
+            throw new CustomError({
+                statusCode: 409,
+                errorType: 'conflict',
+                field: 'equipamento',
+                customMessage: 'Conflito com reservas existentes, incluindo período de atraso.',
+            });
+    }
+    await Equipamento.findByIdAndUpdate(equipamentoObjectId, {
+            $inc: { equiQuantidadeDisponivel: -quantidadeEquipamento }
+    });
+
+    const data = await this.repository.criar(parsedData);
+
+    return data;
+}
 
     async atualizar(id, parsedData) {
         const data = await this.repository.atualizar(id, parsedData);
         return data;
     }
-
-
 
     async ensureReservaExists(id) {
         const reservaExistente = await this.repository.buscarPorID(id);
@@ -146,6 +192,16 @@ class ReservaService {
             });
         }
         return reservaExistente;
+    }
+
+    async marcarReservasAtrasadas() {
+        const currentDate = new Date();
+        const reservasAtrasadas = await this.repository.findReservasParaMarcarAtrasada(currentDate);
+        const reservaIds = reservasAtrasadas.map(reserva => reserva._id);
+        if (reservaIds.length > 0) {
+            await this.repository.marcarReservasComoAtrasadas(reservaIds);
+        }
+        return { message: `${reservaIds.length} reservas marcadas como atrasadas.` };
     }
 
 }
