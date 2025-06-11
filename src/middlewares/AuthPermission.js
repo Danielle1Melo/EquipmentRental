@@ -29,7 +29,7 @@ class AuthPermission {
       const tokenData = await this.service.carregatokens(decoded.id);
       // console.log("AQUIIIIIII",tokenData?.data?.refreshToken)
     
-      console.log(tokenData.data.tipoUsuario)
+    
       if(tokenData?.data?.tipoUsuario !== "admin"){
         throw new CustomError({
           statusCode: 401,
