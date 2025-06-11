@@ -51,7 +51,34 @@ async function SeedUsuario(){
             fotoUsuario
         });
     }
-
+    const dev = {
+        nome: "Dev",
+        email: "dev@gmail.com",
+        telefone: "69 98191-4471",
+        senha:  await bcrypt.hash('Dev@1234', 8),
+        dataNascimento: fake.dataNascimento(),
+        CPF: "12345612345", // Geração de CPF fictício
+        notaMedia: 0,
+        status: "ativo",
+        tipoUsuario: "admin",
+        fotoUsuario:'https://pt.quizur.com/_image?href=https://img.quizur.com/f/img63365b54eee492.52029189.png?lastEdited=1664506795&w=600&h=600&f=webp'
+        
+    }
+    const user = {
+        nome: "Usuario Padrão",
+        email: "usuario@gmail.com",
+        telefone: "69 93121-2271",
+        senha:  await bcrypt.hash('Usuario@1234', 8),
+        dataNascimento: fake.dataNascimento(),
+        CPF: "12345612346", // Geração de CPF fictício
+        notaMedia: 0,
+        status: "ativo",
+        tipoUsuario: "usuario",
+        fotoUsuario:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmtv-wGPAGVnAMkWDSteg4qGIRHhtLCYgoDQ&s'
+        
+    }
+    usuarios.push({...dev})
+    usuarios.push({...user})
     // Inserir no banco
     await Usuario.collection.insertMany(usuarios);
     // console.log(`${usuarios.length} usuários inseridos com sucesso!`);
