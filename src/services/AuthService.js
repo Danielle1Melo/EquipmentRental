@@ -80,16 +80,16 @@ class AuthService {
 
         }
         // Gerar novo access token utilizando a instância injetada
-        const accesstoken = await this.TokenUtil.generateAccessToken(userEncontrado._id);
+        const accessToken = await this.TokenUtil.generateAccessToken(userEncontrado._id);
 
         // Buscar o usuário com os tokens já armazenados
         const userComTokens = await this.usuarioRepository.buscarPorId(userEncontrado._id, true);
-        let refreshtoken = userComTokens.refreshtoken;
-        console.log("refresh token no banco", refreshtoken);
+        let refreshToken = userComTokens.refreshToken;
+        console.log("refresh token no banco", refreshToken);
 
-        if (refreshtoken) {
+        if (refreshToken) {
             try {
-                jwt.verify(refreshtoken, process.env.JWT_SECRET_REFRESH_TOKEN);
+                jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN);
             } catch (error) {
                 if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
                     refreshtoken = await this.TokenUtil.generateRefreshToken(userEncontrado._id);
@@ -105,13 +105,13 @@ class AuthService {
             }
         } else {
             // Se o refresh token não existe, gera um novo
-            refreshtoken = await this.TokenUtil.generateRefreshToken(userEncontrado._id);
+            refreshToken = await this.TokenUtil.generateRefreshToken(userEncontrado._id);
         }
 
-        console.log("refresh token gerado", refreshtoken);
+        console.log("refresh token gerado", refreshToken);
 
         // Armazenar os tokens atualizados
-        await this.repository.armazenarTokens(userEncontrado._id, accesstoken, refreshtoken);
+        await this.repository.armazenarTokens(userEncontrado._id, accessToken, refreshToken);
 
         // Buscar novamente o usuário e remover a senha
         const userLogado = await this.usuarioRepository.buscarPorEmailCadastrado(body.email);
@@ -119,7 +119,7 @@ class AuthService {
         const userObjeto = userLogado.toObject();
 
         // Retornar o usuário com os tokens
-        return { user: { accesstoken, refreshtoken, ...userObjeto } };
+        return { user: { accessToken, refreshToken, ...userObjeto } };
     }
 
 

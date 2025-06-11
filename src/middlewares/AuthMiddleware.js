@@ -5,68 +5,95 @@ import AuthenticationError from '../utils/errors/AuthenticationError.js';
 import TokenExpiredError from '../utils/errors/TokenExpiredError.js';
 import { CustomError } from '../utils/helpers/index.js';
 import AuthService from '../services/AuthService.js';
+// import { Console } from 'console';
 
 class AuthMiddleware {
   constructor() {
     this.service = new AuthService();
-
-    /**
-     * Vinculação para grantir ao método handle o contexto 'this' correto
-     * Ao usar bind(this) no método handle garantimos independentemente de como ou onde o método é chamado, 
-     * this sempre se referirá à instância atual de AuthMiddleware.
-     */
+    // Garante que o 'this' do método se mantenha ao usá-lo como callback
     this.handle = this.handle.bind(this);
+  }
+
+  /**
+   * Extrai o token e devolve { token, secret }
+   * - Authorization: Bearer <token>          → JWT_SECRET_ACCESS_TOKEN
+   * - body.token                             → JWT_SECRET_ACCESS_TOKEN
+   * - query.token                            → JWT_SECRET_PASSWORD_RECOVERY
+   */
+  _getTokenAndSecret(req) {
+    // 1. Header Authorization ───────────────────────────────
+    const authHeader = req.headers?.authorization ?? null;
+    if (authHeader) {
+      // Permite “Bearer <token>” ou apenas o token cru
+      const parts = authHeader.split(' ');
+      const token = parts.length === 2 ? parts[1] : parts[0];
+      // console.log(token)
+      return {
+        token,
+        secret: process.env.JWT_SECRET_ACCESS_TOKEN
+      };
+    }
+
+    // 3. Query string (link de redefinição de senha) ────────
+    if (req.query?.token) {
+      return {
+        token: req.query.token,
+        secret: process.env.JWT_SECRET_PASSWORD_RECOVERY
+      };
+    }
+
+    // Nada encontrado
+    throw new AuthenticationError('Token não informado!');
   }
 
   async handle(req, res, next) {
     try {
-      const authHeader = req.headers.authorization;
-
-      if (!authHeader) {
-        throw new AuthenticationError("O token de autenticação não existe!");
-      }
-
-      const [scheme, token] = authHeader.split(' ');
-
-      if (scheme !== 'Bearer' || !token) {
-        throw new AuthenticationError("Formato do token de autenticação inválido!");
-      }
-
+      const { token, secret } = this._getTokenAndSecret(req);
       // Verifica e decodifica o token
-      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_ACCESS_TOKEN);
+      const decoded = await promisify(jwt.verify)(token, secret);
 
-      if (!decoded) { // Se não ocorrer a decodificação do token
-        throw new TokenExpiredError("O token JWT está expirado!");
+      // Se falhou a verificação, jwt.verify já lança JsonWebTokenError / TokenExpiredError
+      // porém incluímos este “if” por segurança contra valores falsy
+      if (!decoded) {
+        throw new TokenExpiredError('Token JWT expirado, tente novamente.');
       }
 
-      // Verifica se o refreshtoken está presente no banco de dados e se é válido
-      const tokenData = await this.service.carregatokens(decoded.id);
-      // console.log("AQUIIIIIII",tokenData?.data?.refreshToken)
-      if (!tokenData?.data?.refreshToken) {
-        throw new CustomError({
-          statusCode: 401,
-          errorType: 'unauthorized',
-          field: 'Usuario',
-          details: [],
-          customMessage: 'Usuário não é um adminstrador, acesso negado!'
-        });
-      }
+      /**
+       * Caso seja um token de acesso normal, verificamos se o refresh token
+       * continua válido no banco. Se for um token de recuperação de senha,
+       * essa checagem não é necessária.
+       */
 
-      // Se o token for válido, anexa o user_id à requisição
+      if (secret === process.env.JWT_SECRET_ACCESS_TOKEN) {
+        const tokenData = await this.service.carregatokens(decoded.id);
+
+        if (!tokenData?.data?.refreshToken) {
+          throw new CustomError({
+            statusCode: 401,
+            errorType: 'unauthorized',
+            field: 'Token',
+            details: [],
+            customMessage: 'Refresh token inválido, autentique-se novamente!'
+          });
+        }
+      }
+      console.log("ESTE É O TOKEN", token)
+      // Token válido → adiciona o id do usuário à request
       req.user_id = decoded.id;
       next();
-
     } catch (err) {
       if (err.name === 'JsonWebTokenError') {
-        next(new AuthenticationError("Token JWT inválido!"));
-      } else if (err.name === 'TokenExpiredError') {
-        next(new TokenExpiredError("O token JWT está expirado!"));
-      } else {
-        next(err); // Passa outros erros para o errorHandler
+        console.log("AQUIIIIIII")
+        return next(new AuthenticationError('Token JWT inválido!'));
       }
+      if (err.name === 'TokenExpiredError') {
+        return next(new TokenExpiredError('Token JWT expirado, faça login novamente.'));
+      }
+      // Outros erros seguem para o errorHandler global
+      return next(err);
     }
   }
 }
 
-// Instanciar e exportar apenas o método 'handle' como função de middleware
+// Exporta apenas a função middleware já vinculada
 export default new AuthMiddleware().handle;

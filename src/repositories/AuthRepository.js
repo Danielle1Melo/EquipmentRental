@@ -37,8 +37,8 @@ class AuthRepository {
     async removeToken(id) {
         // Criar objeto com os campos a serem atualizados
         const parsedData = {
-            accesstoken: null,
-            refreshtoken: null
+            accessToken: null,
+            refreshToken: null
         };
         const usuario = await this.model.findByIdAndUpdate(id, parsedData, { new: true }).exec();
 
