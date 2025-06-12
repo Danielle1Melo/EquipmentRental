@@ -18,9 +18,6 @@ router
 
     //atualizar dados do equipamento (que esteja ativo)
     .patch("/equipamentos/:id", asyncWrapper(equipamentoController.atualizar.bind(equipamentoController)))
-    
-    //INATIVA o equipamento
-    .delete("/equipamentos/:id", asyncWrapper(equipamentoController.deletar.bind(equipamentoController))) 
 
     // rota adm aprovar um equipamento
     .patch("/equipamentos/:id/aprovar", asyncWrapper(equipamentoController.aprovar.bind(equipamentoController)))

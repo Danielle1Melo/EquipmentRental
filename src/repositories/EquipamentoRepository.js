@@ -61,10 +61,6 @@ class EquipamentoRepository {
   async atualizar(id, dados) {
     return await this.model.findByIdAndUpdate(id, dados, { new: true });
   }
-
-  async deletar(id) {
-    return await this.model.findByIdAndDelete(id);
-  }
 }
 
 export default EquipamentoRepository;

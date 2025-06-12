@@ -13,7 +13,9 @@ class Usuario {
             notaMediaAvaliacao:{type:Number},
             status: {type: String, required: true},
             tipoUsuario:{type:String, required: true},
-            fotoUsuario:{type:String}
+            fotoUsuario:{type:String},
+            accessToken:{type:String, required: false, select:false},
+            refreshToken:{type:String, required: false, select:false}
         })
         usuarioSchema.plugin(mongoosePaginate);
         this.model = mongoose.model('usuarios', usuarioSchema);

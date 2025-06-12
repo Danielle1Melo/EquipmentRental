@@ -9,6 +9,7 @@ import usuario from "./usuarioRouter.js"
 import reserva from "./reservaRoutes.js"
 import equipamentoRoutes from "./equipamentoRoutes.js";
 import '../models/Avaliacao.js';
+import login from "./authRoutes.js";
 
 
 
@@ -35,7 +36,8 @@ const routes = (app) => {
     app.use(express.json(),
         usuario,
         reserva,
-        equipamentoRoutes
+        equipamentoRoutes,
+        login
     );
 
     // Se não é nenhuma rota válida, produz 404

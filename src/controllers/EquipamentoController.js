@@ -76,14 +76,6 @@ class EquipamentoController {
     const equipamento = await this.service.reprovar(id, motivoReprovacao);
     return CommonResponse.success(res, equipamento, 200, 'Equipamento reprovado com sucesso.');
   }
-
-  async deletar(req, res) {
-    const { id } = req.params;
-    EquipamentoIdSchema.parse(id);
-
-    await this.service.deletar(id);
-    return CommonResponse.success(res, { mensagem: 'Equipamento excluído com sucesso.' });
-  }
 }
 
 export default EquipamentoController;

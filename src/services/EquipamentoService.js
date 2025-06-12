@@ -1,10 +1,13 @@
+import mongoose from 'mongoose';
 import EquipamentoRepository from '../repositories/EquipamentoRepository.js';
 import EquipamentoFilterBuilder from '../repositories/filters/EquipamentoFilterBuilder.js';
 import { CustomError, HttpStatusCodes, messages } from '../utils/helpers/index.js';
+import Reserva from '../models/Reserva.js';
 
 class EquipamentoService {
   constructor() {
     this.repository = new EquipamentoRepository();
+    this.reservaModel = Reserva;
   }
 
   async listar(filtros) {
@@ -49,6 +52,32 @@ class EquipamentoService {
   async atualizar(id, dadosAtualizados) {
     const equipamento = await this._buscarEquipamentoExistente(id);
     this._verificarAtualizacaoPermitida(equipamento, dadosAtualizados);
+
+    if (dadosAtualizados.equiStatus === 'inativo') {
+      if (equipamento.equiStatus === 'inativo') {
+        throw new CustomError({
+          statusCode: HttpStatusCodes.BAD_REQUEST.code,
+          customMessage: 'Equipamento já está inativo.',
+        });
+      }
+
+      const reservasAtivas = await this.reservaModel.countDocuments({
+        equipamentos: new mongoose.Types.ObjectId(id),
+        statusReserva: { $in: ['pendente', 'confirmada'] },
+        $or: [
+          { dataInicial: { $lte: new Date() }, dataFinal: { $gte: new Date() } },
+          { dataInicial: { $gte: new Date() } }
+        ]
+      });
+
+      if (reservasAtivas > 0) {
+        throw new CustomError({
+          statusCode: HttpStatusCodes.CONFLICT.code,
+          customMessage: 'Não é possível inativar equipamento com reservas ativas.',
+        });
+      }
+    }
+
     return await this.repository.atualizar(id, dadosAtualizados);
   }
 
@@ -60,7 +89,7 @@ class EquipamentoService {
         customMessage: 'Equipamento já está aprovado.',
       });
     }
-    equipamento.equiStatus = 'aprovado';
+    equipamento.equiStatus = 'ativo';
     equipamento.dataAprovacaoPublicacao = new Date();
     equipamento.equiMotivoReprovacaoPublicacao = null;
     await equipamento.save();
@@ -80,18 +109,6 @@ class EquipamentoService {
     equipamento.dataAprovacaoPublicacao = null;
     await equipamento.save();
     return equipamento;
-  }
-
-  async deletar(id) {
-    const equipamento = await this._buscarEquipamentoExistente(id);
-    const temLocacoesAtivas = false; 
-    if (temLocacoesAtivas) {
-      throw new CustomError({
-        statusCode: HttpStatusCodes.CONFLICT.code,
-        customMessage: 'Não é possível excluir equipamento com locações ativas.',
-      });
-    }
-    return await this.repository.deletar(id);
   }
 
   _processarFiltros(filtros) {
@@ -131,7 +148,7 @@ class EquipamentoService {
     const camposPermitidos = ['equiValorDiaria', 'equiQuantidadeDisponivel', 'equiStatus'];
     const camposAtualizados = Object.keys(dadosAtualizados);
 
-    if (equipamento.equiStatus !== 'ativo') {
+    if (equipamento.equiStatus === 'pendente') {
       if (
         camposAtualizados.length === 1 &&
         'equiStatus' in dadosAtualizados &&
@@ -141,7 +158,7 @@ class EquipamentoService {
       } else {
         throw new CustomError({
           statusCode: HttpStatusCodes.FORBIDDEN.code,
-          customMessage: 'Equipamento não aprovado. Não é possível atualizar.',
+          customMessage: 'Não é possível atualizar! Equipamento pendente, espere por uma aprovação.',
         });
       }
     }

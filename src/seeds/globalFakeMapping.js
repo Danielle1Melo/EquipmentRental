@@ -5,6 +5,7 @@ import loadModels from './loadModels.js';
 import { gerarDataAleatoria } from '../utils/helpers/randomPastDate.js';
 
 const fakeMappings = {
+<<<<<<< HEAD
   common: {},
   Usuario: {
     nome: () => fakebr.name.firstName() + " " + fakebr.name.lastName(),
@@ -19,6 +20,28 @@ const fakeMappings = {
     fotoUsuario: () => fakebr.internet.avatar(),
   },
   Endereco: {
+=======
+    common: {
+
+    },
+
+   Usuario: {
+        nome: () => fakebr.name.firstName() + " " + fakebr.name.lastName(),
+        email: () => fakebr.internet.email(),
+        telefone: () => fakebr.phone.phoneNumber(),
+        senha: () => fakebr.internet.password(),
+        dataNascimento: () => gerarDataAleatoria(),
+        CPF: () => fakebr.br.cpf(),
+        notaMediaAvaliacao: () => fakebr.random.number({ min: 0, max: 10 }),
+        status: () => fakebr.random.arrayElement(['ativo', 'inativo']),
+        tipoUsuario: () => fakebr.random.arrayElement(['admin', 'usuario']),
+        fotoUsuario: () => fakebr.internet.avatar(),
+        accessToken: () => "",
+        refreshToken:() => ""
+        
+    }, 
+Endereco: {
+>>>>>>> master
     endeLogradouro: () => fakebr.address.streetName(),
     endeNumero: () => fakebr.random.number({ min: 1, max: 1000 }),
     endeBairro: () => fakebr.address.county(),
@@ -29,6 +52,7 @@ const fakeMappings = {
     usuario: () => new mongoose.Types.ObjectId().toString(),
   },
   Reserva: {
+<<<<<<< HEAD
     dataInicial: () => fakebr.date.past(),
     dataFinal: () => fakebr.date.future(),
     dataFinalAtrasada: () => fakebr.date.future(),
@@ -88,6 +112,18 @@ const fakeMappings = {
     equiAvaliacoes: () => [],
   },
 };
+=======
+      dataInicial: () => fakebr.date.past(),
+      dataFinal: () => fakebr.date.future(),
+      dataFinalAtrasada: () => fakebr.date.future(),
+      quantidadeEquipamento: () => fakebr.random.number({ min: 1, max: 10 }),
+      valorEquipamento: () => fakebr.random.number({ min: 100, max: 1000 }),
+      enderecoEquipamento: () => fakebr.address.streetAddress(),
+      statusReserva: () => fakebr.random.arrayElement(['pendente', 'confirmada', 'cancelada', 'finalizada']),
+      equipamentos: [{_id: new mongoose.Types.ObjectId().toString}],
+      usuarios: [{_id: new mongoose.Types.ObjectId().toString}],
+    }, 
+>>>>>>> master
 
 export async function getGlobalFakeMapping() {
   const models = await loadModels();

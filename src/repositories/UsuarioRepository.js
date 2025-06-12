@@ -3,6 +3,7 @@ import UsuarioModel from "../models/Usuario.js"
 import CustomError from "../utils/helpers/CustomError.js"
 import messages from "../utils/helpers/messages.js"
 import UsuarioFilterBuilder from "./filters/UsuarioFilterBuilder.js"
+import bcrypt from 'bcrypt'
 
 class UsuarioRepository {
     constructor({
@@ -58,6 +59,10 @@ class UsuarioRepository {
     async buscarPorId(id, includeTokens = false){
         // console.log("Estou no bucarPorId no UsuarioRepository")
         let query = this.model.findById(id)
+        if(includeTokens){
+            console.log(includeTokens)
+            query.select('+refreshToken +accessToken')   
+        }
 
         const user = await query
         if(!user){
@@ -84,6 +89,11 @@ class UsuarioRepository {
 
             })
         }
+    }
+    async buscarPorEmailCadastrado(email) {
+        const documento = await this.model.findOne({email:email},'+senha')
+        // console.log(documento.senha)
+        return documento
     }
     async buscarPorTelefone(telefone, id = null){
         // console.log("Estou no buscarPorTelefone no UsuarioRepository")
@@ -115,9 +125,14 @@ class UsuarioRepository {
         }
     }
     async cadastrarUsuario(req){
-
+        req.body.senha = await bcrypt.hash(req.body.senha, 8)
         const data = await this.model.create(req.body)
         return data
+    }
+    async alterarStatus(id, parseData){
+  
+        const documento = await this.model.findByIdAndUpdate(id,{$set: parseData})
+        return documento
     }
 }
 export default UsuarioRepository
