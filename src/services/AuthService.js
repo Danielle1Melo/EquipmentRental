@@ -249,8 +249,7 @@ class AuthService {
                 customMessage: HttpStatusCodes.NOT_FOUND.message
             });
         }
-
-        if (userEncontrado.refreshtoken !== token) {
+        if (userEncontrado.refreshToken !== token) {
             console.log('Token inválido');
             throw new CustomError({
                 statusCode: HttpStatusCodes.UNAUTHORIZED.code,
