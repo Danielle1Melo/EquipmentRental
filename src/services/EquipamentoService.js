@@ -1,10 +1,13 @@
+import mongoose from 'mongoose';
 import EquipamentoRepository from '../repositories/EquipamentoRepository.js';
 import EquipamentoFilterBuilder from '../repositories/filters/EquipamentoFilterBuilder.js';
 import { CustomError, HttpStatusCodes, messages } from '../utils/helpers/index.js';
+import Reserva from '../models/Reserva.js';
 
 class EquipamentoService {
   constructor() {
     this.repository = new EquipamentoRepository();
+    this.reservaModel = Reserva;
   }
 
   async listar(filtros) {
@@ -14,70 +17,112 @@ class EquipamentoService {
 
   async listarPorId(id, usuarioId) {
     const equipamento = await this._buscarEquipamentoExistente(id);
-
-    if (!equipamento.equiStatus && equipamento.equiUsuario.toString() !== usuarioId) {
+    if (equipamento.equiStatus !== 'ativo' && equipamento.equiUsuario.toString() !== usuarioId) {
       throw new CustomError({
         statusCode: HttpStatusCodes.FORBIDDEN.code,
         customMessage: 'Equipamento não disponível para visualização.',
       });
     }
-
     return equipamento;
   }
 
-  async criar(dados) {
-    this._validarCamposObrigatorios(dados); 
+  async listarPendentes() {
+    return await this.repository.listarPendentes();
+  }
 
+  async criar(dados, usuarioId) {
+    this._validarCamposObrigatorios(dados);
     if (!dados.equiFoto || !Array.isArray(dados.equiFoto) || dados.equiFoto.length === 0) {
       throw new CustomError({
         statusCode: HttpStatusCodes.BAD_REQUEST.code,
-        customMessage: "Pelo menos uma foto é obrigatória",
+        customMessage: 'Pelo menos uma foto é obrigatória',
       });
     }
-
-    const usuario = { _id: "682520e98e38a049ac2ac569" }; // teste
-
     return await this.repository.criar({
       ...dados,
-      equiUsuario: usuario._id,
+      equiUsuario: usuarioId,
       equiAvaliacoes: [],
       equiNotaMediaAvaliacao: 0,
-      equiStatus: false,
+      equiStatus: 'pendente',
+      equiMotivoReprovacaoPublicacao: null,
+      dataAprovacaoPublicacao: null,
     });
   }
 
   async atualizar(id, dadosAtualizados) {
     const equipamento = await this._buscarEquipamentoExistente(id);
-
     this._verificarAtualizacaoPermitida(equipamento, dadosAtualizados);
+
+    if (dadosAtualizados.equiStatus === 'inativo') {
+      if (equipamento.equiStatus === 'inativo') {
+        throw new CustomError({
+          statusCode: HttpStatusCodes.BAD_REQUEST.code,
+          customMessage: 'Equipamento já está inativo.',
+        });
+      }
+
+      const reservasAtivas = await this.reservaModel.countDocuments({
+        equipamentos: new mongoose.Types.ObjectId(id),
+        statusReserva: { $in: ['pendente', 'confirmada'] },
+        $or: [
+          { dataInicial: { $lte: new Date() }, dataFinal: { $gte: new Date() } },
+          { dataInicial: { $gte: new Date() } }
+        ]
+      });
+
+      if (reservasAtivas > 0) {
+        throw new CustomError({
+          statusCode: HttpStatusCodes.CONFLICT.code,
+          customMessage: 'Não é possível inativar equipamento com reservas ativas.',
+        });
+      }
+    }
 
     return await this.repository.atualizar(id, dadosAtualizados);
   }
 
-  async deletar(id) {
-    const equipamento = await this._buscarEquipamentoExistente(id); 
-
-    const temLocacoesAtivas = false;
-
-    if (temLocacoesAtivas) {
+  async aprovar(id) {
+    const equipamento = await this._buscarEquipamentoExistente(id);
+    if (equipamento.equiStatus === 'ativo') {
       throw new CustomError({
-        statusCode: HttpStatusCodes.CONFLICT.code,
-        customMessage: 'Não é possível excluir equipamento com locações ativas.',
+        statusCode: HttpStatusCodes.BAD_REQUEST.code,
+        customMessage: 'Equipamento já está aprovado.',
       });
     }
+    equipamento.equiStatus = 'ativo';
+    equipamento.dataAprovacaoPublicacao = new Date();
+    equipamento.equiMotivoReprovacaoPublicacao = null;
+    await equipamento.save();
+    return equipamento;
+  }
 
-    return await this.repository.deletar(id);
+  async reprovar(id, motivoReprovacao) {
+    const equipamento = await this._buscarEquipamentoExistente(id);
+    if (equipamento.equiStatus === 'inativo') {
+      throw new CustomError({
+        statusCode: HttpStatusCodes.BAD_REQUEST.code,
+        customMessage: 'Equipamento já está reprovado.',
+      });
+    }
+    equipamento.equiStatus = 'inativo';
+    equipamento.equiMotivoReprovacaoPublicacao = motivoReprovacao;
+    equipamento.dataAprovacaoPublicacao = null;
+    await equipamento.save();
+    return equipamento;
   }
 
   _processarFiltros(filtros) {
     const pagina = parseInt(filtros.page) || 1;
     const limite = parseInt(filtros.limit) || 10;
-
     const builder = new EquipamentoFilterBuilder();
 
-    const status = (typeof filtros.status === 'boolean')
-      ? filtros.status
-      : (filtros.status === 'true' ? true : (filtros.status === 'false' ? false : true));
+    const status = filtros.status
+      ? filtros.status === 'true'
+        ? 'ativo'
+        : filtros.status === 'false'
+        ? 'pendente'
+        : filtros.status
+      : 'ativo';
 
     builder
       .comCategoria(filtros.categoria)
@@ -103,22 +148,22 @@ class EquipamentoService {
     const camposPermitidos = ['equiValorDiaria', 'equiQuantidadeDisponivel', 'equiStatus'];
     const camposAtualizados = Object.keys(dadosAtualizados);
 
-    if (!equipamento.equiStatus) {
+    if (equipamento.equiStatus === 'pendente') {
       if (
         camposAtualizados.length === 1 &&
         'equiStatus' in dadosAtualizados &&
-        dadosAtualizados.equiStatus === true
+        dadosAtualizados.equiStatus === 'ativo'
       ) {
         return;
       } else {
         throw new CustomError({
           statusCode: HttpStatusCodes.FORBIDDEN.code,
-          customMessage: 'Equipamento inativo. Não é possível atualizar.',
+          customMessage: 'Não é possível atualizar! Equipamento pendente, espere por uma aprovação.',
         });
       }
     }
 
-    const camposInvalidos = camposAtualizados.filter(campo => !camposPermitidos.includes(campo));
+    const camposInvalidos = camposAtualizados.filter((campo) => !camposPermitidos.includes(campo));
     if (camposInvalidos.length > 0) {
       throw new CustomError({
         statusCode: HttpStatusCodes.BAD_REQUEST.code,

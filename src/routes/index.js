@@ -8,7 +8,9 @@ import dotenv from "dotenv"
 import usuario from "./usuarioRouter.js"
 import reserva from "./reservaRoutes.js"
 import equipamentoRoutes from "./equipamentoRoutes.js";
+import '../models/Avaliacao.js';
 import login from "./authRoutes.js";
+
 
 
 

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { equipamentoSchema, equipamentoUpdateSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
-import { EquipamentoQuerySchema, EquipamentoIdSchema } from "../utils/validators/schemas/zod/querys/EquipamentoQuerySchema.js";
+import { equipamentoSchema, equipamentoUpdateSchema, motivoReprovacaoSchema } from "../utils/validators/schemas/zod/EquipamentoSchema.js";
+import { EquipamentoIdSchema, EquipamentoQuerySchema } from "../utils/validators/schemas/zod/querys/EquipamentoQuerySchema.js";
 import EquipamentoService from "../services/EquipamentoService.js";
-import { CommonResponse } from "../utils/helpers/index.js";
+import { CommonResponse, HttpStatusCodes } from "../utils/helpers/index.js";
 
 class EquipamentoController {
   constructor() {
@@ -23,15 +23,22 @@ class EquipamentoController {
     const { id } = req.params;
     EquipamentoIdSchema.parse(id);
 
-    const usuarioId = req.usuario?._id?.toString(); // Suporte à checagem de permissão
+    const usuarioId = req.usuario?._id?.toString();
     const equipamento = await this.service.listarPorId(id, usuarioId);
     return CommonResponse.success(res, equipamento);
   }
 
+  async listarPendentes(req, res) {
+    if (req.usuario?.tipoUsuario !== 'admin') {
+      return CommonResponse.error(res, HttpStatusCodes.FORBIDDEN.code, 'Acesso restrito a administradores.');
+    }
+    const data = await this.service.listarPendentes();
+    return CommonResponse.success(res, data);
+  }
+
   async criar(req, res) {
     const dados = equipamentoSchema.parse(req.body);
-    const equipamento = await this.service.criar(dados);
-
+    const equipamento = await this.service.criar(dados, req.usuario?._id);
     return CommonResponse.created(res, {
       mensagem: 'Equipamento cadastrado. Aguardando aprovação.',
       equipamento,
@@ -44,19 +51,30 @@ class EquipamentoController {
 
     const dadosAtualizados = equipamentoUpdateSchema.parse(req.body);
     const equipamento = await this.service.atualizar(id, dadosAtualizados);
-
     return CommonResponse.success(res, equipamento, 200, 'Equipamento atualizado com sucesso.');
   }
 
-  async deletar(req, res) {
+  async aprovar(req, res) {
+    if (req.usuario?.tipoUsuario !== 'admin') {
+      return CommonResponse.error(res, HttpStatusCodes.FORBIDDEN.code, 'Acesso restrito a administradores.');
+    }
     const { id } = req.params;
     EquipamentoIdSchema.parse(id);
 
-    await this.service.deletar(id);
+    const equipamento = await this.service.aprovar(id);
+    return CommonResponse.success(res, equipamento, 200, 'Equipamento aprovado com sucesso.');
+  }
 
-    return CommonResponse.success(res, {
-      mensagem: 'Equipamento excluído com sucesso.',
-    });
+  async reprovar(req, res) {
+    if (req.usuario?.tipoUsuario !== 'admin') {
+      return CommonResponse.error(res, HttpStatusCodes.FORBIDDEN.code, 'Acesso restrito a administradores.');
+    }
+    const { id } = req.params;
+    EquipamentoIdSchema.parse(id);
+    const { motivoReprovacao } = motivoReprovacaoSchema.parse(req.body);
+
+    const equipamento = await this.service.reprovar(id, motivoReprovacao);
+    return CommonResponse.success(res, equipamento, 200, 'Equipamento reprovado com sucesso.');
   }
 }
 
