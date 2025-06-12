@@ -27,7 +27,7 @@ class AuthMiddleware {
       // Permite “Bearer <token>” ou apenas o token cru
       const parts = authHeader.split(' ');
       const token = parts.length === 2 ? parts[1] : parts[0];
-      // console.log(token)
+      console.log(token)
       return {
         token,
         secret: process.env.JWT_SECRET_ACCESS_TOKEN
@@ -50,8 +50,9 @@ class AuthMiddleware {
     try {
       const { token, secret } = this._getTokenAndSecret(req);
       // Verifica e decodifica o token
+      
       const decoded = await promisify(jwt.verify)(token, secret);
-
+      // console.log("Chegou aqui")
       // Se falhou a verificação, jwt.verify já lança JsonWebTokenError / TokenExpiredError
       // porém incluímos este “if” por segurança contra valores falsy
       if (!decoded) {
@@ -77,13 +78,13 @@ class AuthMiddleware {
           });
         }
       }
-      console.log("ESTE É O TOKEN", token)
+      // console.log("ESTE É O TOKEN", token)
       // Token válido → adiciona o id do usuário à request
       req.user_id = decoded.id;
       next();
     } catch (err) {
       if (err.name === 'JsonWebTokenError') {
-        console.log("AQUIIIIIII")
+        // console.log("AQUIIIIIII")
         return next(new AuthenticationError('Token JWT inválido!'));
       }
       if (err.name === 'TokenExpiredError') {
