@@ -244,7 +244,7 @@ describe('ReservaSchema', () => {
       const schema = reservaSchema.partial();
       const dataInvalida = { statusReserva: 'invalido' };
       await expect(schema.parseAsync(dataInvalida)).rejects.toThrow(
-        "Invalid enum value. Expected 'pendente' | 'confirmada' | 'cancelada', received 'invalido'"
+        "Invalid enum value. Expected 'pendente' | 'confirmada' | 'cancelada' | 'finalizada' | 'atrasada'"
       );
     });
 
