@@ -1,0 +1,23 @@
+[33mcommit 548d59d897fb70e949e4d21c519d544af88569c0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32m88-implementar-repository-avaliacao[m[33m, [m[1;31morigin/88-implementar-repository-avaliacao[m[33m)[m
+Author: Danielle Silva de Melo <danielleesilva.4@gmail.com>
+Date:   Fri Jun 13 19:38:37 2025 -0400
+
+    removendo logs
+
+[33mcommit b83ac61f165f710c2ef69759ea96426457533c7c[m
+Author: Danielle Melo <danielleesilva.4@gmail.com>
+Date:   Tue Jun 10 21:58:19 2025 -0400
+
+    Removendo arquivos de log do controle de versão
+
+[33mcommit 943ae56df49b320ebe5e9b396bb95671c3845e33[m
+Author: Taline Rodrigues <talinefranca32@gmail.com>
+Date:   Thu May 8 13:17:14 2025 -0400
+
+    corrigindo erros de importação e atualizando seed_equipamentos
+
+[33mcommit 10e7ea8ceb6d230253d40170ce52f8ba5450eb9d[m
+Author: Gilberto <gilberto.silva@ifro.edu.br>
+Date:   Wed May 7 20:43:44 2025 -0400
+
+    Resolvendo bugs
