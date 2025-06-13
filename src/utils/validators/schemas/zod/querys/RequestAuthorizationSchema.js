@@ -14,7 +14,7 @@ import { z } from "zod";
 */
 
 const RequestAuthorizationSchema = z.object({
-    accesstoken: z.string()
+    accessToken: z.string()
         .min(1, "Accesstoken não pode ser vazio")
         .refine(val => val.trim().toLowerCase() !== "null", {
             message: "Accesstoken inválido"
