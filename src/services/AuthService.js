@@ -92,7 +92,7 @@ class AuthService {
                 jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN);
             } catch (error) {
                 if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
-                    refreshtoken = await this.TokenUtil.generateRefreshToken(userEncontrado._id);
+                    refreshToken = await this.TokenUtil.generateRefreshToken(userEncontrado._id);
                 } else {
                     throw new CustomError({
                         statusCode: 500,
@@ -249,6 +249,8 @@ class AuthService {
                 customMessage: HttpStatusCodes.NOT_FOUND.message
             });
         }
+        console.log(userEncontrado.refreshToken)
+        console.log(token)
         if (userEncontrado.refreshToken !== token) {
             console.log('Token inválido');
             throw new CustomError({
