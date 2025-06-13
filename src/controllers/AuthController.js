@@ -9,6 +9,7 @@ import { UsuarioIdSchema } from '../utils/validators/schemas/zod/querys/UsuarioQ
 import { RequestAuthorizationSchema } from '../utils/validators/schemas/zod/querys/RequestAuthorizationSchema.js';
 
 import AuthService from '../services/AuthService.js';
+import { de } from '@faker-js/faker';
 
 /**
    * Validação nesta aplicação segue o segue este artigo:
@@ -149,17 +150,16 @@ class AuthController {
 
     // 2. Decodifica e verifica o JWT
     const decoded = /** @type {{ id: string, exp?: number, iat?: number, nbf?: number, client_id?: string, aud?: string }} */ (
-      await promisify(jwt.verify)(validatedBody.accesstoken, process.env.JWT_SECRET_ACCESS_TOKEN)
+      await promisify(jwt.verify)(validatedBody.accessToken, process.env.JWT_SECRET_ACCESS_TOKEN)
     );
-
     // 3. Valida ID de usuário
-    UsuarioIdSchema.parse(decoded.id);
+    // UsuarioIdSchema.parse(decoded.id);
 
     // 4. Prepara campos de introspecção
     const now = Math.floor(Date.now() / 1000);
     const exp = decoded.exp ?? null; // timestamp UNIX de expiração
     const iat = decoded.iat ?? null; // timestamp UNIX de emissão 
-    const nbf = decoded.nbf ?? iat; // não válido antes deste timestamp
+    const nbf =  decoded.nbf ?? iat; // não válido antes deste timestamp
     const active = exp > now;
 
     // tenta extrair o client_id do próprio token; cai em aud se necessário
@@ -177,7 +177,7 @@ class AuthController {
       nbf,                  // não válido antes deste timestamp
       // …adicione aqui quaisquer campos de extensão necessários…
     };
-
+    // console.log(introspection)
     // 5. Retorna resposta no padrão CommonResponse
     return CommonResponse.success(
       res,

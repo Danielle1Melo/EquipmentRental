@@ -10,5 +10,5 @@ router
   .post("/login", asyncWrapper(authController.login.bind(authController)))
   .post("/logout", asyncWrapper(authController.logout.bind(authController)))
   .post("/revoke", asyncWrapper(authController.revoke.bind(authController)))
-  .post("/refresh", asyncWrapper(authController.refresh.bind(authController)))
+  .post("/instrospect", asyncWrapper(authController.pass.bind(authController)))
 export default router;
