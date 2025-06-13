@@ -1,0 +1,55 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\.1004d5b8f8a7d82caaaf34ad2c0a498cada856be-audit.json",
+    "files": [
+        {
+            "date": 1747225584487,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-05-14.log",
+            "hash": "1470bc1d947e8c881de33986a1f60b4a96195a8fec65d51cd862d576339275d4"
+        },
+        {
+            "date": 1748116240455,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-05-24.log",
+            "hash": "9fec3f9a5edd96cdefc4b3eda8f910de7816f74bf15b905e0a61e752d74288dd"
+        },
+        {
+            "date": 1748285974873,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-05-26.log",
+            "hash": "14d300e18d4c5302012223f90e71a3b8185b2ab913d858a6e87c83893c4cb519"
+        },
+        {
+            "date": 1748435242913,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-05-28.log",
+            "hash": "05c582687c7bf1634d906e830f3ebd0794c50bbb06ea683f16bcc9fe8f11c94b"
+        },
+        {
+            "date": 1748806401323,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-06-01.log",
+            "hash": "e68bc3a664aef04f9215f67faa18bf19c5e0bfaa7298c91b34068125f39d6b74"
+        },
+        {
+            "date": 1749138820602,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-06-05.log",
+            "hash": "ed00b428172d0f5a02dfcf5975d68f08c490a661d34c17b55758bb13664e39bc"
+        },
+        {
+            "date": 1749213323023,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-06-06.log",
+            "hash": "85bd6727f5f4eaad47a8c87f154b3f631928f3936c09ee177784867b9f6d2c74"
+        },
+        {
+            "date": 1749589281914,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-06-10.log",
+            "hash": "726eb66dc9a2a10be3781dcdf3b2a28e7a71630bbe5683373c363f95a724d74a"
+        },
+        {
+            "date": 1749763316443,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\combined-2025-06-12.log",
+            "hash": "3456a35b4074737b4dbd891ba1a60760c36fd541d0a5c650cd7e4b4d1a52c233"
+        }
+    ],
+    "hashType": "sha256"
+}

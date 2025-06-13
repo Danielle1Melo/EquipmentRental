@@ -1,0 +1,55 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\.28f4954673a3de36b5cf6f600bb7aecdfea44553-audit.json",
+    "files": [
+        {
+            "date": 1747225584481,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-14.log",
+            "hash": "f66934418c909fe8d5d8072e36e0ffc7275a382dc29c526e38a2b14618fcc756"
+        },
+        {
+            "date": 1748116240432,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-24.log",
+            "hash": "b5935fef13dd1ccc0feae67f3c9944b57e2245775b2635a391a7aba5c7b2311d"
+        },
+        {
+            "date": 1748285974854,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-26.log",
+            "hash": "2ed86e2e8d724ff1c70015494aadfdbf40fcfbe7adeda81e3a234de41ffb09e4"
+        },
+        {
+            "date": 1748435242890,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-05-28.log",
+            "hash": "d0c0f821d3d8b486ca6ee32210fe67f4a1959974383b421ccc3ddc0d551fdcac"
+        },
+        {
+            "date": 1748806401293,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-06-01.log",
+            "hash": "50aa9c9f1f61eba12791662788c858b993ffc616343290536b7e4bfd7d61dfba"
+        },
+        {
+            "date": 1749138820560,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-06-05.log",
+            "hash": "36e95a947c400a1a3bcf7e76ead1a0984f975b225d845f1614d2e474464959b5"
+        },
+        {
+            "date": 1749213322986,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-06-06.log",
+            "hash": "bbdea5d6ecece1401dbf37162e612e5ae6481f11e4f7add7bad71d56ef9ae6cb"
+        },
+        {
+            "date": 1749589281891,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-06-10.log",
+            "hash": "2e586af2d74b21a77b16b9b142103b9eac2b0254cb1df4029411cf6c4a695168"
+        },
+        {
+            "date": 1749763316412,
+            "name": "C:\\Users\\talin\\aluguel-de-equipamentos\\logs\\error-2025-06-12.log",
+            "hash": "75254d059c3dd9917a968dd8ea794bc5843b5c3f1e5175b2e1bbcf79df3b92ff"
+        }
+    ],
+    "hashType": "sha256"
+}

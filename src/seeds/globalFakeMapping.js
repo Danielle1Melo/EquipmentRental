@@ -54,7 +54,7 @@ Avaliacao: {
   descricao: () => fakebr.lorem.sentence(),
   dataAvaliacao: () => fakebr.date.past(),
   usuario: [{ _id: new mongoose.Types.ObjectId().toString() }],
-  equipamento: [{ _id: new mongoose.Types.ObjectId().toString() }] // ✅ ADICIONE ISSO
+  equipamento: [{ _id: new mongoose.Types.ObjectId().toString() }] 
 
 },
 Equipamento: {

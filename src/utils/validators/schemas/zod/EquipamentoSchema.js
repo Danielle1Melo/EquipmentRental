@@ -8,7 +8,7 @@ const categoriasValidas = [
   "Lixadeira",
   "Compressor de Ar",
   "Soldador",
-  "Betoneira"
+  "Betoneira",
 ];
 
 export const equipamentoSchema = z.object({
@@ -27,17 +27,21 @@ export const equipamentoSchema = z.object({
   }),
   equiFoto: z.array(
     z.string().url({ message: "Cada item deve ser uma URL válida" })
-  ).min(1, "Pelo menos uma foto é obrigatória")
+  ).min(1, "Pelo menos uma foto é obrigatória"),
 });
 
 export const equipamentoUpdateSchema = z.object({
   equiValorDiaria: z.number({
-    invalid_type_error: "Valor da diária deve ser um número"
+    invalid_type_error: "Valor da diária deve ser um número",
   }).positive({ message: "Valor da diária deve ser maior que 0" }).optional(),
   equiQuantidadeDisponivel: z.number({
-    invalid_type_error: "Quantidade disponível deve ser um número"
+    invalid_type_error: "Quantidade disponível deve ser um número",
   }).int({ message: "Quantidade disponível deve ser um número inteiro" }).nonnegative({ message: "Quantidade disponível deve ser maior ou igual a 0" }).optional(),
-  equiStatus: z.boolean({
-    invalid_type_error: "Status deve ser um valor booleano"
-  }).optional()
+  equiStatus: z.enum(['ativo', 'inativo'], {
+    invalid_type_error: "Status deve ser 'ativo' ou 'inativo'",
+  }).optional(),
 }).strict({ message: "Campos não permitidos no objeto" });
+
+export const motivoReprovacaoSchema = z.object({
+  motivoReprovacao: z.string({ required_error: 'Motivo de reprovação é obrigatório' }).min(5, 'Motivo deve ter pelo menos 5 caracteres'),
+});

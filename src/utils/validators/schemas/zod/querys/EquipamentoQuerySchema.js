@@ -13,15 +13,12 @@ export const EquipamentoQuerySchema = z.object({
       message: 'Categoria não pode ser vazia',
     })
     .transform((val) => val?.trim()),
-
   status: z
     .string()
     .optional()
-    .refine((val) => !val || val === 'true' || val === 'false', {
-      message: "Status deve ser 'true' ou 'false'",
-    })
-    .transform((val) => (val ? val === 'true' : undefined)),
-
+    .refine((val) => !val || ['ativo', 'inativo'].includes(val), {
+      message: "Status deve ser 'ativo' ou 'iantivo'",
+    }),
   minValor: z
     .string()
     .optional()
@@ -29,7 +26,6 @@ export const EquipamentoQuerySchema = z.object({
     .refine((val) => val === undefined || (Number.isInteger(val) && val > 0), {
       message: 'minValor deve ser um número inteiro maior que 0',
     }),
-
   maxValor: z
     .string()
     .optional()
@@ -37,7 +33,6 @@ export const EquipamentoQuerySchema = z.object({
     .refine((val) => val === undefined || !isNaN(val) && val >= 0, {
       message: 'maxValor deve ser um número maior ou igual a 0',
     }),
-
   page: z
     .string()
     .optional()
@@ -45,7 +40,6 @@ export const EquipamentoQuerySchema = z.object({
     .refine((val) => Number.isInteger(val) && val > 0, {
       message: 'Page deve ser um número inteiro maior que 0',
     }),
-
   limit: z
     .string()
     .optional()

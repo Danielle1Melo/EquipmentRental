@@ -9,7 +9,7 @@ class Avaliacao {
       descricao: { type: String, required: true },
       usuario: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'usuario',
+        ref: 'usuarios',
         required: true
       },
       equipamento: {
