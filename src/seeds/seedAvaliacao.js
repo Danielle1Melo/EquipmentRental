@@ -8,7 +8,7 @@ import Equipamento from "../models/Equipamento.js"
 
 async function SeedAvaliacao(usuarios, equipamentos) {
   await Avaliacao.deleteMany()
- 
+
   const fake = await getGlobalFakeMapping()
   const avaliacoes = []
 
@@ -20,8 +20,8 @@ async function SeedAvaliacao(usuarios, equipamentos) {
     const avaliacao = await Avaliacao.create({
       nota,
       descricao,
-      usuario: usuario._id,
-      equipamento: equipamentos[i]._id
+      usuarios: usuario._id,
+      equipamentos: equipamentos[i]._id
     })
 
     avaliacoes.push(avaliacao)
