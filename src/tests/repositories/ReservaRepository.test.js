@@ -57,7 +57,7 @@ describe('ReservaRepository', () => {
   });
 
   describe('listar', () => {
-      it('deve listar uma reserva por ID com populate', async () => {
+      it('deve listar uma reserva por ID', async () => {
         const mockReserva = {
           _id: '123',
           dataInicial: new Date(),
@@ -447,7 +447,6 @@ describe('ReservaRepository', () => {
   });
 
   it('deve retornar resultado vazio quando nenhum equipamento é encontrado', async () => {
-    // Mock do equipamentoModel.find retornando array vazio
     Equipamento.find.mockResolvedValue([]);
 
     const req = {
@@ -484,10 +483,10 @@ describe('ReservaRepository', () => {
       totalPages: 1,
     };
 
-    // Mock dos modelos
+
     Usuario.find.mockResolvedValue(mockUsuarios);
     Equipamento.find.mockResolvedValue(mockEquipamentos);
-    // Mock do filterBuilder
+
     ReservaFilterBuilder.mockImplementation(() => ({
       comDataInicial: jest.fn().mockReturnThis(),
       comDataFinal: jest.fn().mockReturnThis(),

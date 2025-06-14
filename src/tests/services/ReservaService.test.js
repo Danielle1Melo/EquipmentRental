@@ -12,6 +12,7 @@ jest.mock('../../repositories/ReservaRepository.js', () => {
     atualizar: jest.fn(),
     buscarPorID: jest.fn(),
     findReservasSobrepostas: jest.fn(),
+    findReservasAtrasadas: jest.fn(), 
   }));
 });
 
@@ -53,14 +54,14 @@ describe('ReservaService', () => {
       const mockData = [
         {
           _id: '67959501ea0999e0a0fa9f58',
-          dataInicial: new Date('2025-06-01T05:01:45.884Z'),
-          dataFinal: new Date('2025-06-05T05:01:45.884Z'),
+          dataInicial: new Date('2026-06-01T05:01:45.884Z'),
+          dataFinal: new Date('2026-06-05T05:01:45.884Z'),
           quantidadeEquipamento: 2,
           valorEquipamento: 200,
           enderecoEquipamento: 'Rua Exemplo, 123',
           statusReserva: 'confirmada',
-          equipamentos: 'equip1',
-          usuarios: 'user1',
+          equipamentos: '67959501ea0999e0a0fa9f58',
+          usuarios: '6839a06f57d3853fbcc3797f',
         },
       ];
       repositoryMock.listar.mockResolvedValue(mockData);
@@ -74,21 +75,20 @@ describe('ReservaService', () => {
 
   describe('criar', () => {
     const validReservaData = {
-      dataInicial: new Date('2025-06-04T05:00:00.000Z'),
-      dataFinal: new Date('2025-06-05T05:00:00.000Z'),
-      dataFinalAtrasada: new Date('2025-06-06T05:00:00.000Z'),
+      dataInicial: new Date('2026-06-22T05:00:00.000Z'),
+      dataFinal: new Date('2026-06-23T05:00:00.000Z'),
       quantidadeEquipamento: 2,
       valorEquipamento: 200,
       enderecoEquipamento: 'Rua Exemplo, 123',
       statusReserva: 'pendente',
       equipamentos: '67959501ea0999e0a0fa9f58',
-      usuarios: 'user1',
+      usuarios: '6839a06f57d3853fbcc3797f',
     };
 
     it('deve criar uma reserva válida', async () => {
       const mockEquipamento = {
-        _id: '67959501ea0999e0a0fa9f58',
         equiQuantidadeDisponivel: 5,
+        equiStatus: true,
       };
       Equipamento.findById.mockResolvedValue(mockEquipamento);
       repositoryMock.findReservasSobrepostas.mockResolvedValue([]);
@@ -105,27 +105,42 @@ describe('ReservaService', () => {
       );
       expect(repositoryMock.criar).toHaveBeenCalledWith(validReservaData);
       expect(result).toEqual(validReservaData);
-    });
+    }, 1000);
 
     it('deve criar uma reserva com data no formato ISO do MongoDB', async () => {
       const isoReservaData = {
         ...validReservaData,
-        dataInicial: new Date('2025-06-04T05:01:45.884Z'),
-        dataFinal: new Date('2025-06-05T05:01:45.884Z'),
-        dataFinalAtrasada: new Date('2025-06-06T05:01:45.884Z'),
+        dataInicial: new Date('2026-06-22T05:01:45.884Z'),
+        dataFinal: new Date('2026-06-23T05:01:45.884Z'),
       };
       const mockEquipamento = {
         _id: '67959501ea0999e0a0fa9f58',
         equiQuantidadeDisponivel: 5,
+        equiStatus: true,
+      };
+      const mockUsuario = {
+        _id: '6839a06f57d3853fbcc3797f',
       };
       Equipamento.findById.mockResolvedValue(mockEquipamento);
+      Equipamento.findByIdAndUpdate.mockResolvedValue(mockEquipamento);
+      Usuario.findById.mockResolvedValue(mockUsuario);
+      repositoryMock.findReservasAtrasadas.mockResolvedValue([]);
       repositoryMock.findReservasSobrepostas.mockResolvedValue([]);
       repositoryMock.criar.mockResolvedValue(isoReservaData);
 
       const result = await reservaService.criar(isoReservaData);
 
       expect(mongoose.Types.ObjectId.isValid).toHaveBeenCalledWith('67959501ea0999e0a0fa9f58');
-      expect(Equipamento.findById).toHaveBeenCalledWith(expect.any(Object));
+      expect(Equipamento.findById).toHaveBeenCalledWith(expect.any(mongoose.Types.ObjectId));
+      expect(Usuario.findById).toHaveBeenCalledWith(expect.any(mongoose.Types.ObjectId));
+      expect(Equipamento.findByIdAndUpdate).toHaveBeenCalledWith(
+        expect.any(mongoose.Types.ObjectId),
+        { $inc: { equiQuantidadeDisponivel: -isoReservaData.quantidadeEquipamento } }
+      );
+      expect(repositoryMock.findReservasAtrasadas).toHaveBeenCalledWith(
+        expect.any(mongoose.Types.ObjectId),
+        expect.any(Date)
+      );
       expect(repositoryMock.findReservasSobrepostas).toHaveBeenCalledWith(
         isoReservaData.equipamentos,
         isoReservaData.dataInicial,
@@ -138,8 +153,8 @@ describe('ReservaService', () => {
     it('deve lançar erro se dataInicial for maior ou igual a dataFinal', async () => {
       const invalidData = {
         ...validReservaData,
-        dataInicial: new Date('2025-06-05T05:01:45.884Z'),
-        dataFinal: new Date('2025-06-05T05:01:45.884Z'),
+        dataInicial: new Date('2026-06-05T05:01:45.884Z'),
+        dataFinal: new Date('2026-06-05T05:01:45.884Z'),
       };
 
       await expect(reservaService.criar(invalidData)).rejects.toThrow(
@@ -218,7 +233,7 @@ describe('ReservaService', () => {
           errorType: 'invalidData',
           field: 'equipamentos',
           details: [],
-          customMessage: 'Pelo menos um equipamento deve ser especificado.',
+          customMessage: 'O campo equipamentos é obrigatório.',
         })
       );
     });
@@ -255,21 +270,21 @@ describe('ReservaService', () => {
       );
     });
 
-it('deve lançar erro se quantidade solicitada excede a disponível', async () => {
-  const mockEquipamento = {
-    _id: '67959501ea0999e0a0fa9f58',
-    quantidadeDisponivel: 1,
-  };
-  
-  Equipamento.findById.mockResolvedValue(mockEquipamento);
-  
-  await expect(reservaService.criar(validReservaData)).rejects.toThrow(
-    new CustomError({
-      statusCode: 400,
-      errorType: 'invalidData',
-      field: 'quantidadeEquipamento',
-      details: [],
-      customMessage: 'Quantidade solicitada excede a quantidade disponível do equipamento.',
+  it('deve lançar erro se quantidade solicitada excede a disponível', async () => {
+    const mockEquipamento = {
+      _id: '6839a07057d3853fbcc379b8',
+      equiQuantidadeDisponivel: 1,
+    };
+    
+    Equipamento.findById.mockResolvedValue(mockEquipamento);
+    
+    await expect(reservaService.criar(validReservaData)).rejects.toThrow(
+      new CustomError({
+        statusCode: 400,
+        errorType: 'invalidData',
+        field: 'equiQuantidadeDisponivel',
+        details: [],
+        customMessage: 'Quantidade solicitada excede a quantidade disponível do equipamento.',
     })
   );
   
@@ -286,13 +301,20 @@ it('deve lançar erro se quantidade solicitada excede a disponível', async () =
         { _id: 'existing-reserva' },
       ]);
 
-      await expect(reservaService.criar(validReservaData)).rejects.toThrow(
+      const futureReservaData = {
+        ...validReservaData,
+        dataInicial: new Date('2025-06-14'), 
+        dataFinal: new Date('2025-06-15'), 
+        dataFinalAtrasada: new Date('2025-06-14T05:00:00.000Z'), 
+    };
+
+      await expect(reservaService.criar(futureReservaData)).rejects.toThrow(
         new CustomError({
           statusCode: 409,
           errorType: 'conflict',
           field: 'equipamento',
           details: [],
-          customMessage: 'Já existe uma reserva para este equipamento no período solicitado.',
+          customMessage: 'Conflito com reservas existentes, incluindo período de atraso.',
         })
       );
     });
@@ -325,8 +347,8 @@ it('deve lançar erro se quantidade solicitada excede a disponível', async () =
     it('deve retornar a reserva se ela existir', async () => {
       const mockReserva = {
         _id: '67959501ea0999e0a0fa9f58',
-        dataInicial: new Date('2025-06-01T05:01:45.884Z'),
-        dataFinal: new Date('2025-06-05T05:01:45.884Z'),
+        dataInicial: new Date('2030-12-01T05:01:45.884Z'),
+        dataFinal: new Date('2030-12-05T05:01:45.884Z'),
         quantidadeEquipamento: 2,
         valorEquipamento: 200,
         enderecoEquipamento: 'Rua Exemplo, 123',
